@@ -26,8 +26,16 @@ jobs:
       - name: Add CNAME & robots
         run: |
           echo "seminar-20250928.archi-prisma.co.jp" > dist/CNAME
-          mkdir -p dist/aixarch-20250928-8dC2p
-          cp -r dist/* dist/aixarch-20250928-8dC2p/ || true
+          SLUG="aixarch-20250928-8dC2p"
+          rm -rf "dist/${SLUG}"
+          mkdir -p "dist/${SLUG}"
+          for path in dist/*; do
+            name=$(basename "$path")
+            if [ "$name" = "$SLUG" ]; then
+              continue
+            fi
+            cp -R "$path" "dist/${SLUG}/$name"
+          done
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
