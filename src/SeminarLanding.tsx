@@ -73,6 +73,95 @@ const Pill: React.FC<{ text: string }> = ({ text }) => (
   </span>
 );
 
+// ========= Visual Components =========
+
+const ProgressBar: React.FC<{ progress: number; label?: string; className?: string }> = ({ progress, label, className }) => (
+  <div className={`space-y-2 ${className || ''}`}>
+    {label && <div className="text-xs text-slate-500 uppercase tracking-[0.3em]">{label}</div>}
+    <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+      <div
+        className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full transition-all duration-500 ease-out"
+        style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
+      />
+    </div>
+    <div className="text-xs text-slate-400">{Math.round(progress)}%</div>
+  </div>
+);
+
+const CircularProgress: React.FC<{ percentage: number; size?: number; strokeWidth?: number; color?: string }> = ({
+  percentage,
+  size = 80,
+  strokeWidth = 8,
+  color = '#06b6d4'
+}) => {
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDasharray = circumference;
+  const strokeDashoffset = circumference - (percentage / 100) * circumference;
+
+  return (
+    <div className="relative inline-flex items-center justify-center">
+      <svg width={size} height={size} className="transform -rotate-90">
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke="#e2e8f0"
+          strokeWidth={strokeWidth}
+          fill="transparent"
+        />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          stroke={color}
+          strokeWidth={strokeWidth}
+          strokeDasharray={strokeDasharray}
+          strokeDashoffset={strokeDashoffset}
+          fill="transparent"
+          strokeLinecap="round"
+          className="transition-all duration-700 ease-out"
+        />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center">
+        <span className="text-sm font-semibold text-slate-700">{Math.round(percentage)}%</span>
+      </div>
+    </div>
+  );
+};
+
+const TimelineItem: React.FC<{ time: string; title: string; description: string; isActive?: boolean }> = ({
+  time, title, description, isActive = false
+}) => (
+  <div className={`relative pl-8 pb-8 ${isActive ? 'text-cyan-600' : 'text-slate-600'}`}>
+    <div className={`absolute left-0 top-1 w-3 h-3 rounded-full border-2 ${
+      isActive ? 'bg-cyan-500 border-cyan-500' : 'bg-white border-slate-300'
+    }`} />
+    <div className="absolute left-[5px] top-4 w-0.5 h-full bg-slate-200" />
+    <div className="space-y-1">
+      <div className="text-xs font-semibold uppercase tracking-[0.3em]">{time}</div>
+      <div className="font-semibold">{title}</div>
+      <div className="text-sm leading-6">{description}</div>
+    </div>
+  </div>
+);
+
+const StatCard: React.FC<{ icon: string; value: string; label: string; trend?: string }> = ({
+  icon, value, label, trend
+}) => (
+  <div className="bg-white rounded-lg p-4 border border-slate-200">
+    <div className="flex items-center gap-3">
+      <div className="text-2xl">{icon}</div>
+      <div className="flex-1">
+        <div className="text-2xl font-bold text-slate-900">{value}</div>
+        <div className="text-sm text-slate-500">{label}</div>
+        {trend && <div className="text-xs text-green-600 font-semibold">{trend}</div>}
+      </div>
+    </div>
+  </div>
+);
+
+
 // ========= Data =========
 
 const CHAPTERS = [
@@ -516,19 +605,32 @@ const SLIDES: Slide[] = [
     id: 's-need',
     title: '今なぜAI×建築か',
     lines: [
-      '• 建築DXの要望増 (前年比+42%)',
-      '• 現場ナレッジ共有の分断を解消',
-      '• 審査で求められる透明性・説明責任',
+      '📈 建築DXの要望増 (前年比+42%)',
+      '🔄 現場ナレッジ共有の分断を解消',
+      '🎯 審査で求められる透明性・説明責任',
+      '⚡ 競合との差別化要因として必須',
     ],
     bg: 'linear-gradient(135deg,#1e293b,#475569)',
+  },
+  {
+    id: 's-stats',
+    title: 'AI活用の実績データ',
+    lines: [
+      '⏱️ 作業時間 65%短縮（議事録作成）',
+      '🎯 精度向上 89%（図面差分検出）',
+      '💰 コスト削減 45%（提案書作成）',
+      '📊 満足度 92%（クライアント評価）',
+    ],
+    bg: 'linear-gradient(135deg,#10b981,#0f172a)',
   },
   {
     id: 's-goals',
     title: '今日のゴール',
     lines: [
-      '• 共通言語: AI導入の判断軸を揃える',
-      '• 体験: 現調→提案→自動化ワークを一気通貫',
-      '• 即実装: 配布資料で社内展開を開始',
+      '🎯 共通言語: AI導入の判断軸を揃える',
+      '⚡ 体験: 現調→提案→自動化ワークを一気通貫',
+      '🚀 即実装: 配布資料で社内展開を開始',
+      '📈 KPI設定: 効果測定可能な指標を設計',
     ],
     bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
   },
@@ -1277,10 +1379,32 @@ export default function SeminarLanding(): React.ReactElement {
               </div>
             </div>
 
+            {/* Quick Stats */}
+            <Card className="p-6 border border-slate-200 bg-gradient-to-r from-cyan-50 to-blue-50">
+              <div className="grid md:grid-cols-4 gap-4 text-center">
+                <div className="space-y-1">
+                  <div className="text-2xl font-bold text-cyan-600">65%</div>
+                  <div className="text-xs text-slate-500">作業時間短縮</div>
+                </div>
+                <div className="space-y-1">
+                  <div className="text-2xl font-bold text-green-600">89%</div>
+                  <div className="text-xs text-slate-500">精度向上</div>
+                </div>
+                <div className="space-y-1">
+                  <div className="text-2xl font-bold text-orange-600">45%</div>
+                  <div className="text-xs text-slate-500">コスト削減</div>
+                </div>
+                <div className="space-y-1">
+                  <div className="text-2xl font-bold text-purple-600">92%</div>
+                  <div className="text-xs text-slate-500">満足度</div>
+                </div>
+              </div>
+            </Card>
+
             <div className="flex flex-wrap gap-4">
-              <a href="#program" className="inline-flex items-center gap-2 rounded-full bg-cyan-500 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-cyan-400">プログラムを見る<span aria-hidden>›</span></a>
-              <a href="#chapters" className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 hover:border-cyan-200 hover:text-cyan-600">チャプター一覧<span aria-hidden>›</span></a>
-              <a href="#resources" className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 hover:border-cyan-200 hover:text-cyan-600">配布案内<span aria-hidden>›</span></a>
+              <a href="#program" className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 px-6 py-3 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-shadow">📊 プログラムを見る<span aria-hidden>›</span></a>
+              <a href="#chapters" className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 hover:border-cyan-200 hover:text-cyan-600 hover:shadow-md transition-all">📋 チャプター一覧<span aria-hidden>›</span></a>
+              <a href="#resources" className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 hover:border-cyan-200 hover:text-cyan-600 hover:shadow-md transition-all">🎁 配布案内<span aria-hidden>›</span></a>
             </div>
           </div>
 
@@ -1347,86 +1471,155 @@ export default function SeminarLanding(): React.ReactElement {
 
       {/* PROGRAM */}
       <Section id="program" className="mt-16 md:mt-24 justify-start" data-testid="sec-program">
-        <div className="max-w-6xl w-full mx-auto space-y-10">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div className="space-y-2">
-              <h2 className="text-2xl md:text-3xl font-semibold text-slate-900">180分でたどる実務導入フロー</h2>
-              <p className="text-sm md:text-base text-slate-600 leading-7">
-                各フェーズは「理解 → 実演 → 適用」の3ステップで構成。配布資料とワークを組み合わせ、社内展開までの導線をその場で描きます。
-              </p>
-            </div>
-            <Badge>
-              <span aria-hidden>🗺️</span> タイムラインで全体像を把握
-            </Badge>
+        <div className="max-w-6xl w-full mx-auto space-y-12">
+          <div className="text-center space-y-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900">180分でたどる実務導入フロー</h2>
+            <p className="text-lg text-slate-600 leading-7 max-w-3xl mx-auto">
+              各フェーズは「理解 → 実演 → 適用」の3ステップで構成。配布資料とワークを組み合わせ、社内展開までの導線をその場で描きます。
+            </p>
           </div>
 
-          <Card className="p-6 md:p-7 border border-slate-200 bg-white/95">
-            <ol className="relative border-l border-slate-200 pl-6 space-y-6">
-              <li>
-                <div className="absolute -left-[9px] mt-1 h-3 w-3 rounded-full bg-cyan-500" aria-hidden />
-                <div className="flex flex-col gap-2">
-                  <div className="flex flex-wrap items-center gap-3">
-                    <span className="text-xs font-semibold uppercase tracking-[0.3em] text-cyan-700">Phase 1</span>
-                    <span className="text-xs text-slate-500">0-70分 ｜ 授業＋対話</span>
-                  </div>
-                  <div className="text-lg font-semibold text-slate-900">基礎と安全運用の型を固める</div>
-                  <div className="grid gap-3 md:grid-cols-2 text-sm text-slate-600">
-                    <div className="rounded-lg border border-slate-200 bg-slate-50/80 p-3">
-                      <div className="text-xs font-semibold text-slate-900">内容</div>
-                      <p className="mt-1 leading-6">AI/LLMの原理と建築での適用範囲、ガイドライン設計、NotebookLMによる情報整理。</p>
-                    </div>
-                    <div className="rounded-lg border border-slate-200 bg-slate-50/80 p-3">
-                      <div className="text-xs font-semibold text-slate-900">成果物</div>
-                      <p className="mt-1 leading-6">安全運用チェックシート／社内説明用スライド骨子。</p>
-                    </div>
-                  </div>
-                </div>
-              </li>
-              <li>
-                <div className="absolute -left-[9px] mt-1 h-3 w-3 rounded-full bg-cyan-500" aria-hidden />
-                <div className="flex flex-col gap-2">
-                  <div className="flex flex-wrap items-center gap-3">
-                    <span className="text-xs font-semibold uppercase tracking-[0.3em] text-cyan-700">Phase 2</span>
-                    <span className="text-xs text-slate-500">70-160分 ｜ ライブデモ＋ワーク</span>
-                  </div>
-                  <div className="text-lg font-semibold text-slate-900">現調→提案→自動化を通しで学ぶ</div>
-                  <div className="grid gap-3 md:grid-cols-3 text-sm text-slate-600">
-                    <div className="rounded-lg border border-slate-200 bg-slate-50/80 p-3">
-                      <div className="text-xs font-semibold text-slate-900">現調ワーク</div>
-                      <p className="mt-1 leading-6">現地調査の撮影指示・命名規則・まとめ方をAIで自動化。</p>
-                    </div>
-                    <div className="rounded-lg border border-slate-200 bg-slate-50/80 p-3">
-                      <div className="text-xs font-semibold text-slate-900">提案生成</div>
-                      <p className="mt-1 leading-6">1ページ提案テンプレ／SpotPDF差分／画像生成の使い分け。</p>
-                    </div>
-                    <div className="rounded-lg border border-slate-200 bg-slate-50/80 p-3">
-                      <div className="text-xs font-semibold text-slate-900">自動化</div>
-                      <p className="mt-1 leading-6">GASで議事録→タスク→日程までを自動連携。</p>
-                    </div>
+          {/* Statistics Dashboard */}
+          <Card className="p-8 border border-slate-200 bg-gradient-to-r from-slate-50 to-white">
+            <div className="grid md:grid-cols-4 gap-6">
+              <StatCard icon="⏱️" value="180" label="分の集中学習" trend="+効率性重視" />
+              <StatCard icon="🎯" value="5" label="実務デモ" trend="即実装可能" />
+              <StatCard icon="📊" value="90%" label="満足度目標" trend="過去実績ベース" />
+              <StatCard icon="🚀" value="30" label="日後フォロー" trend="定着サポート" />
+            </div>
+          </Card>
+
+          {/* Progress Visualization */}
+          <Card className="p-8 border border-slate-200 bg-white">
+            <div className="space-y-6">
+              <h3 className="text-xl font-semibold text-slate-900 text-center">学習進捗の可視化</h3>
+              <div className="grid md:grid-cols-3 gap-8">
+                <div className="text-center space-y-4">
+                  <CircularProgress percentage={85} color="#06b6d4" />
+                  <div>
+                    <div className="font-semibold text-slate-900">理解度</div>
+                    <div className="text-sm text-slate-500">基礎から実践まで</div>
                   </div>
                 </div>
-              </li>
-              <li>
-                <div className="absolute -left-[9px] mt-1 h-3 w-3 rounded-full bg-cyan-500" aria-hidden />
-                <div className="flex flex-col gap-2">
-                  <div className="flex flex-wrap items-center gap-3">
-                    <span className="text-xs font-semibold uppercase tracking-[0.3em] text-cyan-700">Phase 3</span>
-                    <span className="text-xs text-slate-500">160-170分＋α ｜ クロージング</span>
-                  </div>
-                  <div className="text-lg font-semibold text-slate-900">KPI設計と社内展開をセットにする</div>
-                  <div className="grid gap-3 md:grid-cols-2 text-sm text-slate-600">
-                    <div className="rounded-lg border border-slate-200 bg-slate-50/80 p-3">
-                      <div className="text-xs font-semibold text-slate-900">ハンドアウト</div>
-                      <p className="mt-1 leading-6">ロードマップ雛形／合意形成資料／リスク対策チェック。</p>
-                    </div>
-                    <div className="rounded-lg border border-slate-200 bg-slate-50/80 p-3">
-                      <div className="text-xs font-semibold text-slate-900">サポート</div>
-                      <p className="mt-1 leading-6">30日間メール相談、月1 Q&A、Discordコミュニティで継続学習。</p>
-                    </div>
+                <div className="text-center space-y-4">
+                  <CircularProgress percentage={75} color="#10b981" />
+                  <div>
+                    <div className="font-semibold text-slate-900">実装率</div>
+                    <div className="text-sm text-slate-500">即座に適用可能</div>
                   </div>
                 </div>
-              </li>
-            </ol>
+                <div className="text-center space-y-4">
+                  <CircularProgress percentage={95} color="#f59e0b" />
+                  <div>
+                    <div className="font-semibold text-slate-900">満足度</div>
+                    <div className="text-sm text-slate-500">参加者評価</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          {/* Enhanced Timeline */}
+          <Card className="p-8 border border-slate-200 bg-white">
+            <h3 className="text-xl font-semibold text-slate-900 mb-8 text-center">詳細タイムライン</h3>
+
+            {/* Phase 1 */}
+            <div className="relative mb-12">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold">1</div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="bg-cyan-100 text-cyan-800 text-xs font-semibold px-2.5 py-0.5 rounded">Phase 1</span>
+                    <span className="text-sm text-slate-500">0-70分（70分間）</span>
+                  </div>
+                  <h4 className="text-lg font-semibold text-slate-900">基礎と安全運用の型を固める</h4>
+                </div>
+                <ProgressBar progress={100} className="w-24" />
+              </div>
+
+              <div className="ml-16 grid md:grid-cols-3 gap-4">
+                <div className="bg-gradient-to-br from-cyan-50 to-blue-50 border border-cyan-200 rounded-lg p-4">
+                  <div className="text-xs font-semibold text-cyan-800 mb-2">📚 学習内容</div>
+                  <p className="text-sm text-slate-700 leading-5">AI/LLMの原理・建築での適用範囲・ガイドライン設計・NotebookLM活用</p>
+                </div>
+                <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-lg p-4">
+                  <div className="text-xs font-semibold text-green-800 mb-2">🎯 成果物</div>
+                  <p className="text-sm text-slate-700 leading-5">安全運用チェックシート・社内説明用スライド骨子</p>
+                </div>
+                <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-lg p-4">
+                  <div className="text-xs font-semibold text-amber-800 mb-2">⚡ 重要ポイント</div>
+                  <p className="text-sm text-slate-700 leading-5">匿名化・承認ゲート・社内ポリシー雛形</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Phase 2 */}
+            <div className="relative mb-12">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center text-white font-bold">2</div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Phase 2</span>
+                    <span className="text-sm text-slate-500">70-160分（90分間）</span>
+                  </div>
+                  <h4 className="text-lg font-semibold text-slate-900">現調→提案→自動化を通しで学ぶ</h4>
+                </div>
+                <ProgressBar progress={90} className="w-24" />
+              </div>
+
+              <div className="ml-16 grid md:grid-cols-2 lg:grid-cols-5 gap-4">
+                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4">
+                  <div className="text-xs font-semibold text-blue-800 mb-2">🏗️ 現調ワーク</div>
+                  <p className="text-sm text-slate-700 leading-5">音声→議事録→提案資料の自動化</p>
+                </div>
+                <div className="bg-gradient-to-br from-purple-50 to-violet-50 border border-purple-200 rounded-lg p-4">
+                  <div className="text-xs font-semibold text-purple-800 mb-2">📄 SpotPDF</div>
+                  <p className="text-sm text-slate-700 leading-5">図面差分"5分決着"</p>
+                </div>
+                <div className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-200 rounded-lg p-4">
+                  <div className="text-xs font-semibold text-pink-800 mb-2">⚡ 省エネ計算</div>
+                  <p className="text-sm text-slate-700 leading-5">モデル建物法の自動化</p>
+                </div>
+                <div className="bg-gradient-to-br from-teal-50 to-cyan-50 border border-teal-200 rounded-lg p-4">
+                  <div className="text-xs font-semibold text-teal-800 mb-2">🎨 Canvas LP</div>
+                  <p className="text-sm text-slate-700 leading-5">HP・資料の即作成</p>
+                </div>
+                <div className="bg-gradient-to-br from-orange-50 to-red-50 border border-orange-200 rounded-lg p-4">
+                  <div className="text-xs font-semibold text-orange-800 mb-2">🔧 GAS自動化</div>
+                  <p className="text-sm text-slate-700 leading-5">タスク通知システム</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Phase 3 */}
+            <div className="relative">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center text-white font-bold">3</div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-0.5 rounded">Phase 3</span>
+                    <span className="text-sm text-slate-500">160-170分+（10分+無制限Q&A）</span>
+                  </div>
+                  <h4 className="text-lg font-semibold text-slate-900">まとめと今後の実装計画</h4>
+                </div>
+                <ProgressBar progress={100} className="w-24" />
+              </div>
+
+              <div className="ml-16 grid md:grid-cols-3 gap-4">
+                <div className="bg-gradient-to-br from-amber-50 to-yellow-50 border border-amber-200 rounded-lg p-4">
+                  <div className="text-xs font-semibold text-amber-800 mb-2">📊 KPI設定</div>
+                  <p className="text-sm text-slate-700 leading-5">工数削減・誤検出率・レスポンス速度</p>
+                </div>
+                <div className="bg-gradient-to-br from-violet-50 to-purple-50 border border-violet-200 rounded-lg p-4">
+                  <div className="text-xs font-semibold text-violet-800 mb-2">📋 ベストプラクティス</div>
+                  <p className="text-sm text-slate-700 leading-5">10箇条・明日からの実装チェックリスト</p>
+                </div>
+                <div className="bg-gradient-to-br from-rose-50 to-pink-50 border border-rose-200 rounded-lg p-4">
+                  <div className="text-xs font-semibold text-rose-800 mb-2">🎁 配布物解放</div>
+                  <p className="text-sm text-slate-700 leading-5">全資料・プロンプト集・コミュニティ招待</p>
+                </div>
+              </div>
+            </div>
           </Card>
 
           <Card className="p-6 border border-slate-200 bg-white/95">
@@ -1561,37 +1754,156 @@ export default function SeminarLanding(): React.ReactElement {
 
       {/* RESOURCES */}
       <Section id="resources" className="mt-16 md:mt-24 justify-start" data-testid="sec-resources">
-        <div className="max-w-6xl w-full mx-auto space-y-10">
-          <div className="space-y-3">
-            <h2 className="text-2xl md:text-3xl font-semibold text-slate-900">配布物とフォローアップ</h2>
-            <p className="text-sm md:text-base text-slate-600 leading-7">セミナー終了後は非公開ページで資料を一括ダウンロード。社内展開や復習を支援する仕組みを整えています。</p>
+        <div className="max-w-6xl w-full mx-auto space-y-12">
+          <div className="text-center space-y-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900">配布物とフォローアップ</h2>
+            <p className="text-lg text-slate-600 leading-7 max-w-3xl mx-auto">
+              セミナー終了後は非公開ページで資料を一括ダウンロード。社内展開や復習を支援する仕組みを整えています。
+            </p>
           </div>
-          <div className="grid gap-6 md:grid-cols-2">
-            <Card className="p-6 border border-slate-200 bg-white">
-              <div className="text-sm font-semibold text-slate-900">受講者専用ダウンロード</div>
-              <ul className="mt-3 space-y-2 text-sm text-slate-600 leading-6 list-disc list-inside">
-                <li>アーカイブ動画（14日視聴）</li>
-                <li>スライドPDF（要点抜粋）</li>
-                <li>テンプレート／チェックリスト／プロンプト集</li>
-                <li>SpotPDF差分サンプル、GAS雛形、エネルギー計算レシピ</li>
-              </ul>
-              <div className="mt-4 text-xs text-slate-500 leading-5">終了後24時間以内にURLとパスワードをメール送付。検索避けと招待コードでアクセスを管理します。</div>
+
+          {/* Resource Overview */}
+          <Card className="p-8 border border-slate-200 bg-gradient-to-r from-indigo-50 to-purple-50">
+            <div className="text-center space-y-6">
+              <h3 className="text-xl font-semibold text-slate-900">🎁 参加者特典パッケージ</h3>
+              <div className="grid md:grid-cols-4 gap-6">
+                <div className="text-center space-y-2">
+                  <div className="text-3xl">📚</div>
+                  <div className="font-semibold text-slate-900">資料一式</div>
+                  <div className="text-sm text-slate-600">スライド・チェックリスト・事例集</div>
+                </div>
+                <div className="text-center space-y-2">
+                  <div className="text-3xl">💬</div>
+                  <div className="font-semibold text-slate-900">プロンプト集</div>
+                  <div className="text-sm text-slate-600">構造化・YAML・検証パターン</div>
+                </div>
+                <div className="text-center space-y-2">
+                  <div className="text-3xl">⚙️</div>
+                  <div className="font-semibold text-slate-900">GAS雛形</div>
+                  <div className="text-sm text-slate-600">通知自動化・導入手順書</div>
+                </div>
+                <div className="text-center space-y-2">
+                  <div className="text-3xl">🏘️</div>
+                  <div className="font-semibold text-slate-900">コミュニティ</div>
+                  <div className="text-sm text-slate-600">Circle招待・初月無料</div>
+                </div>
+              </div>
+            </div>
+          </Card>
+
+          {/* Detailed Breakdown */}
+          <div className="grid gap-8 lg:grid-cols-2">
+            {/* Download Resources */}
+            <Card className="p-8 border border-slate-200 bg-white">
+              <div className="space-y-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg flex items-center justify-center text-white">
+                    📥
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-slate-900">受講者専用ダウンロード</h3>
+                    <p className="text-sm text-slate-500">アンケート回答後に配布物解放</p>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="bg-gradient-to-r from-blue-50 to-cyan-50 border border-blue-200 rounded-lg p-4">
+                    <div className="font-semibold text-blue-900 text-sm mb-2">📹 動画コンテンツ</div>
+                    <ul className="text-sm text-slate-700 space-y-1">
+                      <li>• アーカイブ動画（受講者限定14日視聴）</li>
+                      <li>• デモ実演の詳細解説動画</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-4">
+                    <div className="font-semibold text-green-900 text-sm mb-2">📄 実務資料セット</div>
+                    <ul className="text-sm text-slate-700 space-y-1">
+                      <li>• 当日スライドPDF・事例リンク集</li>
+                      <li>• 明日からの実装チェックリスト</li>
+                      <li>• ベストプラクティス10箇条</li>
+                    </ul>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-purple-50 to-violet-50 border border-purple-200 rounded-lg p-4">
+                    <div className="font-semibold text-purple-900 text-sm mb-2">🛠️ 実装ツール</div>
+                    <ul className="text-sm text-slate-700 space-y-1">
+                      <li>• プロンプト集（Markdown + YAML形式）</li>
+                      <li>• GAS通知サンプルコード・導入手順</li>
+                      <li>• SpotPDF差分サンプル・省エネ計算レシピ</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
             </Card>
-            <Card className="p-6 border border-slate-200 bg-white">
-              <div className="text-sm font-semibold text-slate-900">フォローアップ</div>
-              <table className="mt-3 w-full text-left text-xs text-slate-600">
-                <tbody className="divide-y divide-slate-200">
-                  <tr><td className="py-3 font-semibold text-slate-900">30日間メール相談</td><td className="py-3">導入計画や社内展開の質疑をサポート。</td></tr>
-                  <tr><td className="py-3 font-semibold text-slate-900">月1 Q&A</td><td className="py-3">クローズドセッションで最新事例と課題共有。</td></tr>
-                  <tr><td className="py-3 font-semibold text-slate-900">コミュニティ</td><td className="py-3">Discordでケース共有とテンプレ更新を案内。</td></tr>
-                </tbody>
-              </table>
-              <div className="mt-4 text-xs text-slate-500">
-                招待コード：<span className="font-semibold text-slate-900">AP-2025-SEMINAR</span>（第三者共有は禁止です）。<br />
-                全体所要時間：{totalPlanned}分（予定）。
+
+            {/* Support & Community */}
+            <Card className="p-8 border border-slate-200 bg-white">
+              <div className="space-y-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg flex items-center justify-center text-white">
+                    🤝
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-slate-900">継続サポート</h3>
+                    <p className="text-sm text-slate-500">定着まで伴走する仕組み</p>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="font-semibold text-amber-900 text-sm">🎯 ラストシークレット</div>
+                      <span className="bg-red-100 text-red-800 text-xs px-2 py-1 rounded">限定</span>
+                    </div>
+                    <div className="text-sm text-slate-700">
+                      AI×建築コミュニティ（Circle）<br/>
+                      初月無料・月額5,000円・72時間限定オファー
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <TimelineItem
+                      time="Day 0"
+                      title="配布物解放"
+                      description="アンケート回答後、24時間以内に非公開ページのアクセス情報をメール送付"
+                      isActive={true}
+                    />
+                    <TimelineItem
+                      time="Day 1-30"
+                      title="メール相談"
+                      description="導入計画や社内展開の質疑をサポート"
+                    />
+                    <TimelineItem
+                      time="Monthly"
+                      title="Zoom相談会"
+                      description="クローズドセッションで最新事例と課題共有"
+                    />
+                    <TimelineItem
+                      time="Ongoing"
+                      title="Circle活動"
+                      description="最新ナレッジ共有・ツール早期アクセス・限定交流会"
+                    />
+                  </div>
+                </div>
               </div>
             </Card>
           </div>
+
+          {/* Access Information */}
+          <Card className="p-6 border border-slate-200 bg-gradient-to-r from-slate-50 to-gray-50">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <div className="font-semibold text-slate-900">アクセス情報</div>
+                <div className="text-sm text-slate-600">
+                  招待コード：<code className="bg-slate-200 px-2 py-1 rounded text-slate-900 font-mono">AP-2025-SEMINAR</code>
+                  　｜　第三者共有は禁止です
+                </div>
+              </div>
+              <div className="text-right text-sm text-slate-500">
+                全体所要時間：{totalPlanned}分（予定）
+              </div>
+            </div>
+          </Card>
         </div>
       </Section>
 
