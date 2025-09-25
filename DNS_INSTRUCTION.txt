@@ -1,0 +1,1 @@
+DNS: 作業後、DNS で seminar-20250928.archi-prisma.co.jp → archi-prisma.github.io の CNAME を追加してください。
