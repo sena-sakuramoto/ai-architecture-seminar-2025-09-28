@@ -96,6 +96,27 @@ const CHAPTERS = [
   { no: 18, id: 'ch-18', title: '無期限Q&A' },
 ] as const;
 
+const CHAPTER_SUMMARIES: Record<string, string> = {
+  'ch-01': '進行の全体像と期待値をそろえる冒頭パート',
+  'ch-02': 'AI/LLMの特性と安全運用を社内で共有する基礎',
+  'ch-03': 'ChatGPTで短時間に仕上げる定型ドキュメント群',
+  'ch-04': '用途別にAIスタックを切り替える判断軸を解説',
+  'ch-05': 'Deep Researchで根拠付き調査レポートを生成',
+  'ch-06': '資料ツールを比較しブランド統一と共同編集を設計',
+  'ch-07': '議題から配布まで自動化するエージェント運用',
+  'ch-08': 'ワークショップでLPを共同制作し導線設計を体感',
+  'ch-09': '1ページ提案テンプレで意思決定を加速させる',
+  'ch-10': '現場調査からレポート化までを標準化する',
+  'ch-11': '議事録の自動整形とタスク化を最小工数で実装',
+  'ch-12': 'GPTとGeminiの画像生成を役割ごとに最適化',
+  'ch-13': 'SpotPDFで差分チェックと承認フローを自動化',
+  'ch-14': 'GAS連携でメール→タスク→カレンダーを連動',
+  'ch-15': '省エネ計算を自動化し提出書式まで一気通貫',
+  'ch-16': 'テンプレ／雛形を配布し社内展開の初速を上げる',
+  'ch-17': 'KPI・ロードマップで導入の次アクションを決定',
+  'ch-18': '無期限Q&Aとコミュニティで定着を支援',
+};
+
 // 章ごとの表示内容＋講師メモ
 const CHAPTER_SECTIONS: Array<{
   id: string;
@@ -249,7 +270,105 @@ const CHAPTER_SECTIONS: Array<{
     bullets: ['Discord常設', '月1相談会/限定交流会', 'ツール早期アクセス'],
     notes: '匿名OK。winsへ成功事例、bug-reportへ課題。アーカイブで復習可。',
   },
-];
+]
+
+const chapterVisuals: Record<string, React.ReactNode> = {
+  'ch-01': (
+    <div className="rounded-lg border border-slate-200 bg-white p-4 text-xs text-slate-600">
+      <div className="text-[11px] font-semibold text-slate-900 uppercase tracking-[0.3em]">Agenda Snapshot</div>
+      <div className="mt-3 space-y-2">
+        <div className="flex items-center justify-between rounded-md bg-slate-50 px-3 py-2">
+          <span>00-10分</span><span>チェックイン・MVV共有</span>
+        </div>
+        <div className="flex items-center justify-between rounded-md bg-slate-50 px-3 py-2">
+          <span>10-25分</span><span>期待値調整と進行説明</span>
+        </div>
+        <div className="flex items-center justify-between rounded-md bg-slate-50 px-3 py-2">
+          <span>25-40分</span><span>デモ導線予告＆QA</span>
+        </div>
+      </div>
+    </div>
+  ),
+  'ch-02': (
+    <div className="rounded-lg border border-slate-200 bg-white p-4 text-xs text-slate-600">
+      <div className="text-[11px] font-semibold text-slate-900 uppercase tracking-[0.3em]">LLMリスクマトリクス</div>
+      <div className="mt-3 grid grid-cols-3 gap-2 text-center">
+        <div className="rounded-md bg-cyan-50 px-2 py-2">
+          <div className="text-[10px] text-cyan-800">幻覚</div>
+          <div className="mt-1 text-[11px] text-slate-600">構造化プロンプト＋検証</div>
+        </div>
+        <div className="rounded-md bg-amber-50 px-2 py-2">
+          <div className="text-[10px] text-amber-800">最新性</div>
+          <div className="mt-1 text-[11px] text-slate-600">更新頻度とソース管理</div>
+        </div>
+        <div className="rounded-md bg-rose-50 px-2 py-2">
+          <div className="text-[10px] text-rose-800">秘匿性</div>
+          <div className="mt-1 text-[11px] text-slate-600">承認フローとマスキング</div>
+        </div>
+      </div>
+    </div>
+  ),
+  'ch-05': (
+    <div className="rounded-lg border border-slate-200 bg-white p-4 text-xs text-slate-600">
+      <div className="text-[11px] font-semibold text-slate-900 uppercase tracking-[0.3em]">評価指標サンプル</div>
+      <table className="mt-3 w-full text-left text-[11px]">
+        <thead className="text-slate-500">
+          <tr><th className="py-1">項目</th><th className="py-1">指標</th><th className="py-1">目標</th></tr>
+        </thead>
+        <tbody className="text-slate-600">
+          <tr className="border-t"><td className="py-1">誤検出率</td><td className="py-1">False Positive</td><td className="py-1">≦5%</td></tr>
+          <tr className="border-t"><td className="py-1">未検出率</td><td className="py-1">False Negative</td><td className="py-1">≦3%</td></tr>
+          <tr className="border-t"><td className="py-1">調査時間</td><td className="py-1">1案件あたり</td><td className="py-1">-40%</td></tr>
+        </tbody>
+      </table>
+    </div>
+  ),
+  'ch-08': (
+    <div className="rounded-lg border border-slate-200 bg-white p-4 text-xs text-slate-600">
+      <div className="text-[11px] font-semibold text-slate-900 uppercase tracking-[0.3em]">LPワイヤーフレーム</div>
+      <div className="mt-3 grid grid-cols-3 gap-2">
+        <div className="col-span-3 rounded-md border border-slate-200 bg-slate-50 py-2 text-center text-[11px]">ヒーロー：キャッチ／ビジュアル／CTA</div>
+        <div className="col-span-2 rounded-md border border-slate-200 bg-slate-50 py-2 text-center text-[11px]">課題と解決策</div>
+        <div className="rounded-md border border-slate-200 bg-slate-50 py-2 text-center text-[11px]">証拠</div>
+        <div className="col-span-3 rounded-md border border-slate-200 bg-slate-50 py-2 text-center text-[11px]">CTA＋配布導線</div>
+      </div>
+    </div>
+  ),
+  'ch-12': (
+    <div className="rounded-lg border border-slate-200 bg-white p-4 text-xs text-slate-600">
+      <div className="text-[11px] font-semibold text-slate-900 uppercase tracking-[0.3em]">ツール使い分けマップ</div>
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        <div className="rounded-md bg-cyan-50 p-3">
+          <div className="text-[11px] font-semibold text-cyan-800">GPT</div>
+          <ul className="mt-2 space-y-1 list-disc list-inside">
+            <li>シーン設定・構図指示</li>
+            <li>素材差し替え</li>
+            <li>シリーズ生成</li>
+          </ul>
+        </div>
+        <div className="rounded-md bg-amber-50 p-3">
+          <div className="text-[11px] font-semibold text-amber-800">Gemini</div>
+          <ul className="mt-2 space-y-1 list-disc list-inside">
+            <li>写実表現・温度調整</li>
+            <li>部分リタッチ</li>
+            <li>海外素材の補完</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  ),
+  'ch-16': (
+    <div className="rounded-lg border border-slate-200 bg-white p-4 text-xs text-slate-600">
+      <div className="text-[11px] font-semibold text-slate-900 uppercase tracking-[0.3em]">配布物リスト</div>
+      <div className="mt-3 grid grid-cols-2 gap-2">
+        <div className="rounded-md bg-slate-50 p-3">テンプレート 15本</div>
+        <div className="rounded-md bg-slate-50 p-3">チェックリスト 8本</div>
+        <div className="rounded-md bg-slate-50 p-3">プロンプト集 70種</div>
+        <div className="rounded-md bg-slate-50 p-3">GAS雛形 3本</div>
+      </div>
+    </div>
+  ),
+};
 
 const NOTES_MAP: Record<string, string> = CHAPTER_SECTIONS.reduce<Record<string, string>>(
   (acc, s) => {
@@ -986,34 +1105,42 @@ section p,section li,section .text-slate-600{font-size:var(--slide-body)}
             <div className="space-y-2">
               <h2 className="text-2xl md:text-3xl font-semibold text-slate-900">チャプター索引</h2>
               <p className="text-sm md:text-base text-slate-600 leading-7">
-                18章それぞれにゴールと成果物を設定。カードをクリックすると該当パートへ移動します。ドットナビやキーボード操作（↑↓）とも連動しています。
+                各チャプターの概要とゴールを一覧化しています。ナンバーまたは「見る」ボタンで該当セクションへジャンプできます。
               </p>
             </div>
             <Badge color="#E2E8F0">
-              <span aria-hidden>⌨️</span> ↑↓ or Dot でジャンプ
+              <span aria-hidden>⌨️</span> ↑↓ / Dot / Enter で移動
             </Badge>
           </div>
-          <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-            {CHAPTERS.map((c) => (
-              <Card
-                key={c.id}
-                className="px-4 py-5 cursor-pointer border border-slate-200 bg-white/95 transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg"
-                data-testid="chapter-card"
-                onClick={() => {
-                  setRevealCount(0);
-                  scrollToId(c.id);
-                }}
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-semibold text-cyan-700">CH.{String(c.no).padStart(2, '0')}</span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-50 text-cyan-700">LIVE</span>
-                </div>
-                <div className="mt-3 text-sm font-semibold text-slate-900 leading-6 min-h-[3.5rem]">
-                  {c.title}
-                </div>
-                <div className="mt-2 text-[11px] text-slate-500">クリックで該当セクションへ移動</div>
-              </Card>
-            ))}
+          <div className="rounded-2xl border border-slate-200 bg-white">
+            <div className="divide-y divide-slate-200">
+              {CHAPTERS.map((c) => {
+                const summary = CHAPTER_SUMMARIES[c.id] || '';
+                return (
+                  <div
+                    key={c.id}
+                    className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-cyan-500/10 text-sm font-semibold text-cyan-600">
+                        {String(c.no).padStart(2, '0')}
+                      </div>
+                      <div className="space-y-1">
+                        <div className="text-sm font-semibold text-slate-900">{c.title}</div>
+                        <p className="text-xs text-slate-500 leading-5">{summary}</p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => { setRevealCount(0); scrollToId(c.id); }}
+                      className="inline-flex items-center gap-2 self-start rounded-full border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600 transition hover:border-cyan-300 hover:text-cyan-600"
+                    >
+                      見る <span aria-hidden>›</span>
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </Section>
@@ -1023,6 +1150,7 @@ section p,section li,section .text-slate-600{font-size:var(--slide-body)}
         const minutes = SECTION_MINUTES[s.id];
         const chapterNo = CHAPTERS.find((c) => c.id === s.id)?.no;
         const progress = typeof minutes === 'number' ? Math.min(100, Math.round((minutes / 12) * 100)) : 0;
+        const visual = chapterVisuals[s.id];
         return (
           <Section
             id={s.id}
@@ -1049,13 +1177,16 @@ section p,section li,section .text-slate-600{font-size:var(--slide-body)}
                     {chapterNo ? <span>CH.{String(chapterNo).padStart(2, '0')}</span> : null}
                   </div>
                 </div>
-                <div className="grid gap-6 md:grid-cols-[minmax(0,0.62fr)_minmax(0,0.38fr)]">
+                <div className="grid gap-6 md:grid-cols-[minmax(0,0.58fr)_minmax(0,0.42fr)]">
                   <ul className="space-y-3">
                     {renderBullets(s.bullets, s.id)}
                   </ul>
-                  <div className="rounded-lg border border-slate-200 bg-slate-50/80 p-4 text-xs md:text-sm text-slate-600">
-                    <div className="font-semibold text-slate-900">講師メモ（Nキーで拡大表示）</div>
-                    <p className="mt-2 leading-6 whitespace-pre-line">{s.notes}</p>
+                  <div className="space-y-4">
+                    {visual ? visual : null}
+                    <div className="rounded-lg border border-slate-200 bg-slate-50/80 p-4 text-xs md:text-sm text-slate-600">
+                      <div className="font-semibold text-slate-900">講師メモ（Nキーで拡大表示）</div>
+                      <p className="mt-2 leading-6 whitespace-pre-line">{s.notes}</p>
+                    </div>
                   </div>
                 </div>
                 {progress > 0 && (
