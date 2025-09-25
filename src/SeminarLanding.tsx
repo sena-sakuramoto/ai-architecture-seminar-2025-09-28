@@ -789,48 +789,77 @@ export default function SeminarLanding(): React.ReactElement {
       data-testid="root-bg"
       data-scroll-root="true"
       ref={containerRef}
-      className="h-screen overflow-y-auto snap-y snap-mandatory scroll-smooth text-slate-900"
+      className="h-screen overflow-y-auto bg-slate-950 text-white"
       style={{
         backgroundImage:
-          'radial-gradient(1200px 500px at 10% -10%, rgba(14,165,233,0.12) 0%, transparent 55%), radial-gradient(900px 400px at 100% 10%, rgba(253,224,71,0.14) 0%, transparent 50%)',
-        backgroundColor: '#F8FAFC',
+          'radial-gradient(1400px 700px at 5% 10%, rgba(14,165,233,0.35) 0%, transparent 60%), radial-gradient(1200px 600px at 95% 0%, rgba(12,74,110,0.4) 0%, transparent 65%)',
       }}
     >
       {/* TOP */}
       <Section id="top" className="justify-center" data-testid="sec-top">
-        <div className="max-w-6xl w-full mx-auto grid gap-10 lg:grid-cols-[1.1fr,0.9fr]">
-          <div className="space-y-6">
-            <Badge>
-              <span aria-hidden>✨</span> 2025.09.28 Live + Archive
-            </Badge>
-            <h1 className="text-[30px] md:text-[34px] font-semibold text-slate-900">実務で使える AI×建築セミナー</h1>
-            <p className="text-sm md:text-base text-slate-600 leading-6">建築ワークフローにAIを組み込む全行程を、180分で体験しながら学ぶ集中プログラム。ライブ配信＋14日アーカイブで復習できます。</p>
-            <ul className="grid gap-3 sm:grid-cols-2 text-sm text-slate-600">
-              <li className="flex items-start gap-2"><span className="mt-1 h-2 w-2 rounded-full bg-cyan-500" /><span>日時：2025年9月28日（日）13:00-16:30 JST</span></li>
-              <li className="flex items-start gap-2"><span className="mt-1 h-2 w-2 rounded-full bg-cyan-500" /><span>形式：オンラインライブ＋14日間アーカイブ</span></li>
-              <li className="flex items-start gap-2"><span className="mt-1 h-2 w-2 rounded-full bg-cyan-500" /><span>定員：120名（法人申込可／1アカウント5名視聴）</span></li>
-              <li className="flex items-start gap-2"><span className="mt-1 h-2 w-2 rounded-full bg-cyan-500" /><span>招待コード：AP-2025-SEMINAR</span></li>
-            </ul>
-            <div className="flex flex-wrap gap-3">
-              <a href="#program" className="inline-flex items-center gap-2 rounded-full bg-cyan-500 px-5 py-3 text-sm font-semibold text-white hover:bg-cyan-400">プログラムを見る<span aria-hidden>›</span></a>
-              <a href="#chapters" className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 hover:border-cyan-200 hover:text-cyan-600">チャプター一覧<span aria-hidden>›</span></a>
-              <a href="#resources" className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 hover:border-cyan-200 hover:text-cyan-600">配布案内<span aria-hidden>›</span></a>
+        <div className="max-w-6xl w-full mx-auto grid gap-12 lg:grid-cols-[1fr,0.9fr]">
+          <div className="space-y-10">
+            <div className="space-y-4">
+              <Badge>
+                <span aria-hidden>✨</span> 2025.09.28 Live + Archive
+              </Badge>
+              <h1 className="text-[40px] font-semibold text-white">実務で使える AI×建築セミナー</h1>
+              <p className="text-sm md:text-base text-slate-200 leading-7">建築現場にAIを実装するための“線”のワークフローを180分で体験。ライブ＋14日アーカイブで復習できます。</p>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Card className="p-5 bg-slate-900/70 backdrop-blur border border-white/10">
+                <div className="text-xs text-slate-300 uppercase tracking-[0.3em]">Schedule</div>
+                <div className="mt-3 text-xl font-semibold text-white">2025.09.28（日）13:00-16:30</div>
+                <div className="text-xs text-slate-400 mt-1">オンラインライブ＋14日アーカイブ</div>
+              </Card>
+              <Card className="p-5 bg-slate-900/70 backdrop-blur border border-white/10">
+                <div className="text-xs text-slate-300 uppercase tracking-[0.3em]">Entry</div>
+                <div className="mt-3 text-xl font-semibold text-white">Invite Code: AP-2025-SEMINAR</div>
+                <div className="text-xs text-slate-400 mt-1">定員120名／法人申込可（1アカウント5名視聴）</div>
+              </Card>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2 text-sm text-slate-200">
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <div className="text-xs text-slate-300 uppercase tracking-[0.3em]">対象部署</div>
+                <p className="mt-2 leading-6">設計・デザイン、ゼネコン、デベロッパー、DX推進、AI導入担当</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <div className="text-xs text-slate-300 uppercase tracking-[0.3em]">進行スタイル</div>
+                <p className="mt-2 leading-6">このページをスライドとして利用。HUD／ノート／段階表示対応。</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <div className="text-xs text-slate-300 uppercase tracking-[0.3em]">配布物</div>
+                <p className="mt-2 leading-6">ワークフロー図／提案テンプレ／チェックリスト／プロンプト／GAS雛形など。</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <div className="text-xs text-slate-300 uppercase tracking-[0.3em]">フォロー</div>
+                <p className="mt-2 leading-6">30日メール相談・月1 Q&A・コミュニティで継続支援。</p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-4">
+              <a href="#program" className="inline-flex items-center gap-2 rounded-full bg-cyan-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-cyan-500/40 hover:bg-cyan-400">プログラムを見る<span aria-hidden>›</span></a>
+              <a href="#chapters" className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white hover:border-cyan-200">チャプター一覧<span aria-hidden>›</span></a>
+              <a href="#resources" className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-6 py-3 text-sm font-semibold text-white hover:border-cyan-200">配布案内<span aria-hidden>›</span></a>
             </div>
           </div>
-          <Card className="p-6 border border-slate-200 bg-white">
+
+          <Card className="p-6 bg-white/10 border border-white/10 backdrop-blur">
             <div className="space-y-5">
               <div className="space-y-2">
-                <div className="text-sm font-semibold text-slate-900">セッション構造</div>
-                <p className="text-xs text-slate-500 leading-5">180分を3フェーズに分けて、理解→実演→適用の順で進行します。</p>
+                <div className="text-xs text-slate-200 uppercase tracking-[0.3em]">180min Timeline</div>
+                <p className="text-sm text-slate-200 leading-6">理解→実演→適用の3フェーズで、AI活用を現場へ落とし込みます。</p>
               </div>
-              <table className="w-full text-left text-xs text-slate-600">
-                <thead className="text-slate-500">
-                  <tr><th className="pb-2">Phase</th><th className="pb-2">時間</th><th className="pb-2">主な内容</th></tr>
+              <table className="w-full text-left text-xs text-slate-200">
+                <thead className="text-slate-400">
+                  <tr><th className="pb-2">Phase</th><th className="pb-2">時間</th><th className="pb-2">重点ポイント</th></tr>
                 </thead>
                 <tbody>
-                  <tr className="border-t"><td className="py-2">基礎</td><td className="py-2">0-70分</td><td className="py-2">AIの基本とガイドライン整理</td></tr>
-                  <tr className="border-t"><td className="py-2">実務ワーク</td><td className="py-2">70-160分</td><td className="py-2">現調→提案→自動化デモ＋ワーク</td></tr>
-                  <tr className="border-t"><td className="py-2">定着</td><td className="py-2">160-170分＋α</td><td className="py-2">KPIと配布案内、Q&A</td></tr>
+                  <tr className="border-t border-white/10"><td className="py-2">基礎</td><td className="py-2">0-70分</td><td className="py-2">LLM特性／安全運用の型／NotebookLM活用</td></tr>
+                  <tr className="border-t border-white/10"><td className="py-2">実務ワーク</td><td className="py-2">70-160分</td><td className="py-2">現調→提案→自動化デモとワークショップ</td></tr>
+                  <tr className="border-t border-white/10"><td className="py-2">定着</td><td className="py-2">160-170分＋α</td><td className="py-2">KPI設計／配布物ガイド／Q&A</td></tr>
                 </tbody>
               </table>
             </div>
