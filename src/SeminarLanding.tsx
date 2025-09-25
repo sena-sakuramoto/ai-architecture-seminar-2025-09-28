@@ -472,93 +472,467 @@ const PresenterHUD: React.FC<{
 // ===== Slide Mode =====
 type Slide = { id: string; title?: string; subtitle?: string; lines?: string[]; img?: string; bg?: string };
 
-const baseSlides: Slide[] = [
+const SLIDES: Slide[] = [
   {
     id: 's-hero',
     title: '実務で使える AI×建築セミナー',
-    subtitle: '建築ワークフローにAIを組み込む180分',
-    lines: ['2025-09-28 JST / Live + 14日アーカイブ', '対象: 設計・デザイン・ゼネコン・DX推進', 'Invite: AP-2025-SEMINAR'],
+    subtitle: '明日から“自分ごと”に落とし込む3時間',
+    lines: [
+      '2025-09-28 JST / Live + 14日アーカイブ',
+      '対象: 設計・デザイン・ゼネコン・DX推進',
+      'Invite: AP-2025-SEMINAR',
+    ],
     bg: 'linear-gradient(120deg,#38bdf8,#0f172a)',
   },
   {
-    id: 's-greeting',
+    id: 's-opening',
     title: 'オープニング',
-    lines: ['講師: sakuramoto sena', 'テーマ: 知る→できる→使える', '進行: 理解 → 実演 → 適用 → フォロー'],
+    lines: [
+      '講師: 櫻本 聖成（Archi-Prisma / archisoft）',
+      'この3時間で『知る→できる→使える』を体感',
+      '資料・プロンプト・GAS雛形を持ち帰り',
+    ],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
+  },
+  {
+    id: 's-mindset',
+    title: 'マインドセット',
+    lines: [
+      '学びは『聞く→やる→話す→教える』で定着',
+      'ハンズオンで“ドヤ顔で教えられる”状態へ',
+      'Instagramで復習＆最新Tipsを配信',
+    ],
+    bg: 'linear-gradient(135deg,#1e293b,#334155)',
+  },
+  {
+    id: 's-learning-cycle',
+    title: '学習サイクル',
+    lines: [
+      '1. インプット（聞く・見る）',
+      '2. リハーサル（真似る）',
+      '3. 転用（自分ごと化）',
+      '4. アウトプット（共有・教える）',
+    ],
+    bg: 'linear-gradient(135deg,#0ea5e9,#1e293b)',
   },
   {
     id: 's-need',
     title: '今なぜAI×建築か',
-    lines: ['建築DXの要望増 (前年比+42%)', '現場でのナレッジ共有不足', '審査で求められる透明性と説明責任'],
-    bg: 'linear-gradient(135deg,#1e293b,#334155)',
+    lines: [
+      '建築DXの要望増 (前年比+42%)',
+      '現場ナレッジ共有の分断',
+      '審査で求められる透明性・説明責任',
+    ],
+    bg: 'linear-gradient(135deg,#1e293b,#475569)',
   },
   {
     id: 's-goals',
     title: '今日のゴール',
-    lines: ['共通言語: AI導入の判断軸を揃える', '体験: 現調→提案→自動化ワークフロー', '即実装: 配布資料で社内展開を開始'],
-    bg: 'linear-gradient(135deg,#0ea5e9,#1e293b)',
+    lines: [
+      '共通言語: AI導入の判断軸を揃える',
+      '体験: 現調→提案→自動化ワークを一気通貫',
+      '即実装: 配布資料で社内展開を開始',
+    ],
+    bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
   },
   {
     id: 's-agenda',
     title: '進行マップ',
-    lines: ['Phase 1 (0-70分): AI基礎と安全運用', 'Phase 2 (70-160分): 現調→提案→自動化デモ', 'Phase 3 (160-170分+): KPI・配布・Q&A'],
-    bg: 'linear-gradient(135deg,#1e293b,#475569)',
-  },
-];
-
-const chapterGradientPalette = [
-  'linear-gradient(135deg,#38bdf8,#0f172a)',
-  'linear-gradient(135deg,#0f172a,#1e293b)',
-  'linear-gradient(135deg,#1e40af,#0f172a)',
-  'linear-gradient(135deg,#1e293b,#475569)',
-];
-
-const chapterSlides: Slide[] = CHAPTER_SECTIONS.map((section) => {
-  const chapter = CHAPTERS.find((c) => c.id === section.id);
-  const index = chapter ? chapter.no - 1 : 0;
-  return {
-    id: `s-${section.id}`,
-    title: `CH.${chapter ? String(chapter.no).padStart(2, '0') : ''} ${section.title}`,
-    lines: section.bullets,
-    bg: chapterGradientPalette[index % chapterGradientPalette.length],
-  };
-});
-
-const closingSlides: Slide[] = [
-  {
-    id: 's-kpi',
-    title: '導入後のKPI例',
-    lines: ['提案作成時間 -40%', '審査コメント対応時間 -30%', 'ガイドライン遵守率 +50%'],
-    bg: 'linear-gradient(135deg,#1e40af,#0f172a)',
-  },
-  {
-    id: 's-resources',
-    title: '配布物一覧',
-    lines: ['ワークフロー図・チェックリスト', 'AIスタック比較表・プロンプト集', 'GAS雛形・エネルギー計算レシピ'],
-    bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
-  },
-  {
-    id: 's-support',
-    title: 'フォローアップ',
-    lines: ['30日間メール相談', '月1クローズドQ&A', 'Discordコミュニティで情報共有'],
+    lines: [
+      'Phase 1 (0-70分): AI基礎と安全運用',
+      'Phase 2 (70-160分): 現調→提案→自動化デモ',
+      'Phase 3 (160-170分+): KPI・配布・Q&A',
+    ],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
   },
   {
-    id: 's-action',
-    title: '次のアクション',
-    lines: ['社内稟議資料の準備', 'PoC案件の選定', '導入ロードマップ相談'],
-    bg: 'linear-gradient(135deg,#0f172a,#0b1120)',
+    id: 's-phase1-overview',
+    title: 'Phase 1｜基礎・基本・ノウハウ',
+    lines: [
+      'LLMの特性と安全運用を整理',
+      '建築業務における役割シフトを理解',
+      'ベースとなる資料とテンプレを準備',
+    ],
+    bg: 'linear-gradient(135deg,#1e40af,#0f172a)',
+  },
+  {
+    id: 's-ai-basics',
+    title: 'AIの基礎',
+    lines: [
+      '生成AIの歴史と転換点',
+      'CAD→BIM→AIの流れ',
+      '今学ぶべき理由と業界トレンド',
+    ],
+    bg: 'linear-gradient(135deg,#1e293b,#334155)',
+  },
+  {
+    id: 's-future-roles',
+    title: 'AIと建築家の役割シフト',
+    lines: [
+      '残る仕事: 企画・物語・統合',
+      'AIでオフロードする作業を選定',
+      'チームで役割を再設計',
+    ],
+    bg: 'linear-gradient(135deg,#334155,#0f172a)',
+  },
+  {
+    id: 's-security',
+    title: 'セキュリティ・リスク',
+    lines: [
+      '機密区分と入力ルール（匿名化・置換）',
+      'クラウドAIの権限・共有リンク・ログ管理',
+      '社内ポリシー雛形（秘匿プロンプト・レビュー・承認）',
+    ],
+    bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
+  },
+  {
+    id: 's-mini-demo',
+    title: '基礎ミニ実演',
+    lines: [
+      '会議音声→要点抽出→表整形',
+      'テンプレ差し込みで議事録骨子生成',
+      '出力を共有フォルダへ保存',
+    ],
+    bg: 'linear-gradient(135deg,#1e293b,#111827)',
+  },
+  {
+    id: 's-prompt-tips',
+    title: 'プロンプト活用Tips',
+    lines: [
+      '構造化して: 会議メモ→要点→決定→ToDo',
+      'yamlでまとめて: 指示書を即共有',
+      '抽象化→具体化で骨子を強化',
+      '検証して: 根拠付き要約と参照列挙',
+    ],
+    bg: 'linear-gradient(135deg,#111827,#1f2937)',
+  },
+  {
+    id: 's-notebooklm',
+    title: 'Google NotebookLM',
+    lines: [
+      '難しい資料を音声学習に変換',
+      '入力ソース準拠で幻覚を抑制',
+      '社内教材・研修に転用可能',
+    ],
+    bg: 'linear-gradient(135deg,#475569,#0f172a)',
+  },
+  {
+    id: 's-notebooklm-use',
+    title: 'NotebookLM 活用例',
+    lines: [
+      '法規・省エネ基準の理解',
+      '海外論文の要点把握',
+      '専門用語辞書の自動生成',
+    ],
+    bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
+  },
+  {
+    id: 's-phase1-summary',
+    title: 'Phase 1 まとめ',
+    lines: [
+      'リスクマトリクス／承認フローを配布',
+      '成功体験を共有し“教える人”へ',
+      'Instagramで復習＆共有を促進',
+    ],
+    bg: 'linear-gradient(135deg,#1e293b,#475569)',
+  },
+  {
+    id: 's-phase2-intro',
+    title: 'Phase 2｜業務ワークフロー',
+    lines: [
+      '調査→設計→コミュ→見積→省エネ→提出',
+      'AI導線マップでROIを可視化',
+      'ワークシートで自分の導線を記入',
+    ],
+    bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
+  },
+  {
+    id: 's-workflow-hands',
+    title: 'ワークフロー手を動かす',
+    lines: [
+      '現状フローとAI候補を記入',
+      'ボトルネックと期待効果を共有',
+      'ペアでフィードバック＆改善案',
+    ],
+    bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
+  },
+  {
+    id: 's-demo1',
+    title: '活用① 現調→議事録→即提案',
+    lines: [
+      '音声→議事録テンプレ→提案資料',
+      '構造化プロンプト＋表整形で高速化',
+      'Canvas/SpotPDFへの導線',
+    ],
+    bg: 'linear-gradient(135deg,#1e293b,#111827)',
+  },
+  {
+    id: 's-demo1-hands',
+    title: 'Demo① ハンズオン',
+    lines: [
+      'サンプル音声をNotebookに投入',
+      '"構造化して" で要点抽出',
+      '"表形式で" で提案骨子整形',
+    ],
+    bg: 'linear-gradient(135deg,#111827,#1f2937)',
+  },
+  {
+    id: 's-demo1-out',
+    title: 'Demo① 成果物',
+    lines: [
+      '議事録骨子（個人成果物）',
+      '提案資料ドラフト',
+      '共有用プロンプトセット',
+    ],
+    bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
+  },
+  {
+    id: 's-demo2',
+    title: '活用② SpotPDF 差分 5分決着',
+    lines: [
+      'A/B図面の差分抽出→自動ハイライト',
+      'コメント→PDF化→共有',
+      '承認ログとしてDrive保存',
+    ],
+    bg: 'linear-gradient(135deg,#1e293b,#475569)',
+  },
+  {
+    id: 's-demo2-hands',
+    title: 'Demo② ハンズオン',
+    lines: [
+      'サンプル図面で差分抽出',
+      'ハイライト箇所をコメント',
+      'PDF出力をDriveへ保存',
+    ],
+    bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
+  },
+  {
+    id: 's-demo3',
+    title: '活用③ 省エネ（モデル建物法）',
+    lines: [
+      '入力最小化→再計算→提出ひな形',
+      'BEIと条件変更の比較',
+      '審査用ドキュメントと連携',
+    ],
+    bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
+  },
+  {
+    id: 's-demo3-hands',
+    title: 'Demo③ ハンズオン',
+    lines: [
+      'Excelに条件入力→BEI算出',
+      '再計算ボタンで差分確認',
+      '提出書式を自動生成',
+    ],
+    bg: 'linear-gradient(135deg,#1e293b,#111827)',
+  },
+  {
+    id: 's-demo4',
+    title: '活用④ HP／資料即作成',
+    lines: [
+      'ChatGPT／Gemini CanvasでミニLP生成',
+      '1ブロック編集→保存',
+      '配布用ミニLPテンプレも提供',
+    ],
+    bg: 'linear-gradient(135deg,#111827,#1f2937)',
+  },
+  {
+    id: 's-demo5',
+    title: '活用⑤ GASでタスク通知',
+    lines: [
+      'Spreadsheet→GAS→Gmail通知',
+      'トリガ設定と権限の確認',
+      'コードをコピペして挙動確認',
+    ],
+    bg: 'linear-gradient(135deg,#1f2937,#0f172a)',
+  },
+  {
+    id: 's-risk-buffer',
+    title: '時間押しリスクへの備え',
+    lines: [
+      '5分押し→Demo4はデモのみ',
+      '10分押し→Demo5は素材配布',
+      'ハンズオンは成功体験優先',
+    ],
+    bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
+  },
+  {
+    id: 's-phase3',
+    title: 'Phase 3｜まとめと今後',
+    lines: [
+      'ケーススタディ＆KPIを共有',
+      '小規模チーム運用ルール雛形',
+      '実装チェックリストで定着',
+    ],
+    bg: 'linear-gradient(135deg,#1e293b,#475569)',
+  },
+  {
+    id: 's-kpi',
+    title: '導入後のKPI例',
+    lines: [
+      '工数削減 / 誤検出率 / レスポンス速度',
+      'ベンチマークを定期記録',
+      '改善結果を見える化',
+    ],
+    bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
+  },
+  {
+    id: 's-best1',
+    title: 'ベストプラクティス 1/2',
+    lines: [
+      '小さく始めて早く回す',
+      '入力を整備（匿名化・フォーマット）',
+      '出力の型を決める（YAML/表/テンプレ）',
+      '差分は機械に任せる',
+      '再計算は自動化が前提',
+    ],
+    bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
+  },
+  {
+    id: 's-best2',
+    title: 'ベストプラクティス 2/2',
+    lines: [
+      '運用できる最小ルールから',
+      '根拠を併記して信頼を積む',
+      '指標で語る（時間・誤差・利益）',
+      '教える人になる（共有＝定着）',
+      '毎週1改善で仕組みに落とす',
+    ],
+    bg: 'linear-gradient(135deg,#1e293b,#475569)',
+  },
+  {
+    id: 's-checklist',
+    title: '明日からの実装チェック',
+    lines: [
+      '業務導線マップを更新',
+      'テンプレとプロンプト集を配布',
+      'GAS通知PoCを1本動かす',
+      'KPI測定の初期値を記録',
+    ],
+    bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
+  },
+  {
+    id: 's-resources',
+    title: '配布物セット',
+    lines: [
+      'アーカイブ動画・スライド・リンク集',
+      'プロンプト集（Markdown+YAML）',
+      'GAS雛形・モデル建物法レシピ',
+    ],
+    bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
+  },
+  {
+    id: 's-materials',
+    title: '資料とワークシート',
+    lines: [
+      'Driveに音声/図面/エネルギー入力を格納',
+      'Canvas素材とGASサンプル',
+      'ワークフローシートとチェックリスト',
+    ],
+    bg: 'linear-gradient(135deg,#1e293b,#111827)',
+  },
+  {
+    id: 's-community-intro',
+    title: 'ラストシークレット',
+    lines: [
+      'AI×建築コミュニティ（Circle）を開放',
+      '今後のセミナーは追加費用なし',
+      '初月無料・72時間限定オファー',
+    ],
+    bg: 'linear-gradient(135deg,#111827,#1f2937)',
+  },
+  {
+    id: 's-community-benefits',
+    title: 'コミュニティ特典',
+    lines: [
+      '月1 Zoom相談会／限定交流会',
+      'SpotPDF・楽々省エネ・天空率の早期アクセス',
+      '最新ナレッジを最速公開',
+    ],
+    bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
+  },
+  {
+    id: 's-community-rules',
+    title: 'コミュニティの運用',
+    lines: [
+      '実名推奨・守秘情報の持込禁止',
+      '成果物二次配布はクレジット必須',
+      'Circle + Zoom + Driveで運用',
+    ],
+    bg: 'linear-gradient(135deg,#1e293b,#475569)',
+  },
+  {
+    id: 's-community-join',
+    title: '参加方法',
+    lines: [
+      'クロージングで招待コードを提示',
+      '72時間以内に申込→初月無料',
+      'オンボーディングで課題とライブ予定を共有',
+    ],
+    bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
+  },
+  {
+    id: 's-last-secret',
+    title: 'ラストシークレット構成',
+    lines: [
+      'Slide1: 初月無料の案内',
+      'Slide2-4: サロン特典とツール',
+      'Slide5: 招待コード＆72時間限定',
+    ],
+    bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
+  },
+  {
+    id: 's-survey',
+    title: 'アンケート＆Q&A',
+    lines: [
+      '170分時点でアンケートURLを案内',
+      '回答後に非公開ページを解放',
+      'Q&Aは無制限・退出自由',
+    ],
+    bg: 'linear-gradient(135deg,#1e293b,#475569)',
+  },
+  {
+    id: 's-instagram',
+    title: 'Instagramで復習',
+    lines: [
+      '最新Tipsは @sena_archisoft で発信',
+      '感想投稿＝学びの定着',
+      'フォロー＆シェア大歓迎',
+    ],
+    bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
+  },
+  {
+    id: 's-ops',
+    title: '運営メモ',
+    lines: [
+      'チャットに素材リンクを固定',
+      'ハンズオンは成功体験優先',
+      '時間押し時は段階短縮で対応',
+    ],
+    bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
+  },
+  {
+    id: 's-prep',
+    title: '事前準備チェック',
+    lines: [
+      'GoogleアカウントでDriveアクセス',
+      'ChatGPT/Geminiにログイン',
+      'PDF閲覧とGmail通知テスト',
+    ],
+    bg: 'linear-gradient(135deg,#1e293b,#475569)',
   },
   {
     id: 's-thanks',
     title: 'Thank You',
     subtitle: 'ご参加ありがとうございます！',
-    lines: ['アンケートURLを後ほどメール送付', 'Discordコミュニティへの招待リンク', '追加質問はメールでお気軽に'],
+    lines: [
+      'アンケート回答で配布物を解放',
+      '追加質問はメールでお気軽に',
+      '一緒にAIで建築業界を変えましょう',
+    ],
     bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
   },
-];
-
-const SLIDES: Slide[] = [...baseSlides, ...chapterSlides, ...closingSlides];
+]
 
 
 const SlideOverlay: React.FC<{
