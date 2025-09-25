@@ -1,20 +1,24 @@
-const CODE = "AP-2025-SEMINAR";
-const KEY = "ap_invite_ok";
-const ok = localStorage.getItem(KEY) === "1";
-const inSlug = location.pathname.includes("aixarch-20250928-8dC2p");
+const CODE = 'AP-2025-SEMINAR';
+const KEY = 'ap_invite_ok';
+const SLUG = 'aixarch-20250928-8dC2p';
 
-if (!ok || !inSlug) {
-  const pathOk =
-    location.pathname.endsWith("aixarch-20250928-8dC2p/") ||
-    location.pathname.endsWith("aixarch-20250928-8dC2p");
+const wantsSlug = () =>
+  SLUG.length > 0 &&
+  (location.pathname.endsWith(`/${SLUG}`) || location.pathname.endsWith(`/${SLUG}/`));
 
-  if (!pathOk) {
-    location.pathname = `/aixarch-20250928-8dC2p/`;
+const ensureSlugPath = () => {
+  if (!wantsSlug()) {
+    location.pathname = `/${SLUG}/`;
+    return false;
   }
+  return true;
+};
 
+const renderGate = () => {
   const wrap = document.getElementById('app-gate');
   if (!wrap) {
-    throw new Error('gate container not found');
+    console.error('Gate container not found');
+    return;
   }
 
   wrap.classList.remove('hidden');
@@ -28,14 +32,35 @@ if (!ok || !inSlug) {
       </div>
     </div>`;
 
-  document.getElementById('ok')?.addEventListener('click', () => {
+  const okButton = document.getElementById('ok');
+  okButton?.addEventListener('click', () => {
     const input = document.getElementById('code');
     const value = input instanceof HTMLInputElement ? input.value.trim() : '';
     if (value === CODE) {
-      localStorage.setItem(KEY, "1");
+      localStorage.setItem(KEY, '1');
       wrap.remove();
     } else {
       alert('コードが違います');
     }
   });
+};
+
+const setupGate = () => {
+  const ok = localStorage.getItem(KEY) === '1';
+  const slugOk = wantsSlug();
+
+  if (!ok || !slugOk) {
+    if (!ensureSlugPath()) {
+      return;
+    }
+    renderGate();
+  }
+};
+
+if (typeof window !== 'undefined') {
+  if (document.readyState === 'loading') {
+    window.addEventListener('DOMContentLoaded', setupGate);
+  } else {
+    setupGate();
+  }
 }
