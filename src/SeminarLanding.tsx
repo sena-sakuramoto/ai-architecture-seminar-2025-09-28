@@ -472,7 +472,7 @@ const PresenterHUD: React.FC<{
 // ===== Slide Mode =====
 type Slide = { id: string; title?: string; subtitle?: string; lines?: string[]; img?: string; bg?: string };
 
-const SLIDES: Slide[] = [
+const baseSlides: Slide[] = [
   {
     id: 's-hero',
     title: '実務で使える AI×建築セミナー',
@@ -482,20 +482,20 @@ const SLIDES: Slide[] = [
   },
   {
     id: 's-greeting',
-    title: 'ご挨拶 & 進め方',
+    title: 'オープニング',
     lines: ['講師: sakuramoto sena', 'テーマ: 知る→できる→使える', '進行: 理解 → 実演 → 適用 → フォロー'],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
   },
   {
     id: 's-need',
     title: '今なぜAI×建築か',
-    lines: ['建築DXの要望増加 (前年比+42%)', '現場でのナレッジ共有不足', '審査で求められる透明性'],
+    lines: ['建築DXの要望増 (前年比+42%)', '現場でのナレッジ共有不足', '審査で求められる透明性と説明責任'],
     bg: 'linear-gradient(135deg,#1e293b,#334155)',
   },
   {
     id: 's-goals',
     title: '今日のゴール',
-    lines: ['共通言語: AI導入の判断軸', '体験: 現調→提案→自動化ワーク', '即実装: 配布資料で社内展開'],
+    lines: ['共通言語: AI導入の判断軸を揃える', '体験: 現調→提案→自動化ワークフロー', '即実装: 配布資料で社内展開を開始'],
     bg: 'linear-gradient(135deg,#0ea5e9,#1e293b)',
   },
   {
@@ -504,58 +504,31 @@ const SLIDES: Slide[] = [
     lines: ['Phase 1 (0-70分): AI基礎と安全運用', 'Phase 2 (70-160分): 現調→提案→自動化デモ', 'Phase 3 (160-170分+): KPI・配布・Q&A'],
     bg: 'linear-gradient(135deg,#1e293b,#475569)',
   },
-  {
-    id: 's-phase1',
-    title: 'Phase 1｜AI基礎と安全運用',
-    lines: ['LLMの特性と建築での用途', '幻覚/最新性/秘匿性への対策', 'NotebookLMで社内ガイドライン整備'],
-    bg: 'linear-gradient(135deg,#38bdf8,#1e40af)',
-  },
-  {
-    id: 's-phase1-demo',
-    title: 'Phase 1 デモ',
-    lines: ['プロンプト構造化で出力安定', 'リスクマトリクスと承認フロー', '社内共有テンプレの作り方'],
-    bg: 'linear-gradient(135deg,#1e40af,#0f172a)',
-  },
-  {
-    id: 's-phase2-intro',
-    title: 'Phase 2｜現調→提案→自動化',
-    lines: ['現地調査の撮影リストと命名規則', 'SpotPDF差分・省エネ計算のライブ', 'GAS連携で議事録→タスク→カレンダー'],
-    bg: 'linear-gradient(135deg,#1e293b,#111827)',
-  },
-  {
-    id: 's-phase2-demo1',
-    title: 'Phase 2 デモ① 現調',
-    lines: ['チェックポイント: 外観/導線/設備', '命名規則とショートレポ生成', 'Photo AI支援のコツ'],
-    bg: 'linear-gradient(135deg,#111827,#1f2937)',
-  },
-  {
-    id: 's-phase2-demo2',
-    title: 'Phase 2 デモ② 提案',
-    lines: ['1ページ提案テンプレを生成', '画像生成: GPT vs Gemini', 'SpotPDFで差分抽出'],
-    bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
-  },
-  {
-    id: 's-phase2-demo3',
-    title: 'Phase 2 デモ③ 自動化',
-    lines: ['ChatGPTエージェントで議事録整形', 'GAS: メール→タスク→Calendar', '承認フローとログ管理'],
-    bg: 'linear-gradient(135deg,#1e293b,#0f172a)',
-  },
-  {
-    id: 's-phase2-hands',
-    title: 'Phase 2 ハンズオンのポイント',
-    lines: ['実操作→質問→再操作のループ', 'Slack/Teamsで共有', '社内QAに活かすログ整理'],
-    bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
-  },
-  {
-    id: 's-phase3-intro',
-    title: 'Phase 3｜定着と配布',
-    lines: ['KPI設計と導入ロードマップ', '配布物の活用と社内展開手順', '無期限Q&Aとコミュニティ案内'],
-    bg: 'linear-gradient(135deg,#38bdf8,#1e40af)',
-  },
+];
+
+const chapterGradientPalette = [
+  'linear-gradient(135deg,#38bdf8,#0f172a)',
+  'linear-gradient(135deg,#0f172a,#1e293b)',
+  'linear-gradient(135deg,#1e40af,#0f172a)',
+  'linear-gradient(135deg,#1e293b,#475569)',
+];
+
+const chapterSlides: Slide[] = CHAPTER_SECTIONS.map((section) => {
+  const chapter = CHAPTERS.find((c) => c.id === section.id);
+  const index = chapter ? chapter.no - 1 : 0;
+  return {
+    id: `s-${section.id}`,
+    title: `CH.${chapter ? String(chapter.no).padStart(2, '0') : ''} ${section.title}`,
+    lines: section.bullets,
+    bg: chapterGradientPalette[index % chapterGradientPalette.length],
+  };
+});
+
+const closingSlides: Slide[] = [
   {
     id: 's-kpi',
-    title: 'KPI例とモニタリング',
-    lines: ['提案作成時間 -40%', '審査コメント対応時間 -30%', '社内ガイドライン遵守率 +50%'],
+    title: '導入後のKPI例',
+    lines: ['提案作成時間 -40%', '審査コメント対応時間 -30%', 'ガイドライン遵守率 +50%'],
     bg: 'linear-gradient(135deg,#1e40af,#0f172a)',
   },
   {
@@ -567,7 +540,7 @@ const SLIDES: Slide[] = [
   {
     id: 's-support',
     title: 'フォローアップ',
-    lines: ['30日間メール相談', '月1クローズドQ&A', 'Discordコミュニティで事例共有'],
+    lines: ['30日間メール相談', '月1クローズドQ&A', 'Discordコミュニティで情報共有'],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
   },
   {
@@ -578,12 +551,15 @@ const SLIDES: Slide[] = [
   },
   {
     id: 's-thanks',
-    title: 'Thank you',
+    title: 'Thank You',
     subtitle: 'ご参加ありがとうございます！',
     lines: ['アンケートURLを後ほどメール送付', 'Discordコミュニティへの招待リンク', '追加質問はメールでお気軽に'],
     bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
   },
 ];
+
+const SLIDES: Slide[] = [...baseSlides, ...chapterSlides, ...closingSlides];
+
 
 const SlideOverlay: React.FC<{
   visible: boolean;
