@@ -796,13 +796,6 @@ export default function SeminarLanding(): React.ReactElement {
         backgroundColor: '#F8FAFC',
       }}
     >
-      <style id="slide-theme">{`
-:root{--slide-h1:clamp(44px,9vw,120px);--slide-h2:clamp(28px,5.5vw,64px);--slide-body:clamp(16px,2.2vw,22px)}
-section h1{font-size:var(--slide-h1);line-height:1.05;font-weight:800;letter-spacing:-.01em}
-section h2{font-size:var(--slide-h2);line-height:1.1;font-weight:800;letter-spacing:-.01em}
-section p,section li,section .text-slate-600{font-size:var(--slide-body)}
-`}</style>
-
       {/* TOP */}
       <Section id="top" className="justify-center" data-testid="sec-top">
         <div className="max-w-6xl w-full mx-auto grid gap-10 lg:grid-cols-[1.1fr,0.9fr]">
@@ -1101,60 +1094,36 @@ section p,section li,section .text-slate-600{font-size:var(--slide-body)}
 
       {/* RESOURCES */}
       <Section id="resources" className="mt-16 md:mt-24 justify-start" data-testid="sec-resources">
-        <div className="max-w-6xl w-full mx-auto space-y-8">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div className="space-y-2">
-              <h2 className="text-2xl md:text-3xl font-semibold text-slate-900">配布・アーカイブ・サポート</h2>
-              <p className="text-sm md:text-base text-slate-600 leading-7">
-                セミナー終了後は非公開ページで資料を一括ダウンロード。社内展開や復習、追加サポートの流れもここから案内します。
-              </p>
-            </div>
-            <Badge color="#FEF3C7">
-              <span aria-hidden>🔒</span> 受講者限定配信
-            </Badge>
+        <div className="max-w-6xl w-full mx-auto space-y-10">
+          <div className="space-y-3">
+            <h2 className="text-2xl md:text-3xl font-semibold text-slate-900">配布物とフォローアップ</h2>
+            <p className="text-sm md:text-base text-slate-600 leading-7">セミナー終了後は非公開ページで資料を一括ダウンロード。社内展開や復習を支援する仕組みを整えています。</p>
           </div>
-          <Card className="p-6 md:p-8 border border-slate-200 bg-white/95">
-            <div className="grid gap-8 md:grid-cols-[minmax(0,0.55fr)_minmax(0,0.45fr)]">
-              <div className="space-y-4">
-                <div className="text-sm md:text-base font-semibold text-slate-900">非公開ページで一括受領</div>
-                <ul className="space-y-2 text-sm md:text-base text-slate-600 leading-6 list-disc list-inside">
-                  <li>アーカイブ動画（14日間視聴）</li>
-                  <li>スライドPDF（要点と図解のみを抽出）</li>
-                  <li>プロンプト集・テンプレ・チェックリスト・GAS雛形</li>
-                  <li>SpotPDF差分サンプル、エネルギー計算レシピ</li>
-                </ul>
-                <div className="text-xs text-slate-500">終了後24時間以内にURLとパスを送付。検索避け＆招待コードで管理します。</div>
+          <div className="grid gap-6 md:grid-cols-2">
+            <Card className="p-6 border border-slate-200 bg-white">
+              <div className="text-sm font-semibold text-slate-900">受講者専用ダウンロード</div>
+              <ul className="mt-3 space-y-2 text-sm text-slate-600 leading-6 list-disc list-inside">
+                <li>アーカイブ動画（14日視聴）</li>
+                <li>スライドPDF（要点抜粋）</li>
+                <li>テンプレート／チェックリスト／プロンプト集</li>
+                <li>SpotPDF差分サンプル、GAS雛形、エネルギー計算レシピ</li>
+              </ul>
+              <div className="mt-4 text-xs text-slate-500 leading-5">終了後24時間以内にURLとパスワードをメール送付。検索避けと招待コードでアクセスを管理します。</div>
+            </Card>
+            <Card className="p-6 border border-slate-200 bg-white">
+              <div className="text-sm font-semibold text-slate-900">フォローアップ</div>
+              <table className="mt-3 w-full text-left text-xs text-slate-600">
+                <tbody className="divide-y divide-slate-200">
+                  <tr><td className="py-3 font-semibold text-slate-900">30日間メール相談</td><td className="py-3">導入計画や社内展開の質疑をサポート。</td></tr>
+                  <tr><td className="py-3 font-semibold text-slate-900">月1 Q&A</td><td className="py-3">クローズドセッションで最新事例と課題共有。</td></tr>
+                  <tr><td className="py-3 font-semibold text-slate-900">コミュニティ</td><td className="py-3">Discordでケース共有とテンプレ更新を案内。</td></tr>
+                </tbody>
+              </table>
+              <div className="mt-4 text-xs text-slate-500">
+                招待コード：<span className="font-semibold text-slate-900">AP-2025-SEMINAR</span>（第三者共有は禁止です）。<br />
+                全体所要時間：{totalPlanned}分（予定）。
               </div>
-              <div className="space-y-4">
-                <div className="text-sm md:text-base font-semibold text-slate-900">招待コード入力で解放</div>
-                <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50/80 p-5 space-y-3">
-                  <div className="text-xs text-slate-500 uppercase tracking-[0.3em]">INVITE</div>
-                  <div className="flex flex-wrap gap-2">
-                    <input
-                      aria-label="招待コード"
-                      placeholder="AP-2025-SEMINAR"
-                      data-testid="invite-code-input"
-                      className="flex-1 min-w-[160px] px-3 py-2 rounded-md border outline-none focus:ring-2 focus:ring-cyan-300"
-                    />
-                    <button className="px-4 py-2 rounded-md text-white shadow-sm" style={{ background: brand.colors.accent }}>
-                      開く
-                    </button>
-                  </div>
-                  <div className="text-xs text-slate-500 leading-5">受講者のみアクセス可能です。第三者への共有や転載はご遠慮ください。</div>
-                </div>
-                <div className="rounded-lg border border-slate-200 bg-white p-4 text-xs text-slate-600 leading-6">
-                  <div className="font-semibold text-slate-900">フォローアップ</div>
-                  <ul className="mt-2 space-y-1 list-disc list-inside">
-                    <li>30日間のメール相談</li>
-                    <li>月1回のクローズドQ&Aセッション</li>
-                    <li>Discordコミュニティで事例共有</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </Card>
-          <div className="text-xs md:text-sm text-slate-500">
-            招待コード：<span className="font-semibold text-slate-900">AP-2025-SEMINAR</span> ／ 全体所要時間：{totalPlanned}分（予定）
+            </Card>
           </div>
         </div>
       </Section>
