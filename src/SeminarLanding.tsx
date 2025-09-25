@@ -339,7 +339,7 @@ const SeminarLanding: React.FC = () => {
             <a href="mailto:contact@archi-prisma.co.jp" className="hover:text-cyan-200">
               お問い合わせ
             </a>
-            <a href="/public/terms.pdf" className="hover:text-cyan-200">
+            <a href="./terms.pdf" className="hover:text-cyan-200">
               受講規約
             </a>
           </div>
