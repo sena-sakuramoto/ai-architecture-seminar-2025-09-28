@@ -33,7 +33,7 @@ const Section: React.FC<SectionProps> = ({ id, children, className, ...rest }) =
   <section
     id={id}
     {...rest}
-    className={`w-screen px-6 md:px-12 py-16 md:py-24 min-h-[100svh] snap-start flex items-center ${className || ''}`}
+    className={`w-full px-6 md:px-12 py-16 md:py-24 min-h-[100svh] snap-start flex flex-col justify-center ${className || ''}`}
   >
     {children}
   </section>
@@ -298,17 +298,17 @@ const totalPlanned = Object.values(SECTION_MINUTES).reduce((a, b) => a + b, 0);
 
 // ========= Tiles =========
 const DemoTile: React.FC<{ emoji: string; title: string; caption: string }> = ({ emoji, title, caption }) => (
-  <Card className="p-5 transition-colors hover:bg-white">
-    <div className="flex items-center gap-3">
+  <Card className="p-6 h-full border border-slate-200 bg-white/90 transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg">
+    <div className="flex items-start gap-4">
       <div
-        className="shrink-0 w-10 h-10 rounded-full flex items-center justify-center"
-        style={{ background: '#E0F2FE', color: '#075985', fontSize: 18 }}
+        className="shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-lg"
+        style={{ background: '#E0F2FE', color: '#075985' }}
       >
         <span aria-hidden>{emoji}</span>
       </div>
-      <div>
-        <div className="text-sm md:text-base font-medium">{title}</div>
-        <div className="text-xs md:text-sm text-slate-500">{caption}</div>
+      <div className="space-y-1">
+        <div className="text-base font-semibold text-slate-900">{title}</div>
+        <div className="text-sm text-slate-600 leading-6">{caption}</div>
       </div>
     </div>
   </Card>
@@ -670,9 +670,12 @@ export default function SeminarLanding(): React.ReactElement {
     return bullets.map((b, i) => (
       <li
         key={i}
-        className={`transition-all duration-300 ${i < count ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}
+        className={`flex items-start gap-3 text-sm md:text-base transition-all duration-300 ${
+          i < count ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 pointer-events-none'
+        }`}
       >
-        - {b}
+        <span className="mt-2 h-2.5 w-2.5 rounded-full" style={{ background: brand.colors.accent }} />
+        <span className="flex-1 leading-7 text-slate-700">{b}</span>
       </li>
     ));
   };
@@ -685,8 +688,8 @@ export default function SeminarLanding(): React.ReactElement {
       className="h-screen overflow-y-auto snap-y snap-mandatory scroll-smooth text-slate-900"
       style={{
         backgroundImage:
-          'radial-gradient(1200px 500px at 10% -10%, #E0F2FE 0%, transparent 50%), radial-gradient(900px 400px at 100% 10%, #FDE68A 0%, transparent 45%)',
-        backgroundColor: brand.colors.bg,
+          'radial-gradient(1200px 500px at 10% -10%, rgba(14,165,233,0.12) 0%, transparent 55%), radial-gradient(900px 400px at 100% 10%, rgba(253,224,71,0.14) 0%, transparent 50%)',
+        backgroundColor: '#F8FAFC',
       }}
     >
       <style id="slide-theme">{`
@@ -697,63 +700,107 @@ section p,section li,section .text-slate-600{font-size:var(--slide-body)}
 `}</style>
 
       {/* TOP */}
-      <Section id="top" className="pt-16 md:pt-24" data-testid="sec-top">
-        <div className="grid md:grid-cols-2 gap-6 md:gap-10 items-center">
-          <div>
-            <Badge>
-              <span aria-hidden>✨</span> 実務で使える AI×建築セミナー
-            </Badge>
-            <h1 className="mt-4 font-semibold leading-tight">
-              知る→できる→使える
-              <br className="hidden md:block" /> 明日から“自分の武器”に
-            </h1>
-            <div className="mt-4 flex flex-wrap gap-3">
+      <Section id="top" className="justify-center" data-testid="sec-top">
+        <div className="grid gap-10 md:grid-cols-[1.1fr,0.9fr] items-start max-w-6xl w-full mx-auto">
+          <div className="space-y-6">
+            <div className="space-y-4">
+              <Badge>
+                <span aria-hidden>✨</span> 実務で使える AI×建築セミナー
+              </Badge>
+              <h1 className="font-semibold leading-tight text-3xl md:text-[40px] md:leading-[1.15]">
+                知る→できる→使える。建築の現場でAIを“線”でつなぎ、明日から武器にするための180分。
+              </h1>
+              <p className="max-w-2xl text-base leading-7 text-slate-600">
+                セミナー本編はこの1ページをスライドとして進行します。チャプターごとのゴール、使用するAIスタック、成果物、配布資料を一覧化し、受講後も復習しやすい台本構成に整えました。
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
               <Pill text="📅 2025-09-28 JST" />
               <Pill text="⏱ 本編170分＋Q&A" />
               <Pill text="🎞 アーカイブ配布あり" />
+              <Pill text="🔑 Invite: AP-2025-SEMINAR" />
             </div>
-            <Card className="mt-6 p-5 border border-cyan-100 bg-white/90">
-              <div className="text-sm font-medium text-slate-900">このページで把握できること</div>
-              <ul className="mt-3 space-y-2 text-xs md:text-sm text-slate-600 list-disc list-inside">
-                <li>180分の進行とゴールを俯瞰できる「一枚スライド」形式</li>
-                <li>ハンズオンの内容・使うAIスタック・成果物を全章で提示</li>
-                <li>非公開配布物と招待コード運用（AP-2025-SEMINAR）の説明</li>
-                <li>講師メモ（Nキー）／スライドモード（Sキー）で現場運営</li>
-              </ul>
+
+            <Card className="p-6 border border-cyan-100 bg-white/95">
+              <div className="text-sm font-semibold text-slate-900">HPで確認できる4つのこと</div>
+              <div className="mt-4 grid gap-3 md:grid-cols-2">
+                <div className="space-y-1 text-sm text-slate-600">
+                  <p className="font-medium text-slate-900">進行とゴール</p>
+                  <p>各チャプターの狙い・成果物・所要時間を一覧化。講師HUDと同期します。</p>
+                </div>
+                <div className="space-y-1 text-sm text-slate-600">
+                  <p className="font-medium text-slate-900">AIスタック</p>
+                  <p>GPT・Gemini・Deep・GASなど、実務で使い分けているツールと導線を明示。</p>
+                </div>
+                <div className="space-y-1 text-sm text-slate-600">
+                  <p className="font-medium text-slate-900">配布と復習</p>
+                  <p>配布物、受領ルール、非公開ページの入口を明確化。アーカイブの案内も記載。</p>
+                </div>
+                <div className="space-y-1 text-sm text-slate-600">
+                  <p className="font-medium text-slate-900">運営のコツ</p>
+                  <p>講師メモ（Nキー）や段階表示の使い方をまとめ、当日のファシリを支援。</p>
+                </div>
+              </div>
             </Card>
-            <p className="mt-6 max-w-2xl text-base leading-7 text-slate-600">
-              建築実務にAIを定着させるための180分。ワークフローを線でつなぎ、講師が現場で使っているAIスタックを全て公開します。
-              本番ではこのページをそのままスライド代わりに使い、進行・メモ・配布を一元管理します。
-            </p>
-            <div className="mt-6 flex flex-wrap gap-3">
+
+            <div className="flex flex-wrap gap-3">
               <a
                 href="#program"
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-full text-white"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-full text-white shadow-sm"
                 style={{ background: brand.colors.accent }}
               >
                 プログラムを見る <span>›</span>
               </a>
               <a
-                href="#resources"
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-full border"
-                style={{ borderColor: '#CBD5E1' }}
+                href="#chapters"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-slate-300 bg-white"
               >
-                資料と配布物 <span>›</span>
+                チャプター一覧 <span>›</span>
+              </a>
+              <a
+                href="#resources"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-full border border-slate-300 bg-white"
+              >
+                配布物ガイド <span>›</span>
               </a>
             </div>
-            <div className="mt-3 text-xs md:text-sm text-slate-500">非公開運用のため検索結果に出ない設定。URLは受講者専用です。</div>
+            <div className="text-xs md:text-sm text-slate-500">
+              ※ 非公開運用のため検索避け設定済み。URL・配布物は受講者専用です。
+            </div>
           </div>
-          <Card className="p-4 md:p-6">
-            <div className="aspect-[16/10] rounded-lg bg-gradient-to-br from-white to-slate-50 border border-black/5 flex items-center justify-center">
-              <div className="text-center">
-                <div className="text-sm md:text-base font-medium">サイト全体が進行台本</div>
-                <div className="mt-1 text-xs md:text-sm text-slate-500">段階表示・ノート・スライドモードを搭載</div>
-                <div className="mt-4 inline-flex items-center gap-2 text-xs md:text-sm px-3 py-1 rounded-full bg-amber-100 text-amber-800">
-                  <span aria-hidden>🛡</span> robots noindex ／ 招待コード運用
+
+          <Card className="p-6 border border-black/5 bg-white/90">
+            <div className="space-y-6">
+              <div className="space-y-1">
+                <div className="text-sm font-semibold text-slate-900">開催概要</div>
+                <p className="text-xs text-slate-500">ライブとアーカイブの両方で受講可能</p>
+              </div>
+              <dl className="grid gap-4 text-sm text-slate-600">
+                <div className="grid grid-cols-[96px,1fr] gap-3">
+                  <dt className="font-medium text-slate-900">日時</dt>
+                  <dd>2025年9月28日（日）13:00-16:30（JST）</dd>
                 </div>
-                <div className="mt-4 text-xs text-slate-500">
-                  Shift+P で HUD、S でスライド表示、N で講師メモ。
+                <div className="grid grid-cols-[96px,1fr] gap-3">
+                  <dt className="font-medium text-slate-900">形式</dt>
+                  <dd>オンラインライブ配信／14日間アーカイブ視聴</dd>
                 </div>
+                <div className="grid grid-cols-[96px,1fr] gap-3">
+                  <dt className="font-medium text-slate-900">対象</dt>
+                  <dd>設計・デザイン、ゼネコン、デベロッパー、DX推進部門、AI導入担当</dd>
+                </div>
+                <div className="grid grid-cols-[96px,1fr] gap-3">
+                  <dt className="font-medium text-slate-900">定員</dt>
+                  <dd>先着120名（法人申込可／1アカウント5名まで視聴）</dd>
+                </div>
+              </dl>
+              <div className="rounded-lg border border-dashed border-slate-200 bg-slate-50/60 p-4 text-xs text-slate-600">
+                <div className="font-semibold text-slate-900">操作のヒント</div>
+                <ul className="mt-2 space-y-1">
+                  <li><span className="font-medium text-slate-900">S</span>：スライドモード／<span className="font-medium text-slate-900">Shift+P</span>：講師HUD</li>
+                  <li><span className="font-medium text-slate-900">N</span>：講師メモ表示／<span className="font-medium text-slate-900">P</span>：印刷（PDF化）</li>
+                  <li>左側のドットでチャプターにジャンプ／上下キーで進行</li>
+                </ul>
               </div>
             </div>
           </Card>
@@ -761,61 +808,109 @@ section p,section li,section .text-slate-600{font-size:var(--slide-body)}
       </Section>
 
       {/* HIGHLIGHTS */}
-      <Section id="highlights" className="mt-12 md:mt-20" data-testid="sec-highlights">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="font-semibold text-2xl text-slate-900">ハイライト</h2>
-          <p className="mt-3 text-sm md:text-base text-slate-600">
-            AI導入を検討する建築チームが「何が」「どこまで」できるのかを短時間で掴める構成です。基礎→実務→配布物まで一直線で把握できます。
-          </p>
-          <div className="mt-6 grid md:grid-cols-4 gap-4 md:gap-6">
-            <DemoTile emoji="🧠" title="AI基礎→安全運用" caption="共通言語と社内ルール" />
-            <DemoTile emoji="⌨️" title="ハンズオン5本" caption="真似→転用まで体験" />
-            <DemoTile emoji="🏗️" title="SpotPDF×省エネ" caption="実務に直結する導線" />
-            <DemoTile emoji="⬇️" title="配布物一括" caption="非公開ページで受領" />
+      <Section id="highlights" className="mt-12 md:mt-20 justify-start" data-testid="sec-highlights">
+        <div className="max-w-6xl w-full mx-auto space-y-8">
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div className="space-y-3">
+              <h2 className="text-2xl md:text-3xl font-semibold text-slate-900">セミナーで押さえる4つの軸</h2>
+              <p className="text-sm md:text-base text-slate-600 leading-7">
+                AI導入の可否判断から実務ワークフロー、社内展開、資料配布までを一本化。どの章を見ても「何を得られるか」が即座に分かるよう、観点ごとに要点を整理しました。
+              </p>
+            </div>
+            <Badge color="#DBEAFE">
+              <span aria-hidden>📌</span> 各章の詳細はチャプター索引へ
+            </Badge>
+          </div>
+          <div className="grid gap-4 md:gap-6 md:grid-cols-2 xl:grid-cols-4">
+            <DemoTile emoji="🧠" title="AI基礎→安全運用" caption="社内で共通言語を持ち、ガイドライン整備とリスク管理の実務像を提示。" />
+            <DemoTile emoji="⌨️" title="ハンズオン5本" caption="議事録、提案、現調、GAS自動化など、明日から真似できる操作手順をその場で実演。" />
+            <DemoTile emoji="🏗️" title="SpotPDF×省エネ" caption="建築ならではの差分確認やモデル建物法の省エネ計算など、現場直結のワークを体験。" />
+            <DemoTile emoji="⬇️" title="配布物一括" caption="テンプレ・チェックリスト・プロンプト集を非公開ページで配布。復習と社内展開をサポート。" />
           </div>
         </div>
       </Section>
 
       {/* PROGRAM */}
-      <Section id="program" className="mt-16 md:mt-24" data-testid="sec-program">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <h2 className="font-semibold text-2xl text-slate-900">プログラム</h2>
+      <Section id="program" className="mt-16 md:mt-24 justify-start" data-testid="sec-program">
+        <div className="max-w-6xl w-full mx-auto space-y-8">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="space-y-2">
+              <h2 className="text-2xl md:text-3xl font-semibold text-slate-900">180分の進行マップ</h2>
+              <p className="text-sm md:text-base text-slate-600 leading-7">
+                導入から実装、社内展開までを3部構成で体系化。各部の終わりで成果物とチェックポイントを確認し、次のステップに進みます。
+              </p>
+            </div>
             <Badge>
-              <span aria-hidden>🗺️</span> ライブはスライド最小、HPで全体俯瞰
+              <span aria-hidden>🗺️</span> HP＝当日の進行台本
             </Badge>
           </div>
-          <div className="mt-6 grid lg:grid-cols-3 gap-6">
-            <Card className="p-5">
-              <div className="text-sm font-medium text-slate-900">第1部 0–70分</div>
-              <div className="mt-3 text-slate-600 text-sm md:text-base">AI基礎、役割シフト、セキュリティ、ミニ実演、NotebookLM</div>
+          <div className="grid gap-6 lg:grid-cols-3">
+            <Card className="p-6 h-full border border-slate-200 bg-white/95">
+              <div className="text-xs uppercase tracking-[0.2em] text-cyan-700">Phase 1</div>
+              <div className="mt-2 text-lg font-semibold text-slate-900">0–70分：基礎と安全運用</div>
+              <ul className="mt-4 space-y-2 text-sm text-slate-600 leading-6 list-disc list-inside">
+                <li>AI/LLMの原理と建築での適用範囲</li>
+                <li>権限設計・情報管理・安全運用の決め方</li>
+                <li>NotebookLMでの情報整理ミニ実演</li>
+              </ul>
             </Card>
-            <Card className="p-5">
-              <div className="text-sm font-medium text-slate-900">第2部 70–160分</div>
-              <div className="mt-3 text-slate-600 text-sm md:text-base">ワークフロー導線、現調→提案、SpotPDF、省エネ、LP生成、GAS</div>
+            <Card className="p-6 h-full border border-slate-200 bg-white/95">
+              <div className="text-xs uppercase tracking-[0.2em] text-cyan-700">Phase 2</div>
+              <div className="mt-2 text-lg font-semibold text-slate-900">70–160分：実務ワークフロー</div>
+              <ul className="mt-4 space-y-2 text-sm text-slate-600 leading-6 list-disc list-inside">
+                <li>現調→提案→GAS自動化の一連デモ</li>
+                <li>SpotPDF 差分チェック、省エネ計算のライブ解説</li>
+                <li>AIプレゼン資料ツール比較と使い分け</li>
+              </ul>
             </Card>
-            <Card className="p-5">
-              <div className="text-sm font-medium text-slate-900">第3部 160–170分</div>
-              <div className="mt-3 text-slate-600 text-sm md:text-base">まとめ、KPI、運用ルール、ベストプラクティス</div>
+            <Card className="p-6 h-full border border-slate-200 bg-white/95">
+              <div className="text-xs uppercase tracking-[0.2em] text-cyan-700">Phase 3</div>
+              <div className="mt-2 text-lg font-semibold text-slate-900">160–170分＋α：定着と展開</div>
+              <ul className="mt-4 space-y-2 text-sm text-slate-600 leading-6 list-disc list-inside">
+                <li>KPI設計・導入ロードマップの雛形</li>
+                <li>配布物の活用方法と社内共有の進め方</li>
+                <li>質疑応答・次アクション設定</li>
+              </ul>
             </Card>
           </div>
-          <div className="mt-6 grid md:grid-cols-3 gap-4">
-            <DemoTile emoji="📄" title="1ページ提案" caption="KPIと合意形成" />
-            <DemoTile emoji="🖼️" title="画像生成の使い分け" caption="GPTとGeminiの役割" />
-            <DemoTile emoji="🚀" title="ベストプラクティス10" caption="明日からの実装" />
-          </div>
+          <Card className="p-6 border border-slate-200 bg-white/95">
+            <div className="grid gap-6 md:grid-cols-3">
+              <div className="space-y-2">
+                <div className="text-sm font-semibold text-slate-900">ワークで扱う主なテーマ</div>
+                <p className="text-sm text-slate-600">議事録整形、現調ダイジェスト、AIプレゼン資料、SpotPDF差分、省エネ計算、GASオートメーション。</p>
+              </div>
+              <div className="space-y-2">
+                <div className="text-sm font-semibold text-slate-900">成果物イメージ</div>
+                <p className="text-sm text-slate-600">1ページ提案テンプレ／AIスタック比較表／現場で使えるチェックリスト／自動化スクリプト雛形。</p>
+              </div>
+              <div className="space-y-2">
+                <div className="text-sm font-semibold text-slate-900">復習の進め方</div>
+                <p className="text-sm text-slate-600">アーカイブ動画＋配布資料で練習→社内導入への転用→講師へのQ&Aで不明点を解消します。</p>
+              </div>
+            </div>
+          </Card>
         </div>
       </Section>
 
       {/* CHAPTERS */}
-      <Section id="chapters" className="mt-16 md:mt-24" data-testid="sec-chapters">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="font-semibold text-2xl text-slate-900">チャプター索引（クリックで移動）</h2>
-          <div className="mt-4 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+      <Section id="chapters" className="mt-16 md:mt-24 justify-start" data-testid="sec-chapters">
+        <div className="max-w-6xl w-full mx-auto space-y-8">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="space-y-2">
+              <h2 className="text-2xl md:text-3xl font-semibold text-slate-900">チャプター索引</h2>
+              <p className="text-sm md:text-base text-slate-600 leading-7">
+                18章それぞれにゴールと成果物を設定。カードをクリックすると該当パートへ移動します。ドットナビやキーボード操作（↑↓）とも連動しています。
+              </p>
+            </div>
+            <Badge color="#E2E8F0">
+              <span aria-hidden>⌨️</span> ↑↓ or Dot でジャンプ
+            </Badge>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
             {CHAPTERS.map((c) => (
               <Card
                 key={c.id}
-                className="px-4 py-3 cursor-pointer"
+                className="px-4 py-5 cursor-pointer border border-slate-200 bg-white/95 transition-transform duration-200 hover:-translate-y-1 hover:shadow-lg"
                 data-testid="chapter-card"
                 onClick={() => {
                   setRevealCount(0);
@@ -823,15 +918,13 @@ section p,section li,section .text-slate-600{font-size:var(--slide-body)}
                 }}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-slate-500">{String(c.no).padStart(2, '0')}</span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-black/5">LIVE</span>
+                  <span className="text-xs font-semibold text-cyan-700">CH.{String(c.no).padStart(2, '0')}</span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-cyan-50 text-cyan-700">LIVE</span>
                 </div>
-                <div
-                  className="mt-2 text-sm font-medium"
-                  style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}
-                >
+                <div className="mt-3 text-sm font-semibold text-slate-900 leading-6 min-h-[3.5rem]">
                   {c.title}
                 </div>
+                <div className="mt-2 text-[11px] text-slate-500">クリックで該当セクションへ移動</div>
               </Card>
             ))}
           </div>
@@ -839,63 +932,106 @@ section p,section li,section .text-slate-600{font-size:var(--slide-body)}
       </Section>
 
       {/* CHAPTER SECTIONS */}
-      {CHAPTER_SECTIONS.map((s) => (
-        <Section
-          id={s.id}
-          key={s.id}
-          data-chapter-section="true"
-          onClick={() => presenter && REVEAL_ENABLED && setRevealCount((c) => c + 1)}
-        >
-          <div className="max-w-6xl mx-auto">
-            {s.kicker ? <div className="text-xs tracking-widest text-slate-500">{s.kicker}</div> : null}
-            <h2 className="font-extrabold text-slate-900">{s.title}</h2>
-            <ul className="mt-4 space-y-2 text-slate-700">
-              {renderBullets(s.bullets, s.id)}
-            </ul>
-          </div>
-        </Section>
-      ))}
+      {CHAPTER_SECTIONS.map((s) => {
+        const minutes = SECTION_MINUTES[s.id];
+        const chapterNo = CHAPTERS.find((c) => c.id === s.id)?.no;
+        return (
+          <Section
+            id={s.id}
+            key={s.id}
+            className="justify-start"
+            data-chapter-section="true"
+            onClick={() => presenter && REVEAL_ENABLED && setRevealCount((c) => c + 1)}
+          >
+            <div className="max-w-6xl w-full mx-auto">
+              <Card className="p-6 md:p-8 border border-slate-200 bg-white/95 space-y-6">
+                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                  <div className="space-y-2">
+                    {s.kicker ? (
+                      <div className="text-xs uppercase tracking-[0.3em] text-cyan-700">{s.kicker}</div>
+                    ) : null}
+                    <h2 className="text-2xl md:text-[30px] font-extrabold text-slate-900 leading-tight">{s.title}</h2>
+                  </div>
+                  <div className="flex flex-col items-start gap-2 text-xs text-slate-500 md:items-end">
+                    {typeof minutes === 'number' ? (
+                      <span className="inline-flex items-center gap-2 rounded-full border border-cyan-100 bg-cyan-50 px-3 py-1 text-cyan-700">
+                        <span aria-hidden>⏱</span> 目安 {minutes} 分
+                      </span>
+                    ) : null}
+                    {chapterNo ? <span>CH.{String(chapterNo).padStart(2, '0')}</span> : null}
+                  </div>
+                </div>
+                <div className="grid gap-6 md:grid-cols-[minmax(0,0.62fr)_minmax(0,0.38fr)]">
+                  <ul className="space-y-3">
+                    {renderBullets(s.bullets, s.id)}
+                  </ul>
+                  <div className="rounded-lg border border-slate-200 bg-slate-50/80 p-4 text-xs md:text-sm text-slate-600">
+                    <div className="font-semibold text-slate-900">講師メモ（Nキーで拡大表示）</div>
+                    <p className="mt-2 leading-6 whitespace-pre-line">{s.notes}</p>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </Section>
+        );
+      })}
 
       {/* RESOURCES */}
-      <Section id="resources" className="mt-16 md:mt-24" data-testid="sec-resources">
-        <div className="max-w-6xl mx-auto w-full">
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <h2 className="font-semibold text-2xl text-slate-900">配布とアーカイブ</h2>
+      <Section id="resources" className="mt-16 md:mt-24 justify-start" data-testid="sec-resources">
+        <div className="max-w-6xl w-full mx-auto space-y-8">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="space-y-2">
+              <h2 className="text-2xl md:text-3xl font-semibold text-slate-900">配布・アーカイブ・サポート</h2>
+              <p className="text-sm md:text-base text-slate-600 leading-7">
+                セミナー終了後は非公開ページで資料を一括ダウンロード。社内展開や復習、追加サポートの流れもここから案内します。
+              </p>
+            </div>
             <Badge color="#FEF3C7">
-              <span aria-hidden>🔒</span> 受講者限定
+              <span aria-hidden>🔒</span> 受講者限定配信
             </Badge>
           </div>
-          <Card className="mt-4 p-6">
-            <div className="grid md:grid-cols-2 gap-6 items-center">
-              <div>
-                <div className="text-sm md:text-base font-medium text-slate-900">非公開ページで一括配布</div>
-                <ul className="mt-3 text-slate-600 space-y-2 list-disc list-inside">
-                  <li>アーカイブ動画</li>
-                  <li>スライドPDF（要点のみ）</li>
-                  <li>テンプレ、チェックリスト、プロンプト集</li>
-                  <li>SpotPDF差分サンプル、GAS雛形、エネルギー計算レシピ</li>
+          <Card className="p-6 md:p-8 border border-slate-200 bg-white/95">
+            <div className="grid gap-8 md:grid-cols-[minmax(0,0.55fr)_minmax(0,0.45fr)]">
+              <div className="space-y-4">
+                <div className="text-sm md:text-base font-semibold text-slate-900">非公開ページで一括受領</div>
+                <ul className="space-y-2 text-sm md:text-base text-slate-600 leading-6 list-disc list-inside">
+                  <li>アーカイブ動画（14日間視聴）</li>
+                  <li>スライドPDF（要点と図解のみを抽出）</li>
+                  <li>プロンプト集・テンプレ・チェックリスト・GAS雛形</li>
+                  <li>SpotPDF差分サンプル、エネルギー計算レシピ</li>
                 </ul>
-                <div className="mt-4 text-xs text-slate-500">配布は終了後にURLを送付。検索避け設定済み。</div>
+                <div className="text-xs text-slate-500">終了後24時間以内にURLとパスを送付。検索避け＆招待コードで管理します。</div>
               </div>
-              <div className="p-4 rounded-lg border border-dashed border-slate-300 bg-white/80">
-                <div className="text-xs text-slate-500">Invite Code</div>
-                <div className="mt-2 flex gap-2">
-                  <input
-                    aria-label="招待コード"
-                    placeholder="招待コードを入力"
-                    data-testid="invite-code-input"
-                    className="flex-1 px-3 py-2 rounded-md border outline-none focus:ring-2 focus:ring-cyan-300"
-                  />
-                  <button className="px-4 py-2 rounded-md text-white" style={{ background: brand.colors.accent }}>
-                    開く
-                  </button>
+              <div className="space-y-4">
+                <div className="text-sm md:text-base font-semibold text-slate-900">招待コード入力で解放</div>
+                <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50/80 p-5 space-y-3">
+                  <div className="text-xs text-slate-500 uppercase tracking-[0.3em]">INVITE</div>
+                  <div className="flex flex-wrap gap-2">
+                    <input
+                      aria-label="招待コード"
+                      placeholder="AP-2025-SEMINAR"
+                      data-testid="invite-code-input"
+                      className="flex-1 min-w-[160px] px-3 py-2 rounded-md border outline-none focus:ring-2 focus:ring-cyan-300"
+                    />
+                    <button className="px-4 py-2 rounded-md text-white shadow-sm" style={{ background: brand.colors.accent }}>
+                      開く
+                    </button>
+                  </div>
+                  <div className="text-xs text-slate-500 leading-5">受講者のみアクセス可能です。第三者への共有や転載はご遠慮ください。</div>
                 </div>
-                <div className="mt-2 text-xs text-slate-500">参加者のみアクセス可。第三者共有は不可。</div>
+                <div className="rounded-lg border border-slate-200 bg-white p-4 text-xs text-slate-600 leading-6">
+                  <div className="font-semibold text-slate-900">フォローアップ</div>
+                  <ul className="mt-2 space-y-1 list-disc list-inside">
+                    <li>30日間のメール相談</li>
+                    <li>月1回のクローズドQ&Aセッション</li>
+                    <li>Discordコミュニティで事例共有</li>
+                  </ul>
+                </div>
               </div>
             </div>
           </Card>
-          <div className="mt-6 text-xs text-slate-500">
-            招待コード: <span className="font-semibold text-slate-900">AP-2025-SEMINAR</span> ／ 所要時間: {totalPlanned}分（予定）
+          <div className="text-xs md:text-sm text-slate-500">
+            招待コード：<span className="font-semibold text-slate-900">AP-2025-SEMINAR</span> ／ 全体所要時間：{totalPlanned}分（予定）
           </div>
         </div>
       </Section>
