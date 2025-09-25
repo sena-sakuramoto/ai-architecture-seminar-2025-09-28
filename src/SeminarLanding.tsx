@@ -483,13 +483,19 @@ const SLIDES: Slide[] = [
   {
     id: 's-greeting',
     title: 'ご挨拶 & 進め方',
-    lines: ['講師: sakuramoto sena', '今日のテーマ: 知る→できる→使える', '進行: 理解 → 実演 → 適用 → フォロー'],
+    lines: ['講師: sakuramoto sena', 'テーマ: 知る→できる→使える', '進行: 理解 → 実演 → 適用 → フォロー'],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
+  },
+  {
+    id: 's-need',
+    title: '今なぜAI×建築か',
+    lines: ['建築DXの要望増加 (前年比+42%)', '現場でのナレッジ共有不足', '審査で求められる透明性'],
+    bg: 'linear-gradient(135deg,#1e293b,#334155)',
   },
   {
     id: 's-goals',
     title: '今日のゴール',
-    lines: ['共通言語: AI導入の判断軸を揃える', '体験: 現調→提案→自動化ワークフロー', '即実装: 配布資料で社内展開'],
+    lines: ['共通言語: AI導入の判断軸', '体験: 現調→提案→自動化ワーク', '即実装: 配布資料で社内展開'],
     bg: 'linear-gradient(135deg,#0ea5e9,#1e293b)',
   },
   {
@@ -499,21 +505,21 @@ const SLIDES: Slide[] = [
     bg: 'linear-gradient(135deg,#1e293b,#475569)',
   },
   {
-    id: 's-phase1-intro',
+    id: 's-phase1',
     title: 'Phase 1｜AI基礎と安全運用',
-    lines: ['LLMの仕組みと建築での用途', '幻覚/最新性/秘匿性への対応', 'NotebookLMでガイドライン整理'],
+    lines: ['LLMの特性と建築での用途', '幻覚/最新性/秘匿性への対策', 'NotebookLMで社内ガイドライン整備'],
     bg: 'linear-gradient(135deg,#38bdf8,#1e40af)',
   },
   {
-    id: 's-phase1-hands',
-    title: 'Phase 1 ハンズオン',
+    id: 's-phase1-demo',
+    title: 'Phase 1 デモ',
     lines: ['プロンプト構造化で出力安定', 'リスクマトリクスと承認フロー', '社内共有テンプレの作り方'],
     bg: 'linear-gradient(135deg,#1e40af,#0f172a)',
   },
   {
     id: 's-phase2-intro',
     title: 'Phase 2｜現調→提案→自動化',
-    lines: ['現地調査の撮影リストと命名規則', 'SpotPDF差分と省エネ計算のライブ', 'GAS連携で議事録→タスク→日程'],
+    lines: ['現地調査の撮影リストと命名規則', 'SpotPDF差分・省エネ計算のライブ', 'GAS連携で議事録→タスク→カレンダー'],
     bg: 'linear-gradient(135deg,#1e293b,#111827)',
   },
   {
@@ -525,7 +531,7 @@ const SLIDES: Slide[] = [
   {
     id: 's-phase2-demo2',
     title: 'Phase 2 デモ② 提案',
-    lines: ['1ページ提案テンプレを生成', '画像生成: GPT vs Gemini 使い分け', 'SpotPDFで差分抽出'],
+    lines: ['1ページ提案テンプレを生成', '画像生成: GPT vs Gemini', 'SpotPDFで差分抽出'],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
   },
   {
@@ -535,10 +541,22 @@ const SLIDES: Slide[] = [
     bg: 'linear-gradient(135deg,#1e293b,#0f172a)',
   },
   {
+    id: 's-phase2-hands',
+    title: 'Phase 2 ハンズオンのポイント',
+    lines: ['実操作→質問→再操作のループ', 'Slack/Teamsで共有', '社内QAに活かすログ整理'],
+    bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
+  },
+  {
     id: 's-phase3-intro',
     title: 'Phase 3｜定着と配布',
-    lines: ['KPI設計と導入ロードマップ', '配布資料の使い方', '社内展開時の注意点'],
+    lines: ['KPI設計と導入ロードマップ', '配布物の活用と社内展開手順', '無期限Q&Aとコミュニティ案内'],
     bg: 'linear-gradient(135deg,#38bdf8,#1e40af)',
+  },
+  {
+    id: 's-kpi',
+    title: 'KPI例とモニタリング',
+    lines: ['提案作成時間 -40%', '審査コメント対応時間 -30%', '社内ガイドライン遵守率 +50%'],
+    bg: 'linear-gradient(135deg,#1e40af,#0f172a)',
   },
   {
     id: 's-resources',
@@ -557,6 +575,13 @@ const SLIDES: Slide[] = [
     title: '次のアクション',
     lines: ['社内稟議資料の準備', 'PoC案件の選定', '導入ロードマップ相談'],
     bg: 'linear-gradient(135deg,#0f172a,#0b1120)',
+  },
+  {
+    id: 's-thanks',
+    title: 'Thank you',
+    subtitle: 'ご参加ありがとうございます！',
+    lines: ['アンケートURLを後ほどメール送付', 'Discordコミュニティへの招待リンク', '追加質問はメールでお気軽に'],
+    bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
   },
 ];
 
