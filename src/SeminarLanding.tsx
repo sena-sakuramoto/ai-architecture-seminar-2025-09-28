@@ -481,28 +481,58 @@ const SLIDES: Slide[] = [
     bg: 'linear-gradient(120deg,#38bdf8,#0f172a)',
   },
   {
+    id: 's-goals',
+    title: '今日のゴール',
+    lines: ['AI導入の共通言語を揃える', '現調→提案→自動化の型を体験', '配布物で社内展開を即スタート'],
+    bg: 'linear-gradient(135deg,#0ea5e9,#1e293b)',
+  },
+  {
     id: 's-agenda',
     title: '進行マップ',
     lines: ['Phase 1 (0-70分): AI基礎と安全運用', 'Phase 2 (70-160分): 現調→提案→自動化デモ', 'Phase 3 (160-170分+): KPI・配布・Q&A'],
+    bg: 'linear-gradient(135deg,#1e293b,#475569)',
+  },
+  {
+    id: 's-phase1',
+    title: 'Phase 1｜基礎と安全運用',
+    lines: ['LLMの特性と建築での適用範囲', '権限・情報管理・リスク対策', 'NotebookLMでガイドライン整理'],
+    bg: 'linear-gradient(135deg,#38bdf8,#1e40af)',
+  },
+  {
+    id: 's-phase2',
+    title: 'Phase 2｜現調→提案→自動化',
+    lines: ['現地調査の撮影指示と命名ルール', 'SpotPDF差分・省エネ計算のライブ実演', 'GAS連携で議事録→タスク→カレンダー'],
+    bg: 'linear-gradient(135deg,#1e293b,#0f172a)',
+  },
+  {
+    id: 's-phase3',
+    title: 'Phase 3｜定着と配布',
+    lines: ['KPI設計・導入ロードマップ', '配布物の活用と社内展開手順', '無期限Q&A・コミュニティ案内'],
     bg: 'linear-gradient(135deg,#0ea5e9,#1e293b)',
   },
   {
     id: 's-workflows',
     title: '重点ワークフロー',
-    lines: ['議事録→タスク→日程を自動連携', 'SpotPDF差分×省エネ計算の実演', 'LP/提案テンプレをその場で生成'],
+    lines: ['議事録→タスク→日程の自動連携', 'SpotPDF差分×省エネ計算の比較', 'LP/提案テンプレの即時生成'],
     bg: 'linear-gradient(135deg,#1e293b,#475569)',
   },
   {
     id: 's-resources',
-    title: '配布物',
-    lines: ['ワークフロー図、チェックリスト、プロンプト集', 'GAS雛形、SpotPDFサンプル、ロードマップ', '終了後24時間以内に非公開ページを案内'],
+    title: '配布物セット',
+    lines: ['ワークフロー図・チェックリスト', 'AIスタック比較表・プロンプト集', 'GAS雛形・エネルギー計算レシピ'],
     bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
   },
   {
     id: 's-support',
     title: 'フォローアップ',
-    lines: ['30日間メール相談', '月1クローズドQ&A', 'コミュニティで事例共有・テンプレ更新'],
+    lines: ['30日間メール相談', '月1クローズドQ&A', 'Discordコミュニティで事例共有'],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
+  },
+  {
+    id: 's-action',
+    title: '次のアクション',
+    lines: ['配布資料で社内説明→稟議準備', 'PoC案件の選定とスケジュール策定', '講師に相談して導入ロードマップ確定'],
+    bg: 'linear-gradient(135deg,#1e3a8a,#0f172a)',
   },
 ];
 
