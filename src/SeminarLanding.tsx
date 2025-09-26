@@ -287,8 +287,8 @@ const BarChart: React.FC<{
 // ========= Data =========
 
 const CHAPTERS = [
-  { no: 1, id: 'part1-opening', title: 'オープニング (0-10分)' },
-  { no: 2, id: 'part1-basics', title: 'AIの基礎 (10-25分)' },
+  { no: 1, id: 'speaker-intro', title: '講師紹介 (0-3分)' },
+  { no: 2, id: 'part1-basics', title: 'AIの基礎 (3-25分)' },
   { no: 3, id: 'part1-future', title: 'AIと建築業界のこれから (25-40分)' },
   { no: 4, id: 'part1-security', title: 'セキュリティ・リスク (40-50分)' },
   { no: 5, id: 'part1-demo', title: '基礎のミニ実演 (50-55分)' },
@@ -306,7 +306,7 @@ const CHAPTERS = [
 ] as const;
 
 const CHAPTER_SUMMARIES: Record<string, string> = {
-  'part1-opening': 'セミナーの目的とゴール、mindset宣言（自分ごと化・ドヤ体験）',
+  'speaker-intro': '櫻本聖成の紹介、2社の事業内容（Archi-Prisma・archisoft）、実績紹介',
   'part1-basics': 'これまでのAIから生成AIの台頭、建築分野の移り変わり（CAD→BIM→AI）',
   'part1-future': 'AIを使えない人材が"オワコン"になる理由、残る仕事と変わる仕事',
   'part1-security': 'データ取り扱いの原則（匿名化、最小限入力）、共有・権限・ログの鉄則',
@@ -332,6 +332,18 @@ const CHAPTER_SECTIONS: Array<{
   bullets: string[];
   notes: string;
 }> = [
+  {
+    id: 'speaker-intro',
+    kicker: 'SPEAKER',
+    title: '講師紹介：櫻本聖成 / Sakuramoto Sena',
+    bullets: [
+      'Archi-Prisma Design works 代表：一級建築士事務所として大規模開発、ホテル事業',
+      'archisoft 代表：Archicad代理店、YouTube運営、建築土木カフェTONKA顧問',
+      '築150年蔵リノベ、AI×建築セミナー、企業コンサル・共同開発',
+    ],
+    notes:
+      '2社経営。建築設計（目黒ビル施工中、大手デベ協議中、鎌倉ホテル運営）とテック事業（Archicad販売、YouTube、AI活用）。実績：スズキ動画236万再生、募集200応募。古民家×AIパース生成も実演予定。',
+  },
   {
     id: 'ch-01',
     kicker: 'START',
@@ -745,10 +757,10 @@ const SLIDES: Slide[] = [
     title: '講師紹介',
     subtitle: '櫻本 聖成 / Sakuramoto Sena',
     lines: [
-      '• 一級建築士事務所 Archi-Prisma Design works 株式会社　代表取締役',
-      '• archisoft株式会社　代表取締役',
-      '• 「AIで建築業界を変える」をミッションに事業展開',
-      '• Instagram: @sena_archisoft（QRコード右側に表示）',
+      '一級建築士事務所 Archi-Prisma Design works 株式会社　代表取締役',
+      'archisoft株式会社　代表取締役',
+      '「AIで建築業界を変える」をミッションに事業展開',
+      'Instagram: @sena_archisoft（QRコード右側に表示）',
     ],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
   },
@@ -1375,6 +1387,9 @@ export default function SeminarLanding(): React.ReactElement {
 
     const onKey = (e: KeyboardEvent) => {
       const k = (e.key || '').toLowerCase();
+      if (slideMode) {
+        console.log('Slide mode key pressed:', e.key, '(lowercase:', k, '), current slideIdx:', slideIdx);
+      }
       if (e.shiftKey && k === 'p') {
         setPresenter((v) => !v);
         e.preventDefault();
@@ -1404,11 +1419,13 @@ export default function SeminarLanding(): React.ReactElement {
       // スライドモードの場合
       if (slideMode) {
         if (k === 'arrowright' || k === 'pagedown' || k === ' ') {
+          console.log('Next slide:', slideIdx, '->', Math.min(slideIdx + 1, SLIDES.length - 1));
           setSlideIdx(Math.min(slideIdx + 1, SLIDES.length - 1));
           e.preventDefault();
           return;
         }
         if (k === 'arrowleft' || k === 'pageup') {
+          console.log('Prev slide:', slideIdx, '->', Math.max(slideIdx - 1, 0));
           setSlideIdx(Math.max(slideIdx - 1, 0));
           e.preventDefault();
           return;
@@ -1455,7 +1472,7 @@ export default function SeminarLanding(): React.ReactElement {
     window.addEventListener('keydown', onKey);
     runSmokeTests(allIds);
     return () => window.removeEventListener('keydown', onKey);
-  }, [presenter, slideMode, allIds, idx]);
+  }, [presenter, slideMode, allIds, idx, slideIdx]);
 
   useEffect(() => {
     const el = containerRef.current;
@@ -1524,7 +1541,7 @@ export default function SeminarLanding(): React.ReactElement {
         {/* メインスライドエリア */}
         <div className="flex-1 p-8 flex items-center justify-center">
           <div className="max-w-6xl w-full">
-            <div className={`grid gap-12 ${showSideContent ? 'lg:grid-cols-[1fr,400px]' : ''}`}>
+            <div className={`grid gap-12 ${showSideContent ? 'lg:grid-cols-[1fr,320px]' : ''}`}>
               {/* メインコンテンツ */}
               <div className="text-center space-y-8">
                 {currentSlide.subtitle && (
@@ -1567,9 +1584,19 @@ export default function SeminarLanding(): React.ReactElement {
               {/* サイドコンテンツ */}
               {showSideContent && (
                 <div className="flex flex-col items-center justify-center space-y-4">
-                  {/* Instagram QRコード */}
+                  {/* 講師写真とInstagram QRコード */}
                   {showInstagramQR && (
                     <>
+                      {/* 講師写真 */}
+                      <div className="mb-6">
+                        <img
+                          src="./images/sakuramoto sena.jpeg"
+                          alt="櫻本聖成 / Sakuramoto Sena"
+                          className="w-64 h-80 object-cover rounded-xl shadow-lg"
+                        />
+                      </div>
+
+                      {/* Instagram QRコード */}
                       <div className="bg-white p-6 rounded-xl shadow-lg">
                         <div className="text-center mb-4">
                           <div className="text-slate-800 font-semibold text-sm">Instagram</div>
