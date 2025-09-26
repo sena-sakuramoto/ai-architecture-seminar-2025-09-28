@@ -738,7 +738,46 @@ const PresenterHUD: React.FC<{
 };
 
 // ===== Slide Mode =====
-type Slide = { id: string; title?: string; subtitle?: string; lines?: string[]; img?: string; bg?: string };
+type SlideMediaTone = 'default' | 'accent' | 'muted';
+
+type SlideMediaItem = {
+  src: string;
+  alt: string;
+  caption?: string;
+  description?: string;
+  tone?: SlideMediaTone;
+  fit?: 'cover' | 'contain';
+};
+
+type SlideMedia = {
+  layout?: 'stack' | 'grid';
+  columns?: 1 | 2 | 3;
+  headline?: string;
+  items: SlideMediaItem[];
+  footnote?: string;
+};
+
+type Slide = {
+  id: string;
+  title?: string;
+  subtitle?: string;
+  lines?: string[];
+  bg?: string;
+  media?: SlideMedia;
+};
+
+const slideAssets = {
+  speakerPortrait: new URL('../images/sakuramoto sena.jpeg', import.meta.url).href,
+  instagramQR: new URL('../images/senaインスタ.jpeg', import.meta.url).href,
+  hotelVideo: new URL('../images/Youtube\u3000スクリーンショット.png', import.meta.url).href,
+  apdwLogo: new URL('../images/APDW logo.png', import.meta.url).href,
+  archicadSite: new URL('../images/Archicad HP掲載\u3000代理店.png', import.meta.url).href,
+  megaDev: new URL('../images/大規模開発\u3000例.png', import.meta.url).href,
+  kuraBefore1: new URL('../images/蔵サウナ写真/kura1 before.JPG', import.meta.url).href,
+  kuraAfter1: new URL('../images/蔵サウナ写真/kura1 after.png', import.meta.url).href,
+  kuraBefore2: new URL('../images/蔵サウナ写真/kura2 before.JPG', import.meta.url).href,
+  kuraAfter2: new URL('../images/蔵サウナ写真/kura2 after.png', import.meta.url).href,
+};
 
 const SLIDES: Slide[] = [
   {
@@ -763,6 +802,27 @@ const SLIDES: Slide[] = [
       'Instagram: @sena_archisoft（QRコード右側に表示）',
     ],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
+    media: {
+      layout: 'stack',
+      headline: '講師プロフィール',
+      items: [
+        {
+          src: slideAssets.speakerPortrait,
+          alt: '櫻本聖成人物写真',
+          caption: '櫻本 聖成 / Sakuramoto Sena',
+          description: 'Archi-Prisma・archisoft 代表取締役',
+        },
+        {
+          src: slideAssets.instagramQR,
+          alt: 'Instagram QRコード @sena_archisoft',
+          caption: 'Instagram @sena_archisoft',
+          description: 'スマートフォンでスキャン',
+          fit: 'contain',
+          tone: 'accent',
+        },
+      ],
+      footnote: '講師SNSで補足資料・最新Tipsをフォロー可能',
+    },
   },
   {
     id: 's-archisoft',
@@ -770,11 +830,32 @@ const SLIDES: Slide[] = [
     subtitle: 'Building Technology & Media',
     lines: [
       '• Archicad正規販売代理店として建築設計支援',
-      '• YouTube「archisoft」運営（建築×AI情報発信）',
+      '• YouTube「archisoft」運営：Archicad中心に建築ソフトの解説を学生時代から',
       '• 建築土木カフェTONKAの顧問',
       '• 企業向けAIセミナー・業務改善コンサル',
     ],
     bg: 'linear-gradient(135deg,#059669,#0f172a)',
+    media: {
+      layout: 'stack',
+      headline: 'ブランド & チャネル',
+      items: [
+        {
+          src: slideAssets.apdwLogo,
+          alt: 'Archi-Prisma Design Works ロゴ',
+          caption: 'Archi-Prisma Design Works',
+          description: '建築設計×AIの実務チーム',
+          fit: 'contain',
+        },
+        {
+          src: slideAssets.archicadSite,
+          alt: 'Archicad 正規代理店掲載ページ',
+          caption: 'Archicad 正規販売代理店',
+          description: 'archisoft株式会社',
+          fit: 'contain',
+          tone: 'muted',
+        },
+      ],
+    },
   },
   {
     id: 's-apdw-current',
@@ -787,6 +868,17 @@ const SLIDES: Slide[] = [
       '• 建築設計から事業企画まで一貫したサービス提供',
     ],
     bg: 'linear-gradient(135deg,#1e3a8a,#0f172a)',
+    media: {
+      layout: 'stack',
+      items: [
+        {
+          src: slideAssets.megaDev,
+          alt: '大規模開発計画イメージ',
+          caption: '大規模複合開発スキーム',
+          description: '都市計画協議のためのコンセプト案',
+        },
+      ],
+    },
   },
   {
     id: 's-hotel',
@@ -799,6 +891,19 @@ const SLIDES: Slide[] = [
       '• 募集に対し200人超の応募（SNSマーケティング効果）',
     ],
     bg: 'linear-gradient(135deg,#dc2626,#0f172a)',
+    media: {
+      layout: 'stack',
+      items: [
+        {
+          src: slideAssets.hotelVideo,
+          alt: 'ホテル施策のSNS動画キャプチャ',
+          caption: '236万再生のショート動画',
+          description: 'SNS連動で採用応募200名超',
+          tone: 'accent',
+        },
+      ],
+      footnote: 'SNSマーケティングで集客・採用を同時加速',
+    },
   },
   {
     id: 's-kura-project',
@@ -811,6 +916,42 @@ const SLIDES: Slide[] = [
       '• 伝統建築×最新AI技術の融合プロジェクト',
     ],
     bg: 'linear-gradient(135deg,#7c3aed,#0f172a)',
+    media: {
+      layout: 'grid',
+      columns: 2,
+      headline: 'AI生成 Before / After',
+      items: [
+        {
+          src: slideAssets.kuraBefore1,
+          alt: '蔵外観 Before',
+          caption: 'Before',
+          description: '現地撮影',
+          tone: 'muted',
+        },
+        {
+          src: slideAssets.kuraAfter1,
+          alt: '蔵外観 After (AI生成)',
+          caption: 'After (AI生成)',
+          description: 'Gemini生成パース',
+          tone: 'accent',
+        },
+        {
+          src: slideAssets.kuraBefore2,
+          alt: '蔵内部 Before',
+          caption: '蔵内部',
+          description: '現況把握',
+          tone: 'muted',
+        },
+        {
+          src: slideAssets.kuraAfter2,
+          alt: '蔵内部 After (AI生成)',
+          caption: '改修案',
+          description: 'AIによる空間提案',
+          tone: 'accent',
+        },
+      ],
+      footnote: '現地で撮影→Gemini即座に生成し施主共有',
+    },
   },
   {
     id: 's-ai-services',
@@ -823,6 +964,27 @@ const SLIDES: Slide[] = [
       '• 自社業務効率化ソフト・サービスのコード開発',
     ],
     bg: 'linear-gradient(135deg,#d97706,#0f172a)',
+    media: {
+      layout: 'stack',
+      items: [
+        {
+          src: slideAssets.archicadSite,
+          alt: 'Archicad導入支援サイト',
+          caption: 'Archicad導入・教育支援',
+          description: 'プロ向け研修とカスタムワークフロー構築',
+          fit: 'contain',
+          tone: 'accent',
+        },
+        {
+          src: slideAssets.apdwLogo,
+          alt: 'archisoft／APDW ロゴ',
+          caption: 'archisoft 開発チーム',
+          description: 'AIアプリ・自社サービス開発',
+          fit: 'contain',
+          tone: 'muted',
+        },
+      ],
+    },
   },
   {
     id: 's-mindset',
@@ -1420,13 +1582,13 @@ export default function SeminarLanding(): React.ReactElement {
       if (slideMode) {
         if (k === 'arrowright' || k === 'pagedown' || k === ' ') {
           console.log('Next slide:', slideIdx, '->', Math.min(slideIdx + 1, SLIDES.length - 1));
-          setSlideIdx(Math.min(slideIdx + 1, SLIDES.length - 1));
+          setSlideIdx((prev) => Math.min(prev + 1, SLIDES.length - 1));
           e.preventDefault();
           return;
         }
         if (k === 'arrowleft' || k === 'pageup') {
           console.log('Prev slide:', slideIdx, '->', Math.max(slideIdx - 1, 0));
-          setSlideIdx(Math.max(slideIdx - 1, 0));
+          setSlideIdx((prev) => Math.max(prev - 1, 0));
           e.preventDefault();
           return;
         }
@@ -1518,10 +1680,33 @@ export default function SeminarLanding(): React.ReactElement {
   if (slideMode) {
     const currentSlide = SLIDES[slideIdx] || SLIDES[0];
 
-    // 右側サイドコンテンツの表示判定
-    const showInstagramQR = currentSlide.id === 's-opening';
-    const showImages = ['s-hotel', 's-kura-project'].includes(currentSlide.id);
-    const showSideContent = showInstagramQR || showImages;
+    const media = currentSlide.media;
+    const showSideContent = Boolean(media && media.items.length);
+    const toneClasses = (tone: SlideMediaTone = 'default') => {
+      switch (tone) {
+        case 'accent':
+          return {
+            border: 'border-cyan-400/60',
+            caption: 'text-cyan-200',
+            description: 'text-cyan-200/80',
+            badge: 'bg-cyan-500/20 text-cyan-200 border border-cyan-400/40',
+          } as const;
+        case 'muted':
+          return {
+            border: 'border-white/10',
+            caption: 'text-white/70',
+            description: 'text-white/50',
+            badge: 'bg-white/10 text-white/60 border border-white/15',
+          } as const;
+        default:
+          return {
+            border: 'border-white/15',
+            caption: 'text-white',
+            description: 'text-white/70',
+            badge: 'bg-white/15 text-white/80 border border-white/15',
+          } as const;
+      }
+    };
 
     return (
       <div className="h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white flex flex-col">
@@ -1582,82 +1767,91 @@ export default function SeminarLanding(): React.ReactElement {
               </div>
 
               {/* サイドコンテンツ */}
-              {showSideContent && (
-                <div className="flex flex-col items-center justify-center space-y-4">
-                  {/* 講師写真とInstagram QRコード */}
-                  {showInstagramQR && (
-                    <>
-                      {/* 講師写真 */}
-                      <div className="mb-6">
-                        <img
-                          src="./images/sakuramoto sena.jpeg"
-                          alt="櫻本聖成 / Sakuramoto Sena"
-                          className="w-64 h-80 object-cover rounded-xl shadow-lg"
-                        />
-                      </div>
-
-                      {/* Instagram QRコード */}
-                      <div className="bg-white p-6 rounded-xl shadow-lg">
-                        <div className="text-center mb-4">
-                          <div className="text-slate-800 font-semibold text-sm">Instagram</div>
-                          <div className="text-slate-600 text-xs">@sena_archisoft</div>
-                        </div>
-                        {/* Instagram QRコード画像 */}
-                        <img
-                          src="./images/senaインスタ.jpeg"
-                          alt="Instagram QRコード @sena_archisoft"
-                          className="w-48 h-48 object-contain rounded-lg"
-                        />
-                      </div>
-                      <div className="text-sm opacity-70 text-center">
-                        スマートフォンで<br/>スキャンしてください
-                      </div>
-                    </>
+              {showSideContent && media && (
+                <div className="flex flex-col items-center justify-center space-y-6 text-left">
+                  {media.headline && (
+                    <div className="text-sm uppercase tracking-[0.3em] text-cyan-200/80 text-center">
+                      {media.headline}
+                    </div>
                   )}
 
-                  {/* プロジェクト画像 */}
-                  {showImages && currentSlide.id === 's-kura-project' && (
-                    <div className="space-y-4">
-                      <div className="text-center text-cyan-400 font-semibold text-sm mb-4">
-                        Before → After（AI生成）
-                      </div>
-                      <div className="grid grid-cols-2 gap-2">
-                        <div className="text-center">
-                          <img
-                            src="./images/蔵サウナ写真/kura1 before.JPG"
-                            alt="蔵 Before"
-                            className="w-full h-32 object-cover rounded-lg border border-white/20"
-                          />
-                          <div className="text-xs text-white/70 mt-1">Before</div>
-                        </div>
-                        <div className="text-center">
-                          <img
-                            src="./images/蔵サウナ写真/kura1 after.png"
-                            alt="蔵 After AI生成"
-                            className="w-full h-32 object-cover rounded-lg border border-cyan-400/50"
-                          />
-                          <div className="text-xs text-cyan-400 mt-1">AI生成</div>
-                        </div>
-                        <div className="text-center">
-                          <img
-                            src="./images/蔵サウナ写真/kura2 before.JPG"
-                            alt="蔵内部 Before"
-                            className="w-full h-32 object-cover rounded-lg border border-white/20"
-                          />
-                          <div className="text-xs text-white/70 mt-1">蔵内部</div>
-                        </div>
-                        <div className="text-center">
-                          <img
-                            src="./images/蔵サウナ写真/kura2 after.png"
-                            alt="蔵内部 After AI生成"
-                            className="w-full h-32 object-cover rounded-lg border border-cyan-400/50"
-                          />
-                          <div className="text-xs text-cyan-400 mt-1">改修案</div>
-                        </div>
-                      </div>
-                      <div className="text-xs opacity-70 text-center mt-2">
-                        現地で撮影→Gemini即座に生成
-                      </div>
+                  {media.layout === 'grid' ? (
+                    <div
+                      className={`grid gap-4 w-full ${
+                        media.columns === 3 ? 'grid-cols-3' : media.columns === 2 ? 'grid-cols-2' : 'grid-cols-1'
+                      }`}
+                    >
+                      {media.items.map((item, idx) => {
+                        const tone = toneClasses(item.tone);
+                        const imageFitClass = item.fit === 'contain' ? 'object-contain' : 'object-cover';
+                        return (
+                          <figure
+                            key={`${currentSlide.id}-media-${idx}`}
+                            className={`bg-white/5 rounded-xl overflow-hidden border ${tone.border} shadow-lg`}
+                          >
+                            <img
+                              src={item.src}
+                              alt={item.alt}
+                              className={`w-full h-32 ${imageFitClass} rounded-lg bg-slate-900/40`}
+                            />
+                            {(item.caption || item.description) && (
+                              <figcaption className="px-3 py-2 space-y-1">
+                                {item.caption && (
+                                  <div className={`text-sm font-semibold ${tone.caption}`}>
+                                    {item.caption}
+                                  </div>
+                                )}
+                                {item.description && (
+                                  <div className={`text-xs ${tone.description}`}>
+                                    {item.description}
+                                  </div>
+                                )}
+                              </figcaption>
+                            )}
+                          </figure>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="space-y-5 w-full">
+                      {media.items.map((item, idx) => {
+                        const tone = toneClasses(item.tone);
+                        const imageFitClass = item.fit === 'contain' ? 'object-contain' : 'object-cover';
+                        return (
+                          <figure
+                            key={`${currentSlide.id}-media-${idx}`}
+                            className={`bg-white/5 rounded-2xl overflow-hidden border ${tone.border} shadow-xl`}
+                          >
+                            <div className="relative">
+                              <img
+                                src={item.src}
+                                alt={item.alt}
+                                className={`w-full max-h-[320px] ${imageFitClass} rounded-2xl bg-slate-900/30`}
+                              />
+                            </div>
+                            {(item.caption || item.description) && (
+                              <figcaption className="px-4 py-3 space-y-1">
+                                {item.caption && (
+                                  <div className={`text-base font-semibold ${tone.caption}`}>
+                                    {item.caption}
+                                  </div>
+                                )}
+                                {item.description && (
+                                  <div className={`text-sm leading-6 ${tone.description}`}>
+                                    {item.description}
+                                  </div>
+                                )}
+                              </figcaption>
+                            )}
+                          </figure>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  {media.footnote && (
+                    <div className="text-xs text-white/60 text-center leading-5">
+                      {media.footnote}
                     </div>
                   )}
                 </div>
