@@ -742,14 +742,75 @@ const SLIDES: Slide[] = [
   },
   {
     id: 's-opening',
-    title: 'オープニング',
+    title: '講師紹介',
+    subtitle: '櫻本 聖成（さくらもと せいな）',
     lines: [
-      '• 講師: 櫻本 聖成（一級建築士事務所　Archi-Prisma Design works 株式会社　代表取締役）',
-      '• "AI発信の理念" archisoft株式会社　代表取締役',
-      '• Archicad正規販売代理店・YouTube「archisoft」運営',
+      '• 一級建築士事務所 Archi-Prisma Design works 株式会社　代表取締役',
+      '• archisoft株式会社　代表取締役',
+      '• 「AIで建築業界を変える」をミッションに事業展開',
       '• Instagram: @sena_archisoft（QRコード右側に表示）',
     ],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
+  },
+  {
+    id: 's-archisoft',
+    title: 'archisoft株式会社',
+    subtitle: 'Building Technology & Media',
+    lines: [
+      '• Archicad正規販売代理店として建築設計支援',
+      '• YouTube「archisoft」運営（建築×AI情報発信）',
+      '• 建築土木カフェTONKAの顧問',
+      '• 企業向けAIセミナー・業務改善コンサル',
+    ],
+    bg: 'linear-gradient(135deg,#059669,#0f172a)',
+  },
+  {
+    id: 's-apdw-current',
+    title: 'Archi-Prisma現在の取組み',
+    subtitle: '大規模開発・店舗設計',
+    lines: [
+      '• 目黒区：店舗オフィスビル新築工事（現在施工中）',
+      '• 大規模開発案件：大手デベロッパーとの企画協議進行中',
+      '• 実績に基づく企画提案・設計監理を実践',
+      '• 建築設計から事業企画まで一貫したサービス提供',
+    ],
+    bg: 'linear-gradient(135deg,#1e3a8a,#0f172a)',
+  },
+  {
+    id: 's-hotel',
+    title: 'ホテル事業の成果',
+    subtitle: '鎌倉駅徒歩2分・メディア注目',
+    lines: [
+      '• 鎌倉駅徒歩2分の立地でホテル運営中',
+      '• 社員スズキのショート動画が236万再生突破',
+      '• 直近のホテルスタッフ募集投稿：9.4万再生',
+      '• 募集に対し200人超の応募（SNSマーケティング効果）',
+    ],
+    bg: 'linear-gradient(135deg,#dc2626,#0f172a)',
+  },
+  {
+    id: 's-kura-project',
+    title: '築150年蔵リノベーション',
+    subtitle: '古民家×AIパース×一棟貸',
+    lines: [
+      '• 築150年の蔵が室内に組み込まれた古民家を取得',
+      '• 現地撮影→その場でGemini活用によるイメージパース作成',
+      '• 一棟貸し貸別荘として事業化予定',
+      '• 伝統建築×最新AI技術の融合プロジェクト',
+    ],
+    bg: 'linear-gradient(135deg,#7c3aed,#0f172a)',
+  },
+  {
+    id: 's-ai-services',
+    title: 'AI・開発サービス',
+    subtitle: '課題解決×技術開発',
+    lines: [
+      '• 今回のようなAI×建築セミナーの企画・実施',
+      '• 企業向けAI導入支援・業務改善コンサル',
+      '• クライアントとの共同開発プロジェクト',
+      '• 自社業務効率化ソフト・サービスのコード開発',
+    ],
+    bg: 'linear-gradient(135deg,#d97706,#0f172a)',
   },
   {
     id: 's-mindset',
@@ -1512,8 +1573,10 @@ export default function SeminarLanding(): React.ReactElement {
   if (slideMode) {
     const currentSlide = SLIDES[slideIdx] || SLIDES[0];
 
-    // Instagram QRコード表示判定
+    // 右側サイドコンテンツの表示判定
     const showInstagramQR = currentSlide.id === 's-opening';
+    const showImages = ['s-hotel', 's-kura-project'].includes(currentSlide.id);
+    const showSideContent = showInstagramQR || showImages;
 
     return (
       <div className="h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white flex flex-col">
@@ -1533,7 +1596,7 @@ export default function SeminarLanding(): React.ReactElement {
         {/* メインスライドエリア */}
         <div className="flex-1 p-8 flex items-center justify-center">
           <div className="max-w-6xl w-full">
-            <div className={`grid gap-12 ${showInstagramQR ? 'lg:grid-cols-[1fr,300px]' : ''}`}>
+            <div className={`grid gap-12 ${showSideContent ? 'lg:grid-cols-[1fr,400px]' : ''}`}>
               {/* メインコンテンツ */}
               <div className="text-center space-y-8">
                 {currentSlide.subtitle && (
@@ -1573,26 +1636,77 @@ export default function SeminarLanding(): React.ReactElement {
                 </div>
               </div>
 
-              {/* Instagram QRコード */}
-              {showInstagramQR && (
+              {/* サイドコンテンツ */}
+              {showSideContent && (
                 <div className="flex flex-col items-center justify-center space-y-4">
-                  <div className="bg-white p-6 rounded-xl shadow-lg">
-                    <div className="text-center mb-4">
-                      <div className="text-slate-800 font-semibold text-sm">Instagram</div>
-                      <div className="text-slate-600 text-xs">@sena_archisoft</div>
-                    </div>
-                    {/* QRコードプレースホルダー - 実際のQRコードに置き換え */}
-                    <div className="w-48 h-48 bg-slate-100 border-2 border-slate-300 flex items-center justify-center rounded-lg">
-                      <div className="text-center text-slate-500 text-xs">
-                        <div className="mb-2">📱 QRコード</div>
-                        <div>Instagram</div>
-                        <div>@sena_archisoft</div>
+                  {/* Instagram QRコード */}
+                  {showInstagramQR && (
+                    <>
+                      <div className="bg-white p-6 rounded-xl shadow-lg">
+                        <div className="text-center mb-4">
+                          <div className="text-slate-800 font-semibold text-sm">Instagram</div>
+                          <div className="text-slate-600 text-xs">@sena_archisoft</div>
+                        </div>
+                        {/* QRコードプレースホルダー - 実際のQRコードに置き換え */}
+                        <div className="w-48 h-48 bg-slate-100 border-2 border-slate-300 flex items-center justify-center rounded-lg">
+                          <div className="text-center text-slate-500 text-xs">
+                            <div className="mb-2">📱 QRコード</div>
+                            <div>Instagram</div>
+                            <div>@sena_archisoft</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-sm opacity-70 text-center">
+                        スマートフォンで<br/>スキャンしてください
+                      </div>
+                    </>
+                  )}
+
+                  {/* プロジェクト画像 */}
+                  {showImages && currentSlide.id === 's-kura-project' && (
+                    <div className="space-y-4">
+                      <div className="text-center text-cyan-400 font-semibold text-sm mb-4">
+                        Before → After（AI生成）
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="text-center">
+                          <img
+                            src="./images/蔵サウナ写真/kura1 before.JPG"
+                            alt="蔵 Before"
+                            className="w-full h-32 object-cover rounded-lg border border-white/20"
+                          />
+                          <div className="text-xs text-white/70 mt-1">Before</div>
+                        </div>
+                        <div className="text-center">
+                          <img
+                            src="./images/蔵サウナ写真/kura1 after.png"
+                            alt="蔵 After AI生成"
+                            className="w-full h-32 object-cover rounded-lg border border-cyan-400/50"
+                          />
+                          <div className="text-xs text-cyan-400 mt-1">AI生成</div>
+                        </div>
+                        <div className="text-center">
+                          <img
+                            src="./images/蔵サウナ写真/kura2 before.JPG"
+                            alt="蔵内部 Before"
+                            className="w-full h-32 object-cover rounded-lg border border-white/20"
+                          />
+                          <div className="text-xs text-white/70 mt-1">蔵内部</div>
+                        </div>
+                        <div className="text-center">
+                          <img
+                            src="./images/蔵サウナ写真/kura2 after.png"
+                            alt="蔵内部 After AI生成"
+                            className="w-full h-32 object-cover rounded-lg border border-cyan-400/50"
+                          />
+                          <div className="text-xs text-cyan-400 mt-1">改修案</div>
+                        </div>
+                      </div>
+                      <div className="text-xs opacity-70 text-center mt-2">
+                        現地で撮影→Gemini即座に生成
                       </div>
                     </div>
-                  </div>
-                  <div className="text-sm opacity-70 text-center">
-                    スマートフォンで<br/>スキャンしてください
-                  </div>
+                  )}
                 </div>
               )}
             </div>
