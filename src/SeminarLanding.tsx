@@ -745,9 +745,9 @@ const SLIDES: Slide[] = [
     title: 'オープニング',
     lines: [
       '• 講師: 櫻本 聖成（一級建築士事務所　Archi-Prisma Design works 株式会社　代表取締役）',
-      '• AIで建築業界を変える archisoft株式会社　代表取締役',
-      '• Archicad　正規販売代理店　Youtube "archisoft"',
-      '• Instagram: @sena_archisoft',
+      '• "AI発信の理念" archisoft株式会社　代表取締役',
+      '• Archicad正規販売代理店・YouTube「archisoft」運営',
+      '• Instagram: @sena_archisoft（QRコード右側に表示）',
     ],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
   },
@@ -1512,6 +1512,9 @@ export default function SeminarLanding(): React.ReactElement {
   if (slideMode) {
     const currentSlide = SLIDES[slideIdx] || SLIDES[0];
 
+    // Instagram QRコード表示判定
+    const showInstagramQR = currentSlide.id === 's-opening';
+
     return (
       <div className="h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white flex flex-col">
         {/* スライドヘッダー */}
@@ -1530,42 +1533,68 @@ export default function SeminarLanding(): React.ReactElement {
         {/* メインスライドエリア */}
         <div className="flex-1 p-8 flex items-center justify-center">
           <div className="max-w-6xl w-full">
-            <div className="text-center space-y-8">
-              {currentSlide.subtitle && (
-                <div className="text-cyan-400 text-lg uppercase tracking-[0.3em] font-semibold">
-                  {currentSlide.subtitle}
-                </div>
-              )}
-              <h1 className="text-6xl font-bold leading-tight">
-                {currentSlide.title}
-              </h1>
+            <div className={`grid gap-12 ${showInstagramQR ? 'lg:grid-cols-[1fr,300px]' : ''}`}>
+              {/* メインコンテンツ */}
+              <div className="text-center space-y-8">
+                {currentSlide.subtitle && (
+                  <div className="text-cyan-400 text-lg uppercase tracking-[0.3em] font-semibold">
+                    {currentSlide.subtitle}
+                  </div>
+                )}
+                <h1 className="text-6xl font-bold leading-tight">
+                  {currentSlide.title}
+                </h1>
 
-              {currentSlide.lines && (
-                <div className="max-w-4xl mx-auto">
-                  <ul className="space-y-6 text-xl text-left">
-                    {currentSlide.lines.map((line, idx) => (
-                      <li key={idx} className="flex items-start gap-4">
-                        <div className="mt-3 w-2 h-2 bg-cyan-400 rounded-full flex-shrink-0" />
-                        <span className="leading-relaxed">{line}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
+                {currentSlide.lines && (
+                  <div className="max-w-4xl mx-auto">
+                    <ul className="space-y-6 text-xl text-left">
+                      {currentSlide.lines.map((line, idx) => (
+                        <li key={idx} className="flex items-start gap-4">
+                          <div className="mt-3 w-2 h-2 bg-cyan-400 rounded-full flex-shrink-0" />
+                          <span className="leading-relaxed">{line}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
-              {/* プログレス表示 */}
-              <div className="max-w-2xl mx-auto bg-black/20 rounded-xl p-6 mt-12">
-                <div className="text-sm opacity-70 mb-3">進行状況</div>
-                <div className="w-full bg-white/20 rounded-full h-3">
-                  <div
-                    className="bg-cyan-400 h-3 rounded-full transition-all duration-500"
-                    style={{ width: `${((slideIdx + 1) / SLIDES.length) * 100}%` }}
-                  />
-                </div>
-                <div className="text-sm opacity-60 mt-3">
-                  {Math.round(((slideIdx + 1) / SLIDES.length) * 100)}% 完了 • {currentSlide.id}
+                {/* プログレス表示 */}
+                <div className="max-w-2xl mx-auto bg-black/20 rounded-xl p-6 mt-12">
+                  <div className="text-sm opacity-70 mb-3">進行状況</div>
+                  <div className="w-full bg-white/20 rounded-full h-3">
+                    <div
+                      className="bg-cyan-400 h-3 rounded-full transition-all duration-500"
+                      style={{ width: `${((slideIdx + 1) / SLIDES.length) * 100}%` }}
+                    />
+                  </div>
+                  <div className="text-sm opacity-60 mt-3">
+                    {Math.round(((slideIdx + 1) / SLIDES.length) * 100)}% 完了 • {currentSlide.id}
+                  </div>
                 </div>
               </div>
+
+              {/* Instagram QRコード */}
+              {showInstagramQR && (
+                <div className="flex flex-col items-center justify-center space-y-4">
+                  <div className="bg-white p-6 rounded-xl shadow-lg">
+                    <div className="text-center mb-4">
+                      <div className="text-slate-800 font-semibold text-sm">Instagram</div>
+                      <div className="text-slate-600 text-xs">@sena_archisoft</div>
+                    </div>
+                    {/* QRコードプレースホルダー - 実際のQRコードに置き換え */}
+                    <div className="w-48 h-48 bg-slate-100 border-2 border-slate-300 flex items-center justify-center rounded-lg">
+                      <div className="text-center text-slate-500 text-xs">
+                        <div className="mb-2">📱 QRコード</div>
+                        <div>Instagram</div>
+                        <div>@sena_archisoft</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-sm opacity-70 text-center">
+                    スマートフォンで<br/>スキャンしてください
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
