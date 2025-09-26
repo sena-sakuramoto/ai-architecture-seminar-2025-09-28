@@ -11,16 +11,50 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
  *  - 依存ゼロ維持、既存のテスト/ID/モード（Slide/Notes/HUD）互換
  ************************************/
 
-// ===== Brand Tokens: PRO-FRIENDLY =====
-const brand = {
-  colors: {
-    primary: '#111827',
-    accent: '#06B6D4',
-    accentWarn: '#F59E0B',
-    neutral: '#6B7280',
-    bg: '#FFFFFF',
-    card: 'rgba(17,24,39,0.04)',
+// ===== Semantic Color System =====
+const semanticColors = {
+  // Primary: Architecture & Foundation
+  architecture: {
+    primary: '#1e3a8a',      // Deep blue - trust, stability
+    light: '#dbeafe',        // Light blue background
+    accent: '#3b82f6',       // Blue accent
   },
+  // Secondary: AI & Technology
+  technology: {
+    primary: '#059669',      // Green - innovation, growth
+    light: '#d1fae5',        // Light green background
+    accent: '#10b981',       // Green accent
+  },
+  // Success & Results
+  success: {
+    primary: '#dc2626',      // Red - energy, results
+    light: '#fecaca',        // Light red background
+    accent: '#ef4444',       // Red accent
+  },
+  // Warning & Attention
+  warning: {
+    primary: '#d97706',      // Amber - caution, important
+    light: '#fed7aa',        // Light amber background
+    accent: '#f59e0b',       // Amber accent
+  },
+  // Process & Workflow
+  process: {
+    primary: '#7c3aed',      // Purple - process, methodology
+    light: '#e9d5ff',        // Light purple background
+    accent: '#8b5cf6',       // Purple accent
+  },
+  // Neutral & Text
+  neutral: {
+    900: '#111827',
+    700: '#374151',
+    500: '#6b7280',
+    300: '#d1d5db',
+    100: '#f3f4f6',
+  }
+} as const;
+
+const brand = {
+  colors: semanticColors,
   radius: 10,
   shadow: '0 6px 24px rgba(0,0,0,0.06)',
 } as const;
@@ -146,20 +180,108 @@ const TimelineItem: React.FC<{ time: string; title: string; description: string;
   </div>
 );
 
-const StatCard: React.FC<{ icon: string; value: string; label: string; trend?: string }> = ({
-  icon, value, label, trend
-}) => (
-  <div className="bg-white rounded-lg p-4 border border-slate-200">
-    <div className="flex items-center gap-3">
-      <div className="text-2xl">{icon}</div>
-      <div className="flex-1">
-        <div className="text-2xl font-bold text-slate-900">{value}</div>
-        <div className="text-sm text-slate-500">{label}</div>
-        {trend && <div className="text-xs text-green-600 font-semibold">{trend}</div>}
+const StatCard: React.FC<{
+  category: Exclude<keyof typeof semanticColors, 'neutral'>;
+  value: string;
+  label: string;
+  trend?: string;
+  indicator?: string;
+}> = ({ category, value, label, trend, indicator }) => {
+  const colors = semanticColors[category];
+  return (
+    <div className="bg-white rounded-lg p-4 border" style={{ borderColor: colors.accent }}>
+      <div className="flex items-center gap-3">
+        {indicator && (
+          <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold"
+               style={{ backgroundColor: colors.primary }}>
+            {indicator}
+          </div>
+        )}
+        <div className="flex-1">
+          <div className="text-2xl font-bold" style={{ color: colors.primary }}>{value}</div>
+          <div className="text-sm" style={{ color: semanticColors.neutral[500] }}>{label}</div>
+          {trend && <div className="text-xs font-semibold" style={{ color: colors.accent }}>{trend}</div>}
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
+
+const DataTable: React.FC<{
+  headers: string[];
+  rows: string[][];
+  colorScheme: Exclude<keyof typeof semanticColors, 'neutral'>;
+}> = ({ headers, rows, colorScheme }) => {
+  const colors = semanticColors[colorScheme];
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm">
+        <thead>
+          <tr style={{ backgroundColor: colors.light }}>
+            {headers.map((header, idx) => (
+              <th key={idx} className="text-left p-3 font-semibold" style={{ color: colors.primary }}>
+                {header}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, rowIdx) => (
+            <tr key={rowIdx} className="border-b" style={{ borderColor: colors.light }}>
+              {row.map((cell, cellIdx) => (
+                <td key={cellIdx} className="p-3" style={{ color: semanticColors.neutral[700] }}>
+                  {cell}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+const BarChart: React.FC<{
+  data: Array<{ label: string; value: number; target?: number }>;
+  colorScheme: Exclude<keyof typeof semanticColors, 'neutral'>;
+  title: string;
+}> = ({ data, colorScheme, title }) => {
+  const colors = semanticColors[colorScheme];
+  const maxValue = Math.max(...data.map(d => Math.max(d.value, d.target || 0)));
+
+  return (
+    <div className="space-y-4">
+      <h4 className="font-semibold" style={{ color: colors.primary }}>{title}</h4>
+      <div className="space-y-3">
+        {data.map((item, idx) => (
+          <div key={idx} className="space-y-1">
+            <div className="flex justify-between text-sm">
+              <span style={{ color: semanticColors.neutral[700] }}>{item.label}</span>
+              <span className="font-semibold" style={{ color: colors.primary }}>
+                {item.value}{item.target ? `/${item.target}` : ''}
+              </span>
+            </div>
+            <div className="h-3 rounded-full" style={{ backgroundColor: colors.light }}>
+              <div
+                className="h-full rounded-full transition-all duration-500"
+                style={{
+                  backgroundColor: colors.accent,
+                  width: `${(item.value / maxValue) * 100}%`
+                }}
+              />
+              {item.target && (
+                <div
+                  className="h-1 w-1 bg-red-500 rounded-full transform -translate-y-2"
+                  style={{ marginLeft: `${(item.target / maxValue) * 100}%` }}
+                />
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 
 // ========= Data =========
@@ -359,99 +481,148 @@ const CHAPTER_SECTIONS: Array<{
 
 const chapterVisuals: Record<string, React.ReactNode> = {
   'ch-01': (
-    <div className="rounded-lg border border-slate-200 bg-white p-4 text-xs text-slate-600">
-      <div className="text-[11px] font-semibold text-slate-900 uppercase tracking-[0.3em]">Agenda Snapshot</div>
-      <div className="mt-3 space-y-2">
-        <div className="flex items-center justify-between rounded-md bg-slate-50 px-3 py-2">
-          <span>00-10分</span><span>チェックイン・MVV共有</span>
-        </div>
-        <div className="flex items-center justify-between rounded-md bg-slate-50 px-3 py-2">
-          <span>10-25分</span><span>期待値調整と進行説明</span>
-        </div>
-        <div className="flex items-center justify-between rounded-md bg-slate-50 px-3 py-2">
-          <span>25-40分</span><span>デモ導線予告＆QA</span>
-        </div>
-      </div>
-    </div>
+    <DataTable
+      colorScheme="architecture"
+      headers={["時間", "内容", "目的"]}
+      rows={[
+        ["0-10分", "チェックイン・MVV共有", "参加者との関係構築"],
+        ["10-25分", "期待値調整と進行説明", "共通理解の形成"],
+        ["25-40分", "デモ導線予告・Q&A", "学習準備の完了"]
+      ]}
+    />
   ),
   'ch-02': (
-    <div className="rounded-lg border border-slate-200 bg-white p-4 text-xs text-slate-600">
-      <div className="text-[11px] font-semibold text-slate-900 uppercase tracking-[0.3em]">LLMリスクマトリクス</div>
-      <div className="mt-3 grid grid-cols-3 gap-2 text-center">
-        <div className="rounded-md bg-cyan-50 px-2 py-2">
-          <div className="text-[10px] text-cyan-800">幻覚</div>
-          <div className="mt-1 text-[11px] text-slate-600">構造化プロンプト＋検証</div>
-        </div>
-        <div className="rounded-md bg-amber-50 px-2 py-2">
-          <div className="text-[10px] text-amber-800">最新性</div>
-          <div className="mt-1 text-[11px] text-slate-600">更新頻度とソース管理</div>
-        </div>
-        <div className="rounded-md bg-rose-50 px-2 py-2">
-          <div className="text-[10px] text-rose-800">秘匿性</div>
-          <div className="mt-1 text-[11px] text-slate-600">承認フローとマスキング</div>
-        </div>
-      </div>
-    </div>
+    <DataTable
+      colorScheme="warning"
+      headers={["リスク", "対策", "重要度"]}
+      rows={[
+        ["幻覚", "構造化プロンプト＋検証", "HIGH"],
+        ["最新性", "更新頻度とソース管理", "MID"],
+        ["秘匿性", "承認フローとマスキング", "HIGH"]
+      ]}
+    />
   ),
   'ch-05': (
-    <div className="rounded-lg border border-slate-200 bg-white p-4 text-xs text-slate-600">
-      <div className="text-[11px] font-semibold text-slate-900 uppercase tracking-[0.3em]">評価指標サンプル</div>
-      <table className="mt-3 w-full text-left text-[11px]">
-        <thead className="text-slate-500">
-          <tr><th className="py-1">項目</th><th className="py-1">指標</th><th className="py-1">目標</th></tr>
-        </thead>
-        <tbody className="text-slate-600">
-          <tr className="border-t"><td className="py-1">誤検出率</td><td className="py-1">False Positive</td><td className="py-1">≦5%</td></tr>
-          <tr className="border-t"><td className="py-1">未検出率</td><td className="py-1">False Negative</td><td className="py-1">≦3%</td></tr>
-          <tr className="border-t"><td className="py-1">調査時間</td><td className="py-1">1案件あたり</td><td className="py-1">-40%</td></tr>
-        </tbody>
-      </table>
-    </div>
+    <DataTable
+      colorScheme="success"
+      headers={["項目", "指標", "目標"]}
+      rows={[
+        ["誤検出率", "False Positive", "≦5%"],
+        ["未検出率", "False Negative", "≦3%"],
+        ["調査時間", "1案件あたり", "-40%"]
+      ]}
+    />
   ),
   'ch-08': (
-    <div className="rounded-lg border border-slate-200 bg-white p-4 text-xs text-slate-600">
-      <div className="text-[11px] font-semibold text-slate-900 uppercase tracking-[0.3em]">LPワイヤーフレーム</div>
-      <div className="mt-3 grid grid-cols-3 gap-2">
-        <div className="col-span-3 rounded-md border border-slate-200 bg-slate-50 py-2 text-center text-[11px]">ヒーロー：キャッチ／ビジュアル／CTA</div>
-        <div className="col-span-2 rounded-md border border-slate-200 bg-slate-50 py-2 text-center text-[11px]">課題と解決策</div>
-        <div className="rounded-md border border-slate-200 bg-slate-50 py-2 text-center text-[11px]">証拠</div>
-        <div className="col-span-3 rounded-md border border-slate-200 bg-slate-50 py-2 text-center text-[11px]">CTA＋配布導線</div>
-      </div>
-    </div>
+    <DataTable
+      colorScheme="technology"
+      headers={["セクション", "内容", "優先度"]}
+      rows={[
+        ["ヒーロー", "キャッチ／ビジュアル／CTA", "HIGH"],
+        ["課題", "課題と解決策", "HIGH"],
+        ["証拠", "実績・事例", "MID"],
+        ["CTA", "CTA＋配布導線", "HIGH"]
+      ]}
+    />
   ),
   'ch-12': (
-    <div className="rounded-lg border border-slate-200 bg-white p-4 text-xs text-slate-600">
-      <div className="text-[11px] font-semibold text-slate-900 uppercase tracking-[0.3em]">ツール使い分けマップ</div>
-      <div className="mt-3 grid grid-cols-2 gap-2">
-        <div className="rounded-md bg-cyan-50 p-3">
-          <div className="text-[11px] font-semibold text-cyan-800">GPT</div>
-          <ul className="mt-2 space-y-1 list-disc list-inside">
-            <li>シーン設定・構図指示</li>
-            <li>素材差し替え</li>
-            <li>シリーズ生成</li>
-          </ul>
-        </div>
-        <div className="rounded-md bg-amber-50 p-3">
-          <div className="text-[11px] font-semibold text-amber-800">Gemini</div>
-          <ul className="mt-2 space-y-1 list-disc list-inside">
-            <li>写実表現・温度調整</li>
-            <li>部分リタッチ</li>
-            <li>海外素材の補完</li>
-          </ul>
-        </div>
-      </div>
-    </div>
+    <DataTable
+      colorScheme="technology"
+      headers={["ツール", "用途", "得意分野"]}
+      rows={[
+        ["GPT", "シーン設定・構図指示", "コンセプト生成"],
+        ["GPT", "素材差し替え", "バリエーション作成"],
+        ["GPT", "シリーズ生成", "一貫性保持"],
+        ["Gemini", "写実表現・温度調整", "リアリスティック"],
+        ["Gemini", "部分リタッチ", "細部調整"],
+        ["Gemini", "海外素材の補完", "国際対応"]
+      ]}
+    />
   ),
   'ch-16': (
-    <div className="rounded-lg border border-slate-200 bg-white p-4 text-xs text-slate-600">
-      <div className="text-[11px] font-semibold text-slate-900 uppercase tracking-[0.3em]">配布物リスト</div>
-      <div className="mt-3 grid grid-cols-2 gap-2">
-        <div className="rounded-md bg-slate-50 p-3">テンプレート 15本</div>
-        <div className="rounded-md bg-slate-50 p-3">チェックリスト 8本</div>
-        <div className="rounded-md bg-slate-50 p-3">プロンプト集 70種</div>
-        <div className="rounded-md bg-slate-50 p-3">GAS雛形 3本</div>
-      </div>
-    </div>
+    <DataTable
+      colorScheme="success"
+      headers={["配布物", "数量", "形式"]}
+      rows={[
+        ["テンプレート", "15本", "PDF/DOCX"],
+        ["チェックリスト", "8本", "PDF/XLSX"],
+        ["プロンプト集", "70種", "YAML/MD"],
+        ["GAS雛形", "3本", "GS/JS"]
+      ]}
+    />
+  ),
+  'ch-03': (
+    <DataTable
+      colorScheme="architecture"
+      headers={["用途", "プロンプト例", "効果"]}
+      rows={[
+        ["雛形作成", "議事録/提案要旨/RFI/メール", "80%時短"],
+        ["WBS作成", "要件→WBS→見積ブレイクダウン", "構造化"],
+        ["図解化", "口述→図解/整形（テンプレ差し込み）", "視覚化"]
+      ]}
+    />
+  ),
+  'ch-04': (
+    <DataTable
+      colorScheme="technology"
+      headers={["ツール", "用途", "選定基準"]}
+      rows={[
+        ["GPT", "文書作成", "骨子/整形/台本"],
+        ["Deep", "リサーチ", "根拠収集と対立整理"],
+        ["GPT", "画像（構図）", "コンセプト重視"],
+        ["Gemini", "画像（写実）", "リアリスティック"],
+        ["GAS", "自動化", "メール→タスク→日程"]
+      ]}
+    />
+  ),
+  'ch-06': (
+    <DataTable
+      colorScheme="process"
+      headers={["プロンプトパターン", "例", "効果"]}
+      rows={[
+        ["構造化して", "YAML形式で整理", "可読性向上"],
+        ["yamlでまとめて", "データ構造化", "再利用性"],
+        ["表形式で", "テーブル出力", "視覚的理解"],
+        ["抽象化→具体化", "概念→実装", "段階的詳細化"],
+        ["制約付きで", "条件指定", "精度向上"],
+        ["検証して", "妥当性確認", "品質保証"]
+      ]}
+    />
+  ),
+  'ch-09': (
+    <DataTable
+      colorScheme="success"
+      headers={["フェーズ", "AI活用", "成果物"]}
+      rows={[
+        ["現調", "音声→議事録", "構造化議事録"],
+        ["要点抽出", "要点→表形式", "提案骨子"],
+        ["提案作成", "テンプレ適用", "提案資料"]
+      ]}
+    />
+  ),
+  'ch-10': (
+    <DataTable
+      colorScheme="warning"
+      headers={["ステップ", "処理内容", "所要時間"]}
+      rows={[
+        ["アップロード", "A/B図面投入", "30秒"],
+        ["差分抽出", "自動解析", "3分"],
+        ["結果確認", "ハイライト表示", "1分"],
+        ["レポート作成", "PDF生成", "1分"]
+      ]}
+    />
+  ),
+  'ch-11': (
+    <DataTable
+      colorScheme="architecture"
+      headers={["項目", "入力", "出力"]}
+      rows={[
+        ["建物情報", "用途・規模・構造", "基準値計算"],
+        ["設備効率", "空調・照明・給湯", "エネルギー消費量"],
+        ["外皮性能", "UA値・ηAC値", "建物性能評価"],
+        ["判定結果", "BEI計算", "適合/不適合"]
+      ]}
+    />
   ),
 };
 
@@ -605,34 +776,34 @@ const SLIDES: Slide[] = [
     id: 's-need',
     title: '今なぜAI×建築か',
     lines: [
-      '📈 建築DXの要望増 (前年比+42%)',
-      '🔄 現場ナレッジ共有の分断を解消',
-      '🎯 審査で求められる透明性・説明責任',
-      '⚡ 競合との差別化要因として必須',
+      '• 建築DXの要望増 (前年比+42%)',
+      '• 現場ナレッジ共有の分断を解消',
+      '• 審査で求められる透明性・説明責任',
+      '• 競合との差別化要因として必須',
     ],
-    bg: 'linear-gradient(135deg,#1e293b,#475569)',
+    bg: `linear-gradient(135deg,${semanticColors.architecture.primary},${semanticColors.neutral[900]})`,
   },
   {
     id: 's-stats',
     title: 'AI活用の実績データ',
     lines: [
-      '⏱️ 作業時間 65%短縮（議事録作成）',
-      '🎯 精度向上 89%（図面差分検出）',
-      '💰 コスト削減 45%（提案書作成）',
-      '📊 満足度 92%（クライアント評価）',
+      '• 作業時間 65%短縮（議事録作成）',
+      '• 精度向上 89%（図面差分検出）',
+      '• コスト削減 45%（提案書作成）',
+      '• 満足度 92%（クライアント評価）',
     ],
-    bg: 'linear-gradient(135deg,#10b981,#0f172a)',
+    bg: `linear-gradient(135deg,${semanticColors.success.primary},${semanticColors.neutral[900]})`,
   },
   {
     id: 's-goals',
     title: '今日のゴール',
     lines: [
-      '🎯 共通言語: AI導入の判断軸を揃える',
-      '⚡ 体験: 現調→提案→自動化ワークを一気通貫',
-      '🚀 即実装: 配布資料で社内展開を開始',
-      '📈 KPI設定: 効果測定可能な指標を設計',
+      '• 共通言語: AI導入の判断軸を揃える',
+      '• 体験: 現調→提案→自動化ワークを一気通貫',
+      '• 即実装: 配布資料で社内展開を開始',
+      '• KPI設定: 効果測定可能な指標を設計',
     ],
-    bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
+    bg: `linear-gradient(135deg,${semanticColors.technology.primary},${semanticColors.neutral[900]})`,
   },
   {
     id: 's-agenda',
@@ -1380,31 +1551,49 @@ export default function SeminarLanding(): React.ReactElement {
             </div>
 
             {/* Quick Stats */}
-            <Card className="p-6 border border-slate-200 bg-gradient-to-r from-cyan-50 to-blue-50">
+            <Card className="p-6 border border-slate-200" style={{ backgroundColor: semanticColors.neutral[100] }}>
               <div className="grid md:grid-cols-4 gap-4 text-center">
                 <div className="space-y-1">
-                  <div className="text-2xl font-bold text-cyan-600">65%</div>
-                  <div className="text-xs text-slate-500">作業時間短縮</div>
+                  <div className="text-2xl font-bold" style={{ color: semanticColors.success.primary }}>65%</div>
+                  <div className="text-xs" style={{ color: semanticColors.neutral[500] }}>作業時間短縮</div>
                 </div>
                 <div className="space-y-1">
-                  <div className="text-2xl font-bold text-green-600">89%</div>
-                  <div className="text-xs text-slate-500">精度向上</div>
+                  <div className="text-2xl font-bold" style={{ color: semanticColors.technology.primary }}>89%</div>
+                  <div className="text-xs" style={{ color: semanticColors.neutral[500] }}>精度向上</div>
                 </div>
                 <div className="space-y-1">
-                  <div className="text-2xl font-bold text-orange-600">45%</div>
-                  <div className="text-xs text-slate-500">コスト削減</div>
+                  <div className="text-2xl font-bold" style={{ color: semanticColors.warning.primary }}>45%</div>
+                  <div className="text-xs" style={{ color: semanticColors.neutral[500] }}>コスト削減</div>
                 </div>
                 <div className="space-y-1">
-                  <div className="text-2xl font-bold text-purple-600">92%</div>
-                  <div className="text-xs text-slate-500">満足度</div>
+                  <div className="text-2xl font-bold" style={{ color: semanticColors.process.primary }}>92%</div>
+                  <div className="text-xs" style={{ color: semanticColors.neutral[500] }}>満足度</div>
                 </div>
               </div>
             </Card>
 
             <div className="flex flex-wrap gap-4">
-              <a href="#program" className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 px-6 py-3 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-shadow">📊 プログラムを見る<span aria-hidden>›</span></a>
-              <a href="#chapters" className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 hover:border-cyan-200 hover:text-cyan-600 hover:shadow-md transition-all">📋 チャプター一覧<span aria-hidden>›</span></a>
-              <a href="#resources" className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 hover:border-cyan-200 hover:text-cyan-600 hover:shadow-md transition-all">🎁 配布案内<span aria-hidden>›</span></a>
+              <a href="#program"
+                 className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-white shadow-lg hover:shadow-xl transition-shadow"
+                 style={{ backgroundColor: semanticColors.architecture.primary }}>
+                プログラムを見る<span aria-hidden>›</span>
+              </a>
+              <a href="#chapters"
+                 className="inline-flex items-center gap-2 rounded-full border bg-white px-6 py-3 text-sm font-semibold hover:shadow-md transition-all"
+                 style={{
+                   borderColor: semanticColors.technology.accent,
+                   color: semanticColors.technology.primary
+                 }}>
+                チャプター一覧<span aria-hidden>›</span>
+              </a>
+              <a href="#resources"
+                 className="inline-flex items-center gap-2 rounded-full border bg-white px-6 py-3 text-sm font-semibold hover:shadow-md transition-all"
+                 style={{
+                   borderColor: semanticColors.success.accent,
+                   color: semanticColors.success.primary
+                 }}>
+                配布案内<span aria-hidden>›</span>
+              </a>
             </div>
           </div>
 
@@ -1480,39 +1669,39 @@ export default function SeminarLanding(): React.ReactElement {
           </div>
 
           {/* Statistics Dashboard */}
-          <Card className="p-8 border border-slate-200 bg-gradient-to-r from-slate-50 to-white">
+          <Card className="p-8 border border-slate-200" style={{ backgroundColor: semanticColors.neutral[100] }}>
             <div className="grid md:grid-cols-4 gap-6">
-              <StatCard icon="⏱️" value="180" label="分の集中学習" trend="+効率性重視" />
-              <StatCard icon="🎯" value="5" label="実務デモ" trend="即実装可能" />
-              <StatCard icon="📊" value="90%" label="満足度目標" trend="過去実績ベース" />
-              <StatCard icon="🚀" value="30" label="日後フォロー" trend="定着サポート" />
+              <StatCard category="architecture" value="180" label="分の集中学習" trend="効率性重視" indicator="T" />
+              <StatCard category="technology" value="5" label="実務デモ" trend="即実装可能" indicator="D" />
+              <StatCard category="success" value="90%" label="満足度目標" trend="過去実績ベース" indicator="S" />
+              <StatCard category="process" value="30" label="日後フォロー" trend="定着サポート" indicator="F" />
             </div>
           </Card>
 
           {/* Progress Visualization */}
           <Card className="p-8 border border-slate-200 bg-white">
             <div className="space-y-6">
-              <h3 className="text-xl font-semibold text-slate-900 text-center">学習進捗の可視化</h3>
+              <h3 className="text-xl font-semibold text-center" style={{ color: semanticColors.neutral[900] }}>学習進捗の可視化</h3>
               <div className="grid md:grid-cols-3 gap-8">
                 <div className="text-center space-y-4">
-                  <CircularProgress percentage={85} color="#06b6d4" />
+                  <CircularProgress percentage={85} color={semanticColors.architecture.primary} />
                   <div>
-                    <div className="font-semibold text-slate-900">理解度</div>
-                    <div className="text-sm text-slate-500">基礎から実践まで</div>
+                    <div className="font-semibold" style={{ color: semanticColors.architecture.primary }}>理解度</div>
+                    <div className="text-sm" style={{ color: semanticColors.neutral[500] }}>基礎から実践まで</div>
                   </div>
                 </div>
                 <div className="text-center space-y-4">
-                  <CircularProgress percentage={75} color="#10b981" />
+                  <CircularProgress percentage={75} color={semanticColors.technology.primary} />
                   <div>
-                    <div className="font-semibold text-slate-900">実装率</div>
-                    <div className="text-sm text-slate-500">即座に適用可能</div>
+                    <div className="font-semibold" style={{ color: semanticColors.technology.primary }}>実装率</div>
+                    <div className="text-sm" style={{ color: semanticColors.neutral[500] }}>即座に適用可能</div>
                   </div>
                 </div>
                 <div className="text-center space-y-4">
-                  <CircularProgress percentage={95} color="#f59e0b" />
+                  <CircularProgress percentage={95} color={semanticColors.success.primary} />
                   <div>
-                    <div className="font-semibold text-slate-900">満足度</div>
-                    <div className="text-sm text-slate-500">参加者評価</div>
+                    <div className="font-semibold" style={{ color: semanticColors.success.primary }}>満足度</div>
+                    <div className="text-sm" style={{ color: semanticColors.neutral[500] }}>参加者評価</div>
                   </div>
                 </div>
               </div>
@@ -1526,29 +1715,50 @@ export default function SeminarLanding(): React.ReactElement {
             {/* Phase 1 */}
             <div className="relative mb-12">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-r from-cyan-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold">1</div>
+                <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold"
+                     style={{ backgroundColor: semanticColors.architecture.primary }}>1</div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="bg-cyan-100 text-cyan-800 text-xs font-semibold px-2.5 py-0.5 rounded">Phase 1</span>
-                    <span className="text-sm text-slate-500">0-70分（70分間）</span>
+                    <span className="text-xs font-semibold px-2.5 py-0.5 rounded"
+                          style={{ backgroundColor: semanticColors.architecture.light, color: semanticColors.architecture.primary }}>
+                      Phase 1: 基礎構築
+                    </span>
+                    <span className="text-sm" style={{ color: semanticColors.neutral[500] }}>0-70分（70分間）</span>
                   </div>
-                  <h4 className="text-lg font-semibold text-slate-900">基礎と安全運用の型を固める</h4>
+                  <h4 className="text-lg font-semibold" style={{ color: semanticColors.architecture.primary }}>
+                    基礎と安全運用の型を固める
+                  </h4>
                 </div>
                 <ProgressBar progress={100} className="w-24" />
               </div>
 
               <div className="ml-16 grid md:grid-cols-3 gap-4">
-                <div className="bg-gradient-to-br from-cyan-50 to-blue-50 border border-cyan-200 rounded-lg p-4">
-                  <div className="text-xs font-semibold text-cyan-800 mb-2">📚 学習内容</div>
-                  <p className="text-sm text-slate-700 leading-5">AI/LLMの原理・建築での適用範囲・ガイドライン設計・NotebookLM活用</p>
+                <div className="rounded-lg p-4 border"
+                     style={{ backgroundColor: semanticColors.architecture.light, borderColor: semanticColors.architecture.accent }}>
+                  <div className="text-xs font-semibold mb-2" style={{ color: semanticColors.architecture.primary }}>
+                    LEARN: 学習内容
+                  </div>
+                  <p className="text-sm leading-5" style={{ color: semanticColors.neutral[700] }}>
+                    AI/LLMの原理・建築での適用範囲・ガイドライン設計・NotebookLM活用
+                  </p>
                 </div>
-                <div className="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-lg p-4">
-                  <div className="text-xs font-semibold text-green-800 mb-2">🎯 成果物</div>
-                  <p className="text-sm text-slate-700 leading-5">安全運用チェックシート・社内説明用スライド骨子</p>
+                <div className="rounded-lg p-4 border"
+                     style={{ backgroundColor: semanticColors.technology.light, borderColor: semanticColors.technology.accent }}>
+                  <div className="text-xs font-semibold mb-2" style={{ color: semanticColors.technology.primary }}>
+                    OUTPUT: 成果物
+                  </div>
+                  <p className="text-sm leading-5" style={{ color: semanticColors.neutral[700] }}>
+                    安全運用チェックシート・社内説明用スライド骨子
+                  </p>
                 </div>
-                <div className="bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200 rounded-lg p-4">
-                  <div className="text-xs font-semibold text-amber-800 mb-2">⚡ 重要ポイント</div>
-                  <p className="text-sm text-slate-700 leading-5">匿名化・承認ゲート・社内ポリシー雛形</p>
+                <div className="rounded-lg p-4 border"
+                     style={{ backgroundColor: semanticColors.warning.light, borderColor: semanticColors.warning.accent }}>
+                  <div className="text-xs font-semibold mb-2" style={{ color: semanticColors.warning.primary }}>
+                    KEY: 重要ポイント
+                  </div>
+                  <p className="text-sm leading-5" style={{ color: semanticColors.neutral[700] }}>
+                    匿名化・承認ゲート・社内ポリシー雛形
+                  </p>
                 </div>
               </div>
             </div>
@@ -1556,68 +1766,151 @@ export default function SeminarLanding(): React.ReactElement {
             {/* Phase 2 */}
             <div className="relative mb-12">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center text-white font-bold">2</div>
+                <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold"
+                     style={{ backgroundColor: semanticColors.technology.primary }}>2</div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Phase 2</span>
-                    <span className="text-sm text-slate-500">70-160分（90分間）</span>
+                    <span className="text-xs font-semibold px-2.5 py-0.5 rounded"
+                          style={{ backgroundColor: semanticColors.technology.light, color: semanticColors.technology.primary }}>
+                      Phase 2: 実装体験
+                    </span>
+                    <span className="text-sm" style={{ color: semanticColors.neutral[500] }}>70-160分（90分間）</span>
                   </div>
-                  <h4 className="text-lg font-semibold text-slate-900">現調→提案→自動化を通しで学ぶ</h4>
+                  <h4 className="text-lg font-semibold" style={{ color: semanticColors.technology.primary }}>
+                    現調→提案→自動化を通しで学ぶ
+                  </h4>
                 </div>
                 <ProgressBar progress={90} className="w-24" />
               </div>
 
-              <div className="ml-16 grid md:grid-cols-2 lg:grid-cols-5 gap-4">
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4">
-                  <div className="text-xs font-semibold text-blue-800 mb-2">🏗️ 現調ワーク</div>
-                  <p className="text-sm text-slate-700 leading-5">音声→議事録→提案資料の自動化</p>
+              <div className="ml-16 space-y-6">
+                {/* Tools Overview */}
+                <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4">
+                  <div className="rounded-lg p-4 border"
+                       style={{ backgroundColor: semanticColors.architecture.light, borderColor: semanticColors.architecture.accent }}>
+                    <div className="text-xs font-semibold mb-2" style={{ color: semanticColors.architecture.primary }}>
+                      SURVEY: 現調ワーク
+                    </div>
+                    <p className="text-sm leading-5" style={{ color: semanticColors.neutral[700] }}>
+                      音声→議事録→提案資料の自動化
+                    </p>
+                  </div>
+                  <div className="rounded-lg p-4 border"
+                       style={{ backgroundColor: semanticColors.process.light, borderColor: semanticColors.process.accent }}>
+                    <div className="text-xs font-semibold mb-2" style={{ color: semanticColors.process.primary }}>
+                      DIFF: SpotPDF
+                    </div>
+                    <p className="text-sm leading-5" style={{ color: semanticColors.neutral[700] }}>
+                      図面差分"5分決着"
+                    </p>
+                  </div>
+                  <div className="rounded-lg p-4 border"
+                       style={{ backgroundColor: semanticColors.success.light, borderColor: semanticColors.success.accent }}>
+                    <div className="text-xs font-semibold mb-2" style={{ color: semanticColors.success.primary }}>
+                      CALC: 省エネ計算
+                    </div>
+                    <p className="text-sm leading-5" style={{ color: semanticColors.neutral[700] }}>
+                      モデル建物法の自動化
+                    </p>
+                  </div>
+                  <div className="rounded-lg p-4 border"
+                       style={{ backgroundColor: semanticColors.technology.light, borderColor: semanticColors.technology.accent }}>
+                    <div className="text-xs font-semibold mb-2" style={{ color: semanticColors.technology.primary }}>
+                      CREATE: Canvas LP
+                    </div>
+                    <p className="text-sm leading-5" style={{ color: semanticColors.neutral[700] }}>
+                      HP・資料の即作成
+                    </p>
+                  </div>
+                  <div className="rounded-lg p-4 border"
+                       style={{ backgroundColor: semanticColors.warning.light, borderColor: semanticColors.warning.accent }}>
+                    <div className="text-xs font-semibold mb-2" style={{ color: semanticColors.warning.primary }}>
+                      AUTO: GAS自動化
+                    </div>
+                    <p className="text-sm leading-5" style={{ color: semanticColors.neutral[700] }}>
+                      タスク通知システム
+                    </p>
+                  </div>
                 </div>
-                <div className="bg-gradient-to-br from-purple-50 to-violet-50 border border-purple-200 rounded-lg p-4">
-                  <div className="text-xs font-semibold text-purple-800 mb-2">📄 SpotPDF</div>
-                  <p className="text-sm text-slate-700 leading-5">図面差分"5分決着"</p>
-                </div>
-                <div className="bg-gradient-to-br from-pink-50 to-rose-50 border border-pink-200 rounded-lg p-4">
-                  <div className="text-xs font-semibold text-pink-800 mb-2">⚡ 省エネ計算</div>
-                  <p className="text-sm text-slate-700 leading-5">モデル建物法の自動化</p>
-                </div>
-                <div className="bg-gradient-to-br from-teal-50 to-cyan-50 border border-teal-200 rounded-lg p-4">
-                  <div className="text-xs font-semibold text-teal-800 mb-2">🎨 Canvas LP</div>
-                  <p className="text-sm text-slate-700 leading-5">HP・資料の即作成</p>
-                </div>
-                <div className="bg-gradient-to-br from-orange-50 to-red-50 border border-orange-200 rounded-lg p-4">
-                  <div className="text-xs font-semibold text-orange-800 mb-2">🔧 GAS自動化</div>
-                  <p className="text-sm text-slate-700 leading-5">タスク通知システム</p>
-                </div>
+
+                {/* Performance Metrics Chart */}
+                <BarChart
+                  title="Phase 2 実装ツール別パフォーマンス"
+                  colorScheme="technology"
+                  data={[
+                    { label: "現調→議事録", value: 85, target: 100 },
+                    { label: "図面差分検出", value: 92, target: 100 },
+                    { label: "省エネ計算", value: 78, target: 100 },
+                    { label: "資料作成", value: 88, target: 100 },
+                    { label: "通知自動化", value: 95, target: 100 }
+                  ]}
+                />
               </div>
             </div>
 
             {/* Phase 3 */}
             <div className="relative">
               <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full flex items-center justify-center text-white font-bold">3</div>
+                <div className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold"
+                     style={{ backgroundColor: semanticColors.success.primary }}>3</div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="bg-amber-100 text-amber-800 text-xs font-semibold px-2.5 py-0.5 rounded">Phase 3</span>
-                    <span className="text-sm text-slate-500">160-170分+（10分+無制限Q&A）</span>
+                    <span className="text-xs font-semibold px-2.5 py-0.5 rounded"
+                          style={{ backgroundColor: semanticColors.success.light, color: semanticColors.success.primary }}>
+                      Phase 3: 定着化
+                    </span>
+                    <span className="text-sm" style={{ color: semanticColors.neutral[500] }}>160-170分+（10分+無制限Q&A）</span>
                   </div>
-                  <h4 className="text-lg font-semibold text-slate-900">まとめと今後の実装計画</h4>
+                  <h4 className="text-lg font-semibold" style={{ color: semanticColors.success.primary }}>
+                    まとめと今後の実装計画
+                  </h4>
                 </div>
                 <ProgressBar progress={100} className="w-24" />
               </div>
 
-              <div className="ml-16 grid md:grid-cols-3 gap-4">
-                <div className="bg-gradient-to-br from-amber-50 to-yellow-50 border border-amber-200 rounded-lg p-4">
-                  <div className="text-xs font-semibold text-amber-800 mb-2">📊 KPI設定</div>
-                  <p className="text-sm text-slate-700 leading-5">工数削減・誤検出率・レスポンス速度</p>
+              <div className="ml-16 space-y-6">
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div className="rounded-lg p-4 border"
+                       style={{ backgroundColor: semanticColors.warning.light, borderColor: semanticColors.warning.accent }}>
+                    <div className="text-xs font-semibold mb-2" style={{ color: semanticColors.warning.primary }}>
+                      KPI: 測定指標
+                    </div>
+                    <p className="text-sm leading-5" style={{ color: semanticColors.neutral[700] }}>
+                      工数削減・誤検出率・レスポンス速度
+                    </p>
+                  </div>
+                  <div className="rounded-lg p-4 border"
+                       style={{ backgroundColor: semanticColors.process.light, borderColor: semanticColors.process.accent }}>
+                    <div className="text-xs font-semibold mb-2" style={{ color: semanticColors.process.primary }}>
+                      BEST: ベストプラクティス
+                    </div>
+                    <p className="text-sm leading-5" style={{ color: semanticColors.neutral[700] }}>
+                      10箇条・明日からの実装チェックリスト
+                    </p>
+                  </div>
+                  <div className="rounded-lg p-4 border"
+                       style={{ backgroundColor: semanticColors.success.light, borderColor: semanticColors.success.accent }}>
+                    <div className="text-xs font-semibold mb-2" style={{ color: semanticColors.success.primary }}>
+                      BONUS: 配布物解放
+                    </div>
+                    <p className="text-sm leading-5" style={{ color: semanticColors.neutral[700] }}>
+                      全資料・プロンプト集・コミュニティ招待
+                    </p>
+                  </div>
                 </div>
-                <div className="bg-gradient-to-br from-violet-50 to-purple-50 border border-violet-200 rounded-lg p-4">
-                  <div className="text-xs font-semibold text-violet-800 mb-2">📋 ベストプラクティス</div>
-                  <p className="text-sm text-slate-700 leading-5">10箇条・明日からの実装チェックリスト</p>
-                </div>
-                <div className="bg-gradient-to-br from-rose-50 to-pink-50 border border-rose-200 rounded-lg p-4">
-                  <div className="text-xs font-semibold text-rose-800 mb-2">🎁 配布物解放</div>
-                  <p className="text-sm text-slate-700 leading-5">全資料・プロンプト集・コミュニティ招待</p>
-                </div>
+
+                {/* Implementation Roadmap Table */}
+                <DataTable
+                  colorScheme="success"
+                  headers={["実装項目", "難易度", "効果", "実装期間"]}
+                  rows={[
+                    ["議事録自動化", "低", "65%時短", "1-2週間"],
+                    ["図面差分検出", "中", "89%精度向上", "2-3週間"],
+                    ["省エネ計算", "高", "45%工数削減", "1ヶ月"],
+                    ["提案書自動生成", "中", "50%時短", "2-3週間"],
+                    ["タスク管理自動化", "低", "通知精度95%", "1週間"]
+                  ]}
+                />
               </div>
             </div>
           </Card>
