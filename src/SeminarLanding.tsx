@@ -297,31 +297,36 @@ const Timeline: React.FC<{
 }> = ({ entries, colorScheme = 'technology' }) => {
   const colors = semanticColors[colorScheme];
   return (
-    <div className="relative pl-6">
-      <div className="absolute left-2 top-0 bottom-0 w-0.5" style={{ backgroundColor: colors.light }} />
-      <div className="space-y-6">
-        {entries.map((entry, idx) => (
-          <div key={idx} className="relative">
-            <div
-              className="absolute -left-[13px] top-1 w-3 h-3 rounded-full border-2"
-              style={{ backgroundColor: 'white', borderColor: colors.accent }}
-            />
-            <div className="flex flex-col md:flex-row md:items-start md:gap-4">
-              <div className="text-xs font-semibold uppercase tracking-[0.3em]" style={{ color: colors.primary }}>
-                {entry.label}
-              </div>
-              <div className="space-y-1 flex-1">
-                <div className="text-sm font-semibold" style={{ color: semanticColors.neutral[900] }}>
-                  {entry.title}
-                </div>
-                <p className="text-sm leading-6" style={{ color: semanticColors.neutral[500] }}>
-                  {entry.description}
-                </p>
-              </div>
-            </div>
+    <div className="space-y-5 md:space-y-4">
+      {entries.map((entry, idx) => (
+        <div
+          key={idx}
+          className="rounded-2xl border px-4 py-5 md:px-6 md:py-6 transition-shadow duration-300"
+          style={{
+            background: 'rgba(15,23,42,0.45)',
+            borderColor: colors.accent,
+            boxShadow: '0 20px 45px rgba(15,23,42,0.35)',
+          }}
+        >
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+            <span
+              className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] px-3 py-1 rounded-full"
+              style={{ backgroundColor: colors.light, color: colors.primary }}
+            >
+              {entry.label}
+            </span>
+            <span className="h-2 w-2 rounded-full" style={{ backgroundColor: colors.accent }} />
           </div>
-        ))}
-      </div>
+          <div className="space-y-2">
+            <div className="text-lg font-semibold text-white leading-snug">
+              {entry.title}
+            </div>
+            <p className="text-sm md:text-base leading-7 text-white/80">
+              {entry.description}
+            </p>
+          </div>
+        </div>
+      ))}
     </div>
   );
 };
@@ -332,7 +337,6 @@ const InfoToggle: React.FC<{
   detail: string;
   tone?: SlideMediaTone;
 }> = ({ title, summary, detail, tone = 'default' }) => {
-  const [open, setOpen] = useState(false);
   const toneStyle = (() => {
     switch (tone) {
       case 'accent':
@@ -360,27 +364,10 @@ const InfoToggle: React.FC<{
   })();
 
   return (
-    <div
-      className={`rounded-xl border ${toneStyle.border} ${toneStyle.bg} overflow-hidden transition-all duration-300`}
-    >
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        className="w-full px-4 py-3 flex items-center justify-between gap-3"
-      >
-        <div className="text-left">
-          <div className={`text-sm font-semibold ${toneStyle.title}`}>{title}</div>
-          <div className={`text-xs ${toneStyle.text}`}>{summary}</div>
-        </div>
-        <span className={`text-xs font-semibold ${toneStyle.title}`}>{open ? '-' : '+'}</span>
-      </button>
-      <div
-        className={`px-4 pb-4 text-sm leading-6 transition-all duration-300 ${
-          open ? 'opacity-100 max-h-96' : 'opacity-0 max-h-0'
-        } ${toneStyle.text}`}
-      >
-        {detail}
-      </div>
+    <div className={`rounded-xl border ${toneStyle.border} ${toneStyle.bg} px-4 py-4 space-y-2`}>
+      <div className={`text-sm font-semibold ${toneStyle.title}`}>{title}</div>
+      <div className={`text-xs ${toneStyle.text}`}>{summary}</div>
+      <div className={`text-sm leading-6 ${toneStyle.text}`}>{detail}</div>
     </div>
   );
 };
@@ -455,7 +442,7 @@ const CHAPTER_SUMMARIES: Record<string, string> = {
   'part1-tips': '構造化して、yamlでまとめて、表形式で、抽象化→具体化、制約付き、検証して',
   'part1-notebook': '難しい資料を投入してラジオ形式で要点を音声学習、幻覚抑制の運用',
   'part2-workflow': '調査→設計→コミュ→見積→省エネ→提出のAI導線マップ',
-  'part2-demo1': '音声→議事録テンプレ→提案資料までの流れをハンズオン',
+  'part2-demo1': '音声→議事録テンプレ→提案資料までの流れをライブ実演',
   'part2-demo2': 'A/B図面の差分抽出→自動ハイライト→コメント→PDF化',
   'part2-demo3': '入力最小化→再計算→提出ひな形の生成',
   'part2-demo4': 'ChatGPT／Gemini CanvasでミニLP生成',
@@ -818,7 +805,7 @@ const chapterDeepDives: Partial<Record<string, SlideToggle[]>> = {
     {
       title: 'セミナー後のゴール',
       summary: '共通言語＋導入ロードマップ',
-      detail: 'テンプレ・チェックリストに沿って初回4週間のアクションを定義。数値で語れる状態にして、翌日の会議で提案できる。',
+      detail: 'テンプレとチェックリストに沿って初回のアクションを具体化。数値と根拠で語れる状態にして、翌日の会議で提案できる。',
       tone: 'accent',
     },
   ],
@@ -882,10 +869,16 @@ const NOTES_MAP: Record<string, string> = CHAPTER_SECTIONS.reduce<Record<string,
   },
   {
     top: '冒頭: 当日配布なし→終了後に非公開HPで配布。集中して視聴を。',
-    highlights: '“基礎/ハンズオン/直結/配布”の4点を速く。ここで価値を確信させる。',
+    highlights: '“基礎/実演/直結/配布”の4点を速く。ここで価値を確信させる。',
     program: '押したら demo4=デモのみ、demo5=素材配布に切替。',
     chapters: 'クリックで各章へ。SキーでSlide Mode、Nでメモ呼び出し。',
     resources: '配布URL・Invite・DL期限・再配布ルールを示す。',
+    's-gemini-overview': 'Gemini導入のフロー。背景→条件→出力形式をセットで指示する重要性を強調。',
+    's-gemini-case1': '夕景の例。生成後は色味とサインを自分で仕上げる。',
+    's-gemini-case2': '昼景の比較。植栽・人流を追加して共有。',
+    's-gemini-case3': 'サイン位置と光量の検証例。',
+    's-gemini-case4': '素材バリエーション比較。仕上げ表と紐付ける。',
+    's-gemini-case5': 'ディテール比較。重点箇所を揃える目的。',
   }
 );
 
@@ -916,6 +909,12 @@ const SECTION_MINUTES: Record<string, number> = {
   'ch-16': 6,
   'ch-17': 6,
   'ch-18': 10,
+  's-gemini-overview': 6,
+  's-gemini-case1': 6,
+  's-gemini-case2': 6,
+  's-gemini-case3': 6,
+  's-gemini-case4': 6,
+  's-gemini-case5': 6,
 };
 
 const totalPlanned = Object.values(SECTION_MINUTES).reduce((a, b) => a + b, 0);
@@ -992,6 +991,7 @@ type SlideMedia = {
   headline?: string;
   items: SlideMediaItem[];
   footnote?: string;
+  position?: 'side' | 'main';
 };
 
 type SlideToggle = {
@@ -1028,10 +1028,117 @@ type Slide = {
   media?: SlideMedia;
 };
 
+const mediaToneStyles = (tone: SlideMediaTone = 'default') => {
+  switch (tone) {
+    case 'accent':
+      return {
+        border: 'border-cyan-400/60',
+        caption: 'text-cyan-200',
+        description: 'text-cyan-200/80',
+        badge: 'bg-cyan-500/20 text-cyan-200 border border-cyan-400/40',
+      } as const;
+    case 'muted':
+      return {
+        border: 'border-white/10',
+        caption: 'text-white/70',
+        description: 'text-white/50',
+        badge: 'bg-white/10 text-white/60 border border-white/15',
+      } as const;
+    default:
+      return {
+        border: 'border-white/15',
+        caption: 'text-white',
+        description: 'text-white/70',
+        badge: 'bg-white/15 text-white/80 border border-white/15',
+      } as const;
+  }
+};
+
+const ShowcaseMedia: React.FC<{ media: SlideMedia }> = ({ media }) => {
+  if (!media || !media.items.length) return null;
+  const isGrid = media.layout === 'grid';
+  const columns = media.columns ?? (isGrid ? 2 : 1);
+  const columnClass = columns === 3 ? 'md:grid-cols-3' : columns === 2 ? 'md:grid-cols-2' : 'md:grid-cols-1';
+  const toneStyles = mediaToneStyles;
+
+  if (isGrid) {
+    return (
+      <div className={`grid gap-6 ${columnClass}`}>
+        {media.items.map((item, idx) => {
+          const tone = toneStyles(item.tone);
+          const imageFitClass = item.fit === 'contain' ? 'object-contain' : 'object-cover';
+          return (
+            <figure
+              key={`showcase-${idx}`}
+              className={`rounded-3xl border ${tone.border} bg-white/5 overflow-hidden shadow-[0_20px_60px_rgba(8,15,25,0.35)]`}
+            >
+              <img
+                src={item.src}
+                alt={item.alt}
+                loading="lazy"
+                className={`w-full ${imageFitClass} rounded-3xl bg-slate-900/40 ${columns === 1 ? 'max-h-[620px]' : 'max-h-[520px] md:max-h-[560px]'} mx-auto`}
+              />
+              {(item.caption || item.description) && (
+                <figcaption className="px-6 py-4 space-y-2">
+                  {item.caption && (
+                    <div className={`text-base font-semibold ${tone.caption}`}>
+                      {item.caption}
+                    </div>
+                  )}
+                  {item.description && (
+                    <p className={`text-sm leading-6 ${tone.description}`}>
+                      {item.description}
+                    </p>
+                  )}
+                </figcaption>
+              )}
+            </figure>
+          );
+        })}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {media.items.map((item, idx) => {
+        const tone = toneStyles(item.tone);
+        const imageFitClass = item.fit === 'contain' ? 'object-contain' : 'object-cover';
+        return (
+          <figure
+            key={`showcase-${idx}`}
+            className={`rounded-3xl border ${tone.border} bg-white/5 overflow-hidden shadow-[0_20px_60px_rgba(8,15,25,0.35)]`}
+          >
+            <img
+              src={item.src}
+              alt={item.alt}
+              loading="lazy"
+              className={`w-full ${imageFitClass} rounded-3xl bg-slate-900/40 max-h-[620px] md:max-h-[660px]`}
+            />
+            {(item.caption || item.description) && (
+              <figcaption className="px-6 py-4 space-y-2">
+                {item.caption && (
+                  <div className={`text-base font-semibold ${tone.caption}`}>
+                    {item.caption}
+                  </div>
+                )}
+                {item.description && (
+                  <p className={`text-sm leading-6 ${tone.description}`}>
+                    {item.description}
+                  </p>
+                )}
+              </figcaption>
+            )}
+          </figure>
+        );
+      })}
+    </div>
+  );
+};
+
 const slideAssets = {
   speakerPortrait: new URL('../images/sakuramoto sena.jpeg', import.meta.url).href,
   instagramQR: new URL('../images/senaインスタ.jpeg', import.meta.url).href,
-  hotelVideo: new URL('../images/Youtube\u3000スクリーンショット.png', import.meta.url).href,
   apdwLogo: new URL('../images/APDW logo.png', import.meta.url).href,
   archicadSite: new URL('../images/Archicad HP掲載\u3000代理店.png', import.meta.url).href,
   megaDev: new URL('../images/大規模開発\u3000例.png', import.meta.url).href,
@@ -1039,7 +1146,233 @@ const slideAssets = {
   kuraAfter1: new URL('../images/蔵サウナ写真/kura1 after.png', import.meta.url).href,
   kuraBefore2: new URL('../images/蔵サウナ写真/kura2 before.JPG', import.meta.url).href,
   kuraAfter2: new URL('../images/蔵サウナ写真/kura2 after.png', import.meta.url).href,
+  youtubeSnapshot: new URL('../images/Youtube\u3000スクリーンショット.png', import.meta.url).href,
+  whiteHotelTiktok: new URL('../images/ホワイトホテル鎌倉　スズキ　Tiktok.PNG', import.meta.url).href,
+  geminiFacadeBefore1: new URL('../images/画像生成/ritumen01 before.png', import.meta.url).href,
+  geminiFacadeAfter1: new URL('../images/画像生成/ritumen01 after.png', import.meta.url).href,
+  geminiFacadeBefore2: new URL('../images/画像生成/ritumen02 before.png', import.meta.url).href,
+  geminiFacadeAfter2: new URL('../images/画像生成/ritumen02 after.png', import.meta.url).href,
+  geminiFacadeBefore3: new URL('../images/画像生成/ritumen03 before.png', import.meta.url).href,
+  geminiFacadeAfter3: new URL('../images/画像生成/ritumen03 after.png', import.meta.url).href,
+  geminiFacadeBefore4: new URL('../images/画像生成/ritumen04 before.png', import.meta.url).href,
+  geminiFacadeAfter4: new URL('../images/画像生成/ritumen04 after.png', import.meta.url).href,
+  geminiFacadeBefore5: new URL('../images/画像生成/ritumen05 before.png', import.meta.url).href,
+  geminiFacadeAfter5: new URL('../images/画像生成/ritumen05 after.png', import.meta.url).href,
 };
+
+
+type GeminiShowcase = {
+  id: string;
+  kicker?: string;
+  title: string;
+  subtitle?: string;
+  points: string[];
+  media: SlideMedia;
+  footnote?: string;
+  detail?: string;
+  notes?: string;
+};
+
+const GEMINI_SHOWCASES: GeminiShowcase[] = [
+  {
+    id: 's-gemini-overview',
+    kicker: 'GEMINI',
+    title: 'Geminiで立面からパースへ',
+    subtitle: '現場で回すときの流れ',
+    points: [
+      '立面やスケッチをそのまま読み込み、用途・時間帯・材質をテキストで指示',
+      'プロンプトで「どこを強調したいか」を伝え、数パターンを生成して比較',
+      '採用案はPhotoshopなどで微調整し、提案資料やSNSに即活用する',
+    ],
+    media: {
+      position: 'main',
+      layout: 'grid',
+      columns: 1,
+      headline: '作業イメージ',
+      items: [
+        {
+          src: slideAssets.geminiFacadeBefore1,
+          alt: '立面スケッチのサンプル',
+          caption: '入力素材の例',
+          description: 'クライアントと共有した立面図。背景情報と意図をセットでAIに渡す。',
+          tone: 'muted',
+          fit: 'contain',
+        },
+      ],
+      footnote: '立面図・構造メモ・希望テイストなど「背景」をセットで渡すことで精度が上がる',
+    },
+    notes: '指示テンプレ：背景／用途／時間帯／素材／照明／人の動き／出力形式。生成後にPhotoshopでロゴや細部だけを調整する。',
+  },
+  {
+    id: 's-gemini-case1',
+    kicker: 'CASE 1',
+    title: '夕景の立面提案',
+    subtitle: '条件: 夕景 / 木質 / 間接照明',
+    points: [
+      '立面スケッチを読み込み、夕景と木質を強調した案を複数生成',
+      '採用案は色味のみ整え、提案資料とSNS投稿に転用',
+    ],
+    media: {
+      position: 'main',
+      layout: 'grid',
+      columns: 2,
+      headline: 'Before / After',
+      items: [
+        {
+          src: slideAssets.geminiFacadeBefore1,
+          alt: '立面スケッチ Before',
+          caption: 'Before: 立面スケッチ',
+          description: 'クライアント提供の一次資料',
+          tone: 'muted',
+          fit: 'contain',
+        },
+        {
+          src: slideAssets.geminiFacadeAfter1,
+          alt: 'Gemini生成パース After',
+          caption: 'After: Gemini案',
+          description: '夕景・木質・間接照明の要素を付加',
+          tone: 'accent',
+        },
+      ],
+      footnote: '生成〜調整まで約7分。提案資料とSNS投稿に活用。',
+    },
+  },
+  {
+    id: 's-gemini-case2',
+    kicker: 'CASE 2',
+    title: '昼景の外構提案',
+    subtitle: '条件: 日中 / 植栽 / 来客導線',
+    points: [
+      '外構の立面データに日中・植栽・人流を指定し、昼景案を生成',
+      '色味のみ整えて見積と計画会議で共有、翌日には方向性を確定',
+    ],
+    media: {
+      position: 'main',
+      layout: 'grid',
+      columns: 2,
+      items: [
+        {
+          src: slideAssets.geminiFacadeBefore2,
+          alt: '外構立面 Before',
+          caption: 'Before: 外構立面',
+          description: '必要最低限の線情報のみ',
+          tone: 'muted',
+          fit: 'contain',
+        },
+        {
+          src: slideAssets.geminiFacadeAfter2,
+          alt: 'Gemini生成 昼景パース After',
+          caption: 'After: 昼景パース',
+          description: '緑・人流・質感を加えた共有用イメージ',
+          tone: 'accent',
+        },
+      ],
+      footnote: '生成10枚から2案を採用し、社内レビューのたたき台に利用',
+    },
+  },
+  {
+    id: 's-gemini-case3',
+    kicker: 'CASE 3',
+    title: '夜景サインスタディ',
+    subtitle: '条件: 夜景 / サイン位置 / 光量',
+    points: [
+      'サイン位置と光量を指定し、夜景での視認性を検証',
+      '複数案を比較しながらサインの大きさと色味をすり合わせ',
+    ],
+    media: {
+      position: 'main',
+      layout: 'grid',
+      columns: 2,
+      items: [
+        {
+          src: slideAssets.geminiFacadeBefore3,
+          alt: 'サインなし立面 Before',
+          caption: 'Before: 立面ベース',
+          description: 'サイン・光源なしの状態',
+          tone: 'muted',
+          fit: 'contain',
+        },
+        {
+          src: slideAssets.geminiFacadeAfter3,
+          alt: 'Gemini生成 夜景サイン After',
+          caption: 'After: サインスタディ',
+          description: '夜景・ネオン・人流を加えた検証案',
+          tone: 'accent',
+        },
+      ],
+      footnote: '社内レビューで合意形成→サイン計画へスムーズに移行',
+    },
+  },
+  {
+    id: 's-gemini-case4',
+    kicker: 'CASE 4',
+    title: 'ファサード素材検討',
+    subtitle: '条件: マテリアル / 色味 / 光環境',
+    points: [
+      '素材や色のバリエーションを短時間で並べ、クライアントと即日共有',
+      '仕上げ表に紐付けて意思決定をスピーディーに実施',
+    ],
+    media: {
+      position: 'main',
+      layout: 'grid',
+      columns: 2,
+      items: [
+        {
+          src: slideAssets.geminiFacadeBefore4,
+          alt: 'ファサード素材検討 Before',
+          caption: 'Before: ベース立面',
+          description: '素材・照明条件なし',
+          tone: 'muted',
+          fit: 'contain',
+        },
+        {
+          src: slideAssets.geminiFacadeAfter4,
+          alt: 'Gemini生成 ファサードバリエーション After',
+          caption: 'After: 素材バリエーション',
+          description: 'マテリアルと光環境を変えて比較',
+          tone: 'accent',
+        },
+      ],
+      footnote: '各案に対応する仕上げ表を添えてクライアント合意を形成',
+    },
+  },
+  {
+    id: 's-gemini-case5',
+    kicker: 'CASE 5',
+    title: 'ディテール検討',
+    subtitle: '条件: 屋根 / 庇 / 照明',
+    points: [
+      'ディテールの違いを並べて比較し、重点的に作り込む箇所を合意',
+      '施工前に方向性を揃え、再作業を最小化',
+    ],
+    media: {
+      position: 'main',
+      layout: 'grid',
+      columns: 2,
+      items: [
+        {
+          src: slideAssets.geminiFacadeBefore5,
+          alt: 'ディテール検討 Before',
+          caption: 'Before: ベース立面',
+          description: 'ディテール指定なし',
+          tone: 'muted',
+          fit: 'contain',
+        },
+        {
+          src: slideAssets.geminiFacadeAfter5,
+          alt: 'Gemini生成 ディテール比較 After',
+          caption: 'After: ディテール案',
+          description: '屋根・庇・照明のバリエーション比較',
+          tone: 'accent',
+        },
+      ],
+      footnote: '施工前にディテールの方向性を素早く揃えられる',
+    },
+  },
+];
+
+const GEMINI_SHOWCASE_IDS = GEMINI_SHOWCASES.map((s) => s.id);
+
 
 const SLIDES: Slide[] = [
   {
@@ -1048,14 +1381,9 @@ const SLIDES: Slide[] = [
     subtitle: '明日から"自分ごと"に落とし込む3時間',
     goalStatement: '建築現場の“明日”に合わせたAI導入ロードマップをここで描き切る',
     lines: [
-      '2025-09-28 / オンライン（ライブ配信＋ハンズオン）',
-      '本編180分 + 無制限Q&A',
-      '録画あり: 受講者限定の非公開ページで配布',
-    ],
-    quickFacts: [
-      { label: '受講形式', value: 'ライブ + ハンズオン', description: 'プロジェクト資料をその場で操作' },
-      { label: '配布物', value: 'テンプレ 40+', description: 'プロンプト・チェックリスト・GAS雛形' },
-      { label: 'フォロー', value: '録画 + Q&A 無制限', description: '終了後も非公開ページで復習可能' },
+      '建築チームにAIワークフローを持ち帰るための3時間',
+      'ライブデモと対話で実務への転用ポイントを整理',
+      '終了後は非公開ページで資料と録画を配布',
     ],
     bg: 'linear-gradient(120deg,#1d4ed8,#0f172a)',
   },
@@ -1064,15 +1392,10 @@ const SLIDES: Slide[] = [
     title: '講師紹介',
     subtitle: '櫻本 聖成 / Sakuramoto Sena',
     lines: [
-      '一級建築士事務所 Archi-Prisma Design works 株式会社　代表取締役',
-      'archisoft株式会社　代表取締役',
-      '「AIで建築業界を変える」をミッションに事業展開',
+      '建築実務とDXをつなぐ Archi-Prisma Design works 代表',
+      'archisoft株式会社 代表取締役',
+      'AIと建築のワークフロー変革をテーマに活動',
       'Instagram: @sena_archisoft（QRコード右側に表示）',
-    ],
-    quickFacts: [
-      { label: '経験', value: '建築×AI 12年', description: '設計・メディア・プロダクト開発を横断' },
-      { label: 'チーム', value: '2社 25名', description: 'Archi-Prisma / archisoft を両軸で運営' },
-      { label: '実績', value: '236万再生', description: 'SNSを活用した集客・採用の成功事例' },
     ],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
     media: {
@@ -1107,11 +1430,6 @@ const SLIDES: Slide[] = [
       '建築土木カフェTONKAの顧問',
       '企業向けAIセミナー・業務改善コンサル',
     ],
-    quickFacts: [
-      { label: '導入企業', value: '120+', description: 'Archicad・AIワークフローの伴走実績' },
-      { label: 'メディア', value: 'YouTube 3.2万+', description: '建築DX/AIをテーマに継続配信' },
-      { label: '提供領域', value: '設計〜運用まで', description: '建築実務とSaaS開発を横断サポート' },
-    ],
     toggles: [
       {
         title: '建築設計スタジオ',
@@ -1131,19 +1449,19 @@ const SLIDES: Slide[] = [
       headline: 'ブランド & チャネル',
       items: [
         {
-          src: slideAssets.apdwLogo,
-          alt: 'Archi-Prisma Design Works ロゴ',
-          caption: 'Archi-Prisma Design Works',
-          description: '建築設計×AIの実務チーム',
-          fit: 'contain',
-        },
-        {
           src: slideAssets.archicadSite,
           alt: 'Archicad 正規代理店掲載ページ',
           caption: 'Archicad 正規販売代理店',
           description: 'archisoft株式会社',
           fit: 'contain',
           tone: 'muted',
+        },
+        {
+          src: slideAssets.youtubeSnapshot,
+          alt: 'archisoft YouTube チャンネル',
+          caption: 'YouTube / archisoft',
+          description: '建築DXとAIのナレッジを定期配信',
+          fit: 'contain',
         },
       ],
     },
@@ -1162,7 +1480,7 @@ const SLIDES: Slide[] = [
       {
         title: '目黒区プロジェクト',
         summary: '店舗・オフィス複合施設',
-        detail: '用途混在の複合ビル。BIM×AIで設計レビューを自動化し、意思決定スピードを2倍に。',
+        detail: '用途混在の複合ビル。BIM×AIで設計レビューを自動化し、意思決定スピードを高めている。',
       },
       {
         title: '大規模開発協議',
@@ -1176,6 +1494,14 @@ const SLIDES: Slide[] = [
       layout: 'stack',
       items: [
         {
+          src: slideAssets.apdwLogo,
+          alt: 'Archi-Prisma Design works ロゴ',
+          caption: 'Archi-Prisma Design works 株式会社',
+          description: '建築設計とプロジェクト運営を担うコアチーム',
+          fit: 'contain',
+          tone: 'accent',
+        },
+        {
           src: slideAssets.megaDev,
           alt: '大規模開発計画イメージ',
           caption: '大規模複合開発スキーム',
@@ -1186,45 +1512,26 @@ const SLIDES: Slide[] = [
   },
   {
     id: 's-hotel',
-    title: 'ホテル事業の成果',
-    subtitle: '鎌倉駅徒歩2分・メディア注目',
+    title: 'White Hotel Kamakura',
+    subtitle: '鎌倉駅徒歩2分・メディア発信と運営',
     lines: [
-      '鎌倉駅徒歩2分の立地でホテル運営中',
-      '社員スズキのショート動画が236万再生突破',
-      '直近のホテルスタッフ募集投稿：9.4万再生',
-      '募集に対し200人超の応募（SNSマーケティング効果）',
-    ],
-    quickFacts: [
-      { label: '稼働率', value: '89%', description: '2024年平均（前年比 +12pt）' },
-      { label: 'SNS応募', value: '200+', description: '採用募集に対する応募数' },
-      { label: '滞在満足度', value: '4.8/5', description: '主要プラットフォーム平均' },
-    ],
-    barChart: {
-      title: 'ホテル事業 KPI 推移',
-      colorScheme: 'success',
-      data: [
-        { label: '動画再生（万回）', value: 236, target: 250 },
-        { label: '応募数', value: 200, target: 220 },
-        { label: '平均稼働率', value: 89, target: 92 },
-      ],
-    },
-    footnotes: [
-      'SNSインサイト: TikTok / Instagram Insights 2024年9月集計',
-      '稼働率・満足度: 自社運営ホテル 2024年通期実績値',
+      '鎌倉駅近くで運営する White Hotel Kamakura のケーススタディ',
+      'スタッフ鈴木によるショート動画がSNSで大きな反響を獲得',
+      'SNS発信と現場運営の連携ノウハウをセミナー内で共有',
     ],
     bg: 'linear-gradient(135deg,#dc2626,#0f172a)',
     media: {
       layout: 'stack',
       items: [
         {
-          src: slideAssets.hotelVideo,
-          alt: 'ホテル施策のSNS動画キャプチャ',
-          caption: '236万再生のショート動画',
-          description: 'SNS連動で採用応募200名超',
+          src: slideAssets.whiteHotelTiktok,
+          alt: 'White Hotel Kamakura SNS ショート動画',
+          caption: 'スタッフ鈴木のショート動画',
+          description: 'SNSでの反響を活かした集客施策',
           tone: 'accent',
         },
       ],
-      footnote: 'SNSマーケティングで集客・採用を同時加速',
+      footnote: 'SNS発信と現場オペレーション連携の実践事例',
     },
   },
   {
@@ -1236,11 +1543,6 @@ const SLIDES: Slide[] = [
       '現地撮影→その場でGemini活用によるイメージパース作成',
       '一棟貸し貸別荘として事業化予定',
       '伝統建築×最新AI技術の融合プロジェクト',
-    ],
-    quickFacts: [
-      { label: '取得年度', value: '2024', description: '現地調査→構想設計を即日実施' },
-      { label: 'AI生成枚数', value: '40+', description: 'その場でパターン比較し意思決定に活用' },
-      { label: '事業化', value: '2026 OPEN予定', description: '宿泊＋地域交流スペースを併設' },
     ],
     bg: 'linear-gradient(135deg,#7c3aed,#0f172a)',
     media: {
@@ -1350,7 +1652,7 @@ const SLIDES: Slide[] = [
       {
         label: 'STEP 2',
         title: 'リハーサル',
-        description: '実案件に近い素材でハンズオン。失敗パターンも確認。',
+        description: '実案件に近い素材でライブ実演。失敗パターンも確認。',
       },
       {
         label: 'STEP 3',
@@ -1369,10 +1671,10 @@ const SLIDES: Slide[] = [
     id: 's-need',
     title: '今なぜAI×建築か',
     lines: [
-      '建築DX発注案件が前年比で倍増し、AIによるスピードと説明力が求められる',
-      '現場ナレッジの分断を解消し、再現性あるワークフローを共有する必要がある',
-      '審査や顧客から根拠提示を求められ、AI活用の透明性と記録が必須になっている',
-      '競合との差別化には“AIを仕組みに組み込んだ実装力”が直結する',
+      '建築DX要件が企画・設計・運用フェーズに広がり、AI前提の進行が求められている',
+      '審査・顧客説明で根拠や再現性を提示する必要があり、AIでの記録と説明力が欠かせない',
+      '属人化したナレッジを共有し、誰が実行しても同じ結果が出るワークフローを整える必要がある',
+      '差別化要因として「AIを仕組みに組み込んだ実装力」が評価軸になりつつある',
     ],
     toggles: [
       {
@@ -1383,10 +1685,21 @@ const SLIDES: Slide[] = [
       {
         title: '社内運用の課題',
         summary: '属人化をどう解消するか',
-        detail: '現場での経験則をAIプロンプト・テンプレに落とし込み、チーム全体で共有する仕組みづくりが不可欠。',
+        detail: '現場での経験則をAIプロンプトやテンプレに落とし込み、チーム全体で共有する仕組みづくりが不可欠。',
         tone: 'muted',
       },
     ],
+    barChart: {
+      title: '社内ヒアリングから見えた優先度スコア（0-100換算）',
+      colorScheme: 'architecture',
+      data: [
+        { label: 'DX要件への対応', value: 82 },
+        { label: '説明責任・透明性', value: 76 },
+        { label: 'ナレッジ共有と再現性', value: 71 },
+        { label: '差別化とブランド', value: 78 },
+      ],
+    },
+    footnotes: ['自社セミナー申込・既存顧客ヒアリングで頻出した優先度をスコア化（2024-2025）'],
     bg: `linear-gradient(135deg,${semanticColors.architecture.primary},${semanticColors.neutral[900]})`,
   },
   {
@@ -1397,7 +1710,7 @@ const SLIDES: Slide[] = [
       '共通言語を揃え、判断軸が一致した状態で議論できるようにする',
       '現調→提案→自動化のワークフローを体験し、自社への転用ポイントを特定する',
       '提供するテンプレ・チェックリストを自社フォーマットに落とし込み持ち帰る',
-      'KPIと初回4週間のアクションプランを設定し、測定できる形にする',
+      'KPIと初回アクションプランを設定し、測定できる形にする',
     ],
     bg: `linear-gradient(135deg,${semanticColors.technology.primary},${semanticColors.neutral[900]})`,
   },
@@ -1476,6 +1789,293 @@ const SLIDES: Slide[] = [
       '国土交通省 建築BIM推進会議（2024年5月）資料より抜粋',
     ],
     bg: 'linear-gradient(135deg,#1e293b,#334155)',
+  },
+  {
+    id: 's-llm-basics',
+    title: 'LLMとは？',
+    subtitle: 'Large Language Model の仕組み',
+    lines: [
+      '大量のテキストを読み込み、次の言葉を統計的に予測する仕組み',
+      '事前学習で言語の地図を作り、プロンプトで欲しいゴールを指定する',
+      '建築では文書・図面・表の構造化が得意で、判断は人が最終確認する',
+    ],
+    toggles: [
+      {
+        title: '得意なこと',
+        summary: '要約・変換・構造化',
+        detail: '議事録の要点整理、法令文の平易化、図面や表の比較など、言語・構造変換が高速にできる。',
+      },
+      {
+        title: '苦手なこと',
+        summary: '最新情報・数値の厳密さ',
+        detail: '学習時点より後の情報や精密な数値計算は要注意。根拠の記録と人による検証が前提。',
+        tone: 'muted',
+      },
+    ],
+    footnotes: ['LLM = Large Language Model。OpenAI, Anthropic, Google など各社が提供'],
+    bg: 'linear-gradient(135deg,#1f2a4a,#0f172a)',
+  },
+  {
+    id: 's-genai-basics',
+    title: '生成AIとは？',
+    subtitle: '文章・画像・音声を生み出す仕組み',
+    lines: [
+      '入力された条件やサンプルから、新しい文章・画像・音声を生成するAIの総称',
+      'テキスト生成・画像生成・マルチモーダル（画像＋テキスト）など用途が広がっている',
+      '建築では企画案のスタディ、プレゼン資料、顧客コミュニケーションで活用範囲が拡大',
+    ],
+    toggles: [
+      {
+        title: '代表的なツール',
+        summary: 'ChatGPT / Gemini / Midjourney ほか',
+        detail: '文章: ChatGPT, Claude。画像: Midjourney, DALL·E, Stable Diffusion。現場の目的に応じて使い分ける。',
+      },
+      {
+        title: '使い分けの軸',
+        summary: '品質・速度・権利・共有',
+        detail: '仕上がり品質・生成時間・ライセンス・共有のしやすさでツールを選定。顧客と共有する場合は権利面の確認が必須。',
+        tone: 'accent',
+      },
+    ],
+    bg: 'linear-gradient(135deg,#123c64,#0b172a)',
+  },
+  {
+    id: 's-ai-journey',
+    title: 'midjourney から ChatGPT へ',
+    subtitle: '現場で感じた転換点',
+    lines: [
+      'Midjourneyで建築イメージを一瞬で描けたことが、AI活用にのめり込むきっかけだった',
+      'ChatGPT登場で文章・計画・コードが一気に加速し、建築実務の可能性が拡張した',
+      '“AIで何が変わるか”よりも“どこまで任せるか”を考えるフェーズへと移り変わった',
+    ],
+    toggles: [
+      {
+        title: '初期の気づき',
+        summary: '試行回数と結果の早さ',
+        detail: '短時間で案を大量に出せることで、意思決定までの会話量が劇的に増えた。',
+      },
+      {
+        title: '今の向き合い方',
+        summary: '設計〜運用での実装',
+        detail: '案件ごとにテンプレとルールを整備し、チーム全員が AI ワークフローを再現できる状態を目指している。',
+        tone: 'accent',
+      },
+    ],
+    bg: 'linear-gradient(135deg,#1f2937,#0f172a)',
+  },
+  {
+    id: 's-ai-approach',
+    title: 'AIとの向き合い方',
+    goalStatement: 'AIを“背景を共有できる新しいチームメンバー”として扱う',
+    lines: [
+      'AIをAIとして扱うな：背景・目的・判断基準を伝えれば、的外れな出力は大きく減る',
+      '背景を知らない部下に指示するイメージで、ゴールと制約・優先度をセットで共有する',
+      '道中は違っても結果が揃う状態を作るために、人が最終レビューと改善指示を行う',
+    ],
+    toggles: [
+      {
+        title: '背景を渡す',
+        summary: '目的・条件・判断基準を明文化',
+        detail: '案件の背景、評価軸、使ってはいけない情報をセットで伝えると、出力の質が跳ね上がる。',
+      },
+      {
+        title: '人の役割',
+        summary: '最終判断とケア',
+        detail: 'AIは提案や下書き担当。人が品質チェックと意思決定を担うことで、責任ある実装になる。',
+        tone: 'accent',
+      },
+    ],
+    footnotes: ['AIは背景を知らないまま提案する。人間同士のマネジメント視点が不可欠'],
+    bg: 'linear-gradient(135deg,#12354a,#0f172a)',
+  },
+  {
+    id: 's-gemini-overview',
+    title: 'Geminiで立面からパースへ',
+    subtitle: '現場で回すときの流れ',
+    lines: [
+      '1. 立面やスケッチをそのまま読み込み、目的（用途・時間帯・材質）をテキストで指定する',
+      '2. プロンプトで「どこを強調したいか」を伝え、数パターンを生成し比較する',
+      '3. 採用案はPhotoshopなどで微調整し、提案資料やSNSに即活用する',
+    ],
+    media: {
+      position: 'main',
+      layout: 'grid',
+      columns: 1,
+      headline: '作業イメージ',
+      items: [
+        {
+          src: slideAssets.geminiFacadeBefore1,
+          alt: '立面スケッチのサンプル',
+          caption: '入力素材の例',
+          description: 'クライアントと共有した立面図。背景情報と意図をセットでAIに渡す。',
+          tone: 'muted',
+          fit: 'contain',
+        },
+      ],
+      footnote: '実務では立面図・構造メモ・希望テイストをセットで指示',
+    },
+    bg: 'linear-gradient(135deg,#10213a,#0b1220)',
+  },
+  {
+    id: 's-gemini-case1',
+    title: 'Case 1｜夕景の立面提案',
+    lines: [
+      '立面スケッチをそのまま読み込み、夕景・木質・間接照明を指定',
+      '複数案の中から店舗らしさが出る1枚を選び、Photoshopでロゴとサインを追加',
+    ],
+    media: {
+      position: 'main',
+      layout: 'grid',
+      columns: 2,
+      headline: 'Before / After',
+      items: [
+        {
+          src: slideAssets.geminiFacadeBefore1,
+          alt: '立面スケッチ Before',
+          caption: 'Before: 立面スケッチ',
+          description: 'クライアント提供の一次資料',
+          tone: 'muted',
+          fit: 'contain',
+        },
+        {
+          src: slideAssets.geminiFacadeAfter1,
+          alt: 'Gemini生成パース After',
+          caption: 'After: Gemini案',
+          description: '条件: 夕景 / 木質 / 間接照明',
+          tone: 'accent',
+        },
+      ],
+      footnote: '生成～調整まで約7分。提案資料とSNS投稿に転用',
+    },
+    bg: 'linear-gradient(135deg,#172942,#0b111d)',
+  },
+  {
+    id: 's-gemini-case2',
+    title: 'Case 2｜昼景の外構提案',
+    lines: [
+      '外構の立面データに「日中・植栽・来客導線」を指定し、複数案を生成',
+      '採用案は色味だけを調整し、見積・計画会議で共有',
+    ],
+    media: {
+      position: 'main',
+      layout: 'grid',
+      columns: 2,
+      items: [
+        {
+          src: slideAssets.geminiFacadeBefore2,
+          alt: '外構立面 Before',
+          caption: 'Before: 外構立面',
+          description: '必要最低限の線情報',
+          tone: 'muted',
+          fit: 'contain',
+        },
+        {
+          src: slideAssets.geminiFacadeAfter2,
+          alt: 'Gemini生成 昼景パース After',
+          caption: 'After: 昼景パース',
+          description: '明るさ・植栽・人流を追加',
+          tone: 'accent',
+        },
+      ],
+      footnote: '生成10枚から2案を採用。社内レビューのたたき台に使用',
+    },
+    bg: 'linear-gradient(135deg,#14263c,#091017)',
+  },
+  {
+    id: 's-gemini-case3',
+    title: 'Case 3｜夜景サインスタディ',
+    lines: [
+      'サイン位置と光量を指定し、夜景での印象と視認性を検証',
+      '複数案を比較しながら、サインのサイズと色味をすり合わせ',
+    ],
+    media: {
+      position: 'main',
+      layout: 'grid',
+      columns: 2,
+      items: [
+        {
+          src: slideAssets.geminiFacadeBefore3,
+          alt: 'サインなし立面 Before',
+          caption: 'Before: 立面ベース',
+          description: 'サイン・光源なしの状態',
+          tone: 'muted',
+          fit: 'contain',
+        },
+        {
+          src: slideAssets.geminiFacadeAfter3,
+          alt: 'Gemini生成 夜景サイン After',
+          caption: 'After: サインスタディ',
+          description: '夜景・ネオン・人流を追加して想定共有',
+          tone: 'accent',
+        },
+      ],
+      footnote: '各案を比較しながらサイン計画を決定',
+    },
+    bg: 'linear-gradient(135deg,#111f33,#080c14)',
+  },
+  {
+    id: 's-gemini-case4',
+    title: 'Case 4｜ファサード素材検討',
+    lines: [
+      '素材や色の違いを複数パターン生成し、クライアントと即日共有',
+      '実施設計で使う色番号・素材カタログに紐付けて意思決定をスムーズに',
+    ],
+    media: {
+      position: 'main',
+      layout: 'grid',
+      columns: 2,
+      items: [
+        {
+          src: slideAssets.geminiFacadeBefore4,
+          alt: 'ファサード素材検討 Before',
+          caption: 'Before: ベース立面',
+          description: '素材・照明条件なし',
+          tone: 'muted',
+          fit: 'contain',
+        },
+        {
+          src: slideAssets.geminiFacadeAfter4,
+          alt: 'Gemini生成 ファサードバリエーション After',
+          caption: 'After: 素材バリエーション',
+          description: 'マテリアルと光環境を変えて比較',
+          tone: 'accent',
+        },
+      ],
+      footnote: '各案に対応する仕上げ表を添えてクライアント合意を形成',
+    },
+    bg: 'linear-gradient(135deg,#122031,#090f18)',
+  },
+  {
+    id: 's-gemini-case5',
+    title: 'Case 5｜ディテール検討',
+    lines: [
+      '屋根や袖壁などディテールのバリエーションを短時間で並べて比較',
+      '設計チーム内で「どこを重点的に作り込むか」を共通認識に',
+    ],
+    media: {
+      position: 'main',
+      layout: 'grid',
+      columns: 2,
+      items: [
+        {
+          src: slideAssets.geminiFacadeBefore5,
+          alt: 'ディテール検討 Before',
+          caption: 'Before: ベース立面',
+          description: 'ディテール指定なし',
+          tone: 'muted',
+          fit: 'contain',
+        },
+        {
+          src: slideAssets.geminiFacadeAfter5,
+          alt: 'Gemini生成 ディテール比較 After',
+          caption: 'After: ディテール案',
+          description: '屋根・庇・照明のバリエーション比較',
+          tone: 'accent',
+        },
+      ],
+      footnote: '施工前にディテールの方向性を素早く揃えられる',
+    },
+    bg: 'linear-gradient(135deg,#111d2d,#080b12)',
   },
   {
     id: 's-future-roles',
@@ -1564,13 +2164,13 @@ const SLIDES: Slide[] = [
     lines: [
       '調査→設計→コミュ→見積→省エネ→提出',
       'AI導線マップでROI (工数/誤検出/利益)',
-      'ハンズオンシートで自業務を記入',
+      '実演ワークシートで自業務を記入',
     ],
     bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
   },
   {
     id: 's-workflow-hands',
-    title: 'ワークフロー ハンズオン',
+    title: 'ワークフロー 実演',
     lines: [
       '現状フローにAI候補を書き込む',
       'ボトルネックと期待効果を共有',
@@ -1590,7 +2190,7 @@ const SLIDES: Slide[] = [
   },
   {
     id: 's-demo1-hands',
-    title: 'Demo① ハンズオン',
+    title: 'Demo① 実演',
     lines: [
       'サンプル音声をNotebookLMに投入',
       '「構造化して」で要点抽出',
@@ -1620,7 +2220,7 @@ const SLIDES: Slide[] = [
   },
   {
     id: 's-demo2-hands',
-    title: 'Demo② ハンズオン',
+    title: 'Demo② 実演',
     lines: [
       'サンプル図面で差分抽出',
       'ハイライト箇所をコメント',
@@ -1640,7 +2240,7 @@ const SLIDES: Slide[] = [
   },
   {
     id: 's-demo3-hands',
-    title: 'Demo③ ハンズオン',
+    title: 'Demo③ 実演',
     lines: [
       'Excelに条件入力→BEI算出',
       '再計算ボタンで差分確認',
@@ -1674,7 +2274,7 @@ const SLIDES: Slide[] = [
     lines: [
       '5分押し→Canvasデモは紹介のみ',
       '10分押し→GASデモは素材配布',
-      'ハンズオンは成功体験最優先',
+      '実演は成功体験最優先',
     ],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
   },
@@ -1839,7 +2439,7 @@ const SLIDES: Slide[] = [
     title: '運営メモ',
     lines: [
       'チャットに素材リンクを固定',
-      'ハンズオンは成功体験最優先',
+      '実演は成功体験最優先',
       '時間押しはリスクプランに従う',
     ],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
@@ -1915,7 +2515,7 @@ function runSmokeTests(allIds: string[]): void {
 
 export default function SeminarLanding(): React.ReactElement {
   const baseOrder = useMemo(() => ['top', 'highlights', 'program', 'chapters'], []);
-  const allIds = useMemo(() => [...baseOrder, ...CHAPTERS.map((c) => c.id), 'resources'], [baseOrder]);
+  const allIds = useMemo(() => [...baseOrder, ...CHAPTERS.map((c) => c.id), ...GEMINI_SHOWCASE_IDS, 'resources'], [baseOrder]);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [presenter, setPresenter] = useState(false);
@@ -2099,31 +2699,122 @@ export default function SeminarLanding(): React.ReactElement {
     const currentSlide = SLIDES[slideIdx] || SLIDES[0];
 
     const media = currentSlide.media;
-    const showSideContent = Boolean(media && media.items.length);
-    const toneClasses = (tone: SlideMediaTone = 'default') => {
-      switch (tone) {
-        case 'accent':
-          return {
-            border: 'border-cyan-400/60',
-            caption: 'text-cyan-200',
-            description: 'text-cyan-200/80',
-            badge: 'bg-cyan-500/20 text-cyan-200 border border-cyan-400/40',
-          } as const;
-        case 'muted':
-          return {
-            border: 'border-white/10',
-            caption: 'text-white/70',
-            description: 'text-white/50',
-            badge: 'bg-white/10 text-white/60 border border-white/15',
-          } as const;
-        default:
-          return {
-            border: 'border-white/15',
-            caption: 'text-white',
-            description: 'text-white/70',
-            badge: 'bg-white/15 text-white/80 border border-white/15',
-          } as const;
-      }
+    const mediaPosition = media?.position ?? 'side';
+    const showSideContent = Boolean(media && media.items.length && mediaPosition !== 'main');
+    const showMainMedia = Boolean(media && media.items.length && mediaPosition === 'main');
+    const toneClasses = mediaToneStyles;
+
+    const renderMediaContainer = (placement: 'side' | 'main') => {
+      if (!media) return null;
+      if (placement === 'side' && mediaPosition === 'main') return null;
+      if (placement === 'main' && mediaPosition !== 'main') return null;
+
+      const isGrid = media.layout === 'grid';
+      const columns = media.columns ?? (isGrid ? 2 : 1);
+      const singleColumn = columns === 1;
+      const containerBase = placement === 'main'
+        ? 'space-y-6'
+        : 'flex flex-col items-center justify-center space-y-6 text-left';
+      const gridClass = placement === 'main'
+        ? `grid gap-6 ${columns === 3 ? 'md:grid-cols-3' : columns === 2 ? 'md:grid-cols-2' : 'md:grid-cols-1'}`
+        : `grid gap-4 w-full ${columns === 3 ? 'grid-cols-3' : columns === 2 ? 'grid-cols-2' : 'grid-cols-1'}`;
+      const stackClass = placement === 'main' ? 'space-y-6 w-full' : 'space-y-5 w-full';
+
+      const renderFigures = () => {
+        if (isGrid) {
+          return (
+            <div className={gridClass}>
+              {media.items.map((item, idx) => {
+                const tone = toneClasses(item.tone);
+                const imageFitClass = item.fit === 'contain' ? 'object-contain' : 'object-cover';
+                const baseFigureClass = placement === 'main'
+                  ? `rounded-2xl border ${tone.border} bg-white/10 overflow-hidden`
+                  : `bg-white/5 rounded-xl overflow-hidden border ${tone.border} shadow-lg`;
+                const imageClass = placement === 'main'
+                  ? `w-full ${imageFitClass} rounded-2xl bg-slate-900/30 ${singleColumn ? '' : 'max-h-[520px] md:max-h-[580px]'} mx-auto`
+                  : `w-full h-48 ${imageFitClass} rounded-lg bg-slate-900/40 md:h-56`;
+                return (
+                  <figure key={`${currentSlide.id}-media-${idx}`} className={baseFigureClass}>
+                    <img src={item.src} alt={item.alt} loading="lazy" className={imageClass} />
+                    {(item.caption || item.description) && (
+                      <figcaption className="px-4 py-3 space-y-1">
+                        {item.caption && (
+                          <div className={`text-base font-semibold ${tone.caption}`}>
+                            {item.caption}
+                          </div>
+                        )}
+                        {item.description && (
+                          <div className={`text-sm leading-6 ${tone.description}`}>
+                            {item.description}
+                          </div>
+                        )}
+                      </figcaption>
+                    )}
+                  </figure>
+                );
+              })}
+            </div>
+          );
+        }
+
+        return (
+          <div className={stackClass}>
+            {media.items.map((item, idx) => {
+              const tone = toneClasses(item.tone);
+              const imageFitClass = item.fit === 'contain' ? 'object-contain' : 'object-cover';
+              const baseFigureClass = placement === 'main'
+                ? `rounded-2xl border ${tone.border} bg-white/10 overflow-hidden`
+                : `bg-white/5 rounded-2xl overflow-hidden border ${tone.border} shadow-xl`;
+              const imageClass = placement === 'main'
+                ? `w-full ${imageFitClass} rounded-2xl bg-slate-900/30 max-h-[540px] md:max-h-[600px]`
+                : `w-full max-h-[320px] ${imageFitClass} rounded-2xl bg-slate-900/30`;
+              return (
+                <figure key={`${currentSlide.id}-media-${idx}`} className={baseFigureClass}>
+                  <div className="relative">
+                    <img src={item.src} alt={item.alt} loading="lazy" className={imageClass} />
+                  </div>
+                  {(item.caption || item.description) && (
+                    <figcaption className="px-4 py-3 space-y-1">
+                      {item.caption && (
+                        <div className={`text-base font-semibold ${tone.caption}`}>
+                          {item.caption}
+                        </div>
+                      )}
+                      {item.description && (
+                        <div className={`text-sm leading-6 ${tone.description}`}>
+                          {item.description}
+                        </div>
+                      )}
+                    </figcaption>
+                  )}
+                </figure>
+              );
+            })}
+          </div>
+        );
+      };
+
+      return (
+        <div className={containerBase}>
+          {media.headline && (
+            <div
+              className={
+                placement === 'main'
+                  ? 'text-sm uppercase tracking-[0.3em] text-cyan-200/85 text-center'
+                  : 'text-sm uppercase tracking-[0.3em] text-cyan-200/80 text-center'
+              }
+            >
+              {media.headline}
+            </div>
+          )}
+          {renderFigures()}
+          {media.footnote && (
+            <div className={placement === 'main' ? 'text-xs text-white/65 text-center leading-5' : 'text-xs text-white/60 text-center leading-5'}>
+              {media.footnote}
+            </div>
+          )}
+        </div>
+      );
     };
 
     const sanitizedLines = (currentSlide.lines || []).map(stripLeadingBullet);
@@ -2204,9 +2895,17 @@ export default function SeminarLanding(): React.ReactElement {
                   <RevealPanel delay={150}>
                     <div className="bg-white/5 rounded-2xl px-6 py-8 text-left">
                       <div className="text-sm uppercase tracking-[0.3em] text-cyan-200/80 mb-4">
-                        AI×建築の進化タイムライン
+                        AI×建築アップデート
                       </div>
                       <Timeline entries={currentSlide.timeline} colorScheme="architecture" />
+                    </div>
+                  </RevealPanel>
+                )}
+
+                {showMainMedia && (
+                  <RevealPanel delay={220}>
+                    <div className="max-w-5xl mx-auto w-full">
+                      {renderMediaContainer('main')}
                     </div>
                   </RevealPanel>
                 )}
@@ -2262,98 +2961,8 @@ export default function SeminarLanding(): React.ReactElement {
                 </div>
               </div>
 
-              {/* サイドコンテンツ */}
-              {showSideContent && media && (
-                <div className="flex flex-col items-center justify-center space-y-6 text-left">
-                  {media.headline && (
-                    <div className="text-sm uppercase tracking-[0.3em] text-cyan-200/80 text-center">
-                      {media.headline}
-                    </div>
-                  )}
+              {showSideContent && renderMediaContainer('side')}
 
-                  {media.layout === 'grid' ? (
-                    <div
-                      className={`grid gap-4 w-full ${
-                        media.columns === 3 ? 'grid-cols-3' : media.columns === 2 ? 'grid-cols-2' : 'grid-cols-1'
-                      }`}
-                    >
-                      {media.items.map((item, idx) => {
-                        const tone = toneClasses(item.tone);
-                        const imageFitClass = item.fit === 'contain' ? 'object-contain' : 'object-cover';
-                        return (
-                          <figure
-                            key={`${currentSlide.id}-media-${idx}`}
-                            className={`bg-white/5 rounded-xl overflow-hidden border ${tone.border} shadow-lg`}
-                          >
-                            <img
-                              src={item.src}
-                              alt={item.alt}
-                              loading="lazy"
-                              className={`w-full h-32 ${imageFitClass} rounded-lg bg-slate-900/40`}
-                            />
-                            {(item.caption || item.description) && (
-                              <figcaption className="px-3 py-2 space-y-1">
-                                {item.caption && (
-                                  <div className={`text-sm font-semibold ${tone.caption}`}>
-                                    {item.caption}
-                                  </div>
-                                )}
-                                {item.description && (
-                                  <div className={`text-xs ${tone.description}`}>
-                                    {item.description}
-                                  </div>
-                                )}
-                              </figcaption>
-                            )}
-                          </figure>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    <div className="space-y-5 w-full">
-                      {media.items.map((item, idx) => {
-                        const tone = toneClasses(item.tone);
-                        const imageFitClass = item.fit === 'contain' ? 'object-contain' : 'object-cover';
-                        return (
-                          <figure
-                            key={`${currentSlide.id}-media-${idx}`}
-                            className={`bg-white/5 rounded-2xl overflow-hidden border ${tone.border} shadow-xl`}
-                          >
-                            <div className="relative">
-                              <img
-                                src={item.src}
-                                alt={item.alt}
-                                loading="lazy"
-                                className={`w-full max-h-[320px] ${imageFitClass} rounded-2xl bg-slate-900/30`}
-                              />
-                            </div>
-                            {(item.caption || item.description) && (
-                              <figcaption className="px-4 py-3 space-y-1">
-                                {item.caption && (
-                                  <div className={`text-base font-semibold ${tone.caption}`}>
-                                    {item.caption}
-                                  </div>
-                                )}
-                                {item.description && (
-                                  <div className={`text-sm leading-6 ${tone.description}`}>
-                                    {item.description}
-                                  </div>
-                                )}
-                              </figcaption>
-                            )}
-                          </figure>
-                        );
-                      })}
-                    </div>
-                  )}
-
-                  {media.footnote && (
-                    <div className="text-xs text-white/60 text-center leading-5">
-                      {media.footnote}
-                    </div>
-                  )}
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -2759,7 +3368,7 @@ export default function SeminarLanding(): React.ReactElement {
           <Card className="p-6 border border-slate-200 bg-white/95">
             <div className="grid gap-6 md:grid-cols-3">
               <div className="space-y-2">
-                <div className="text-sm font-semibold text-slate-900">ハンズオンで扱う領域</div>
+                <div className="text-sm font-semibold text-slate-900">実演で扱う領域</div>
                 <p className="text-sm text-slate-600 leading-6">議事録整形／現調ダイジェスト／AIプレゼン資料／SpotPDF差分／省エネ計算／GASオートメーション。</p>
               </div>
               <div className="space-y-2">
@@ -2902,6 +3511,64 @@ export default function SeminarLanding(): React.ReactElement {
           </Section>
         );
       })}
+
+      {/* GEMINI SHOWCASE */}
+      {GEMINI_SHOWCASES.map((show) => (
+        <Section
+          id={show.id}
+          key={show.id}
+          className="justify-start"
+          data-testid={`sec-${show.id}`}
+        >
+          <div className="max-w-6xl w-full mx-auto space-y-8">
+            <Card className="p-6 md:p-10 border border-slate-200 bg-white/95 space-y-8">
+              <div className="space-y-3 text-left md:text-center">
+                {show.kicker ? (
+                  <div className="text-xs uppercase tracking-[0.35em] text-cyan-600">{show.kicker}</div>
+                ) : null}
+                <h2 className="text-2xl md:text-4xl font-bold text-slate-900 leading-tight">{show.title}</h2>
+                {show.subtitle ? (
+                  <p className="text-base md:text-lg text-slate-600 leading-7 max-w-3xl mx-auto">
+                    {show.subtitle}
+                  </p>
+                ) : null}
+              </div>
+
+              <div className="grid gap-8 md:grid-cols-[minmax(0,0.42fr)_minmax(0,0.58fr)] items-start">
+                <div className="space-y-4 text-left">
+                  <ul className="space-y-3 text-slate-700">
+                    {show.points.map((point, idx) => (
+                      <li key={idx} className="flex items-start gap-3">
+                        <span className="mt-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-cyan-500/15 text-xs font-semibold text-cyan-600">
+                          {idx + 1}
+                        </span>
+                        <span className="leading-6 text-sm md:text-base">{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  {show.detail ? (
+                    <p className="text-sm text-slate-500 leading-6">{show.detail}</p>
+                  ) : null}
+                  {show.footnote ? (
+                    <div className="text-xs text-slate-500 leading-5">※ {show.footnote}</div>
+                  ) : null}
+                </div>
+
+                <div className="space-y-6">
+                  <ShowcaseMedia media={show.media} />
+                </div>
+              </div>
+            </Card>
+
+            {show.notes ? (
+              <div className="max-w-4xl mx-auto text-sm text-slate-600 bg-white/90 border border-slate-200 rounded-xl p-4">
+                <div className="font-semibold text-slate-900 mb-2">メモ</div>
+                <p className="leading-6 whitespace-pre-line">{show.notes}</p>
+              </div>
+            ) : null}
+          </div>
+        </Section>
+      ))}
 
       {/* RESOURCES */}
       <Section id="resources" className="mt-16 md:mt-24 justify-start" data-testid="sec-resources">
