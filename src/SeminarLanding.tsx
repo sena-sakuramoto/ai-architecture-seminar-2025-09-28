@@ -423,11 +423,11 @@ const CHAPTERS = [
   { no: 6, id: 'part1-tips', title: 'プロンプト活用Tips (55-60分)' },
   { no: 7, id: 'part1-notebook', title: 'Google NotebookLM 紹介 (60-70分)' },
   { no: 8, id: 'part2-workflow', title: '実務ワークフローの全体像 (70-90分)' },
-  { no: 9, id: 'part2-demo1', title: '活用① 現調→議事録→即提案 (90-115分)' },
+  { no: 9, id: 'part2-demo1', title: '活用① 現地調査でAIをフル活用する (90-115分)' },
   { no: 10, id: 'part2-demo2', title: '活用② SpotPDF 差分"5分決着" (115-130分)' },
   { no: 11, id: 'part2-demo3', title: '活用③ 省エネ（モデル建物法） (130-150分)' },
-  { no: 12, id: 'part2-demo4', title: '活用④ HP／資料の即作成（Canvas） (150-155分)' },
-  { no: 13, id: 'part2-demo5', title: '活用⑤ GASでタスク通知自動化 (155-160分)' },
+  { no: 12, id: 'part2-demo4', title: '活用④ HPと自作ゲームを作ろう (150-155分)' },
+  { no: 13, id: 'part2-demo5', title: '活用⑤ 無料で自動化してみよう (155-160分)' },
   { no: 14, id: 'part2-invoice', title: '活用⑥ サンプル自動請求 (160-170分)' },
   { no: 15, id: 'part3-summary', title: 'まとめと今後 (170-180分)' },
   { no: 16, id: 'survey', title: 'アンケート (180分-)' },
@@ -446,8 +446,8 @@ const CHAPTER_SUMMARIES: Record<string, string> = {
   'part2-demo1': '音声→議事録テンプレ→提案資料までの流れをライブ実演',
   'part2-demo2': 'A/B図面の差分抽出→自動ハイライト→コメント→PDF化',
   'part2-demo3': '入力最小化→再計算→提出ひな形の生成',
-  'part2-demo4': 'ChatGPT／Gemini CanvasでミニLP生成',
-  'part2-demo5': 'Spreadsheet→GAS→Gmail通知の雛形',
+  'part2-demo4': 'ChatGPT5とGeminiを使って自由にHP・ゲーム・アプリを作成',
+  'part2-demo5': 'タスク管理：当日や前日に担当者にメールが送られるシステムを無料で構築',
   'part2-invoice': '見積・実績データからサンプル請求書を自動生成し共有',
   'part3-summary': 'ケーススタディ＆KPI、小規模チーム運用ルール、ベストプラクティス10箇条',
   'survey': '本編終了直後、回答者に非公開ページのアクセスを解放',
@@ -1091,7 +1091,7 @@ const ShowcaseMedia: React.FC<{ media: SlideMedia }> = ({ media }) => {
                 src={item.src}
                 alt={item.alt}
                 loading="lazy"
-                className={`w-full ${imageFitClass} rounded-3xl bg-slate-900/40 ${columns === 1 ? 'max-h-[620px]' : 'max-h-[520px] md:max-h-[560px]'} mx-auto`}
+                className={`w-full ${imageFitClass} rounded-3xl bg-slate-900/40 ${columns === 1 ? 'max-h-[400px]' : 'max-h-[520px] md:max-h-[560px]'} mx-auto`}
               />
               {(item.caption || item.description) && (
                 <figcaption className="px-6 py-4 space-y-2">
@@ -1128,7 +1128,7 @@ const ShowcaseMedia: React.FC<{ media: SlideMedia }> = ({ media }) => {
               src={item.src}
               alt={item.alt}
               loading="lazy"
-              className={`w-full ${imageFitClass} rounded-3xl bg-slate-900/40 max-h-[620px] md:max-h-[660px]`}
+              className={`w-full ${imageFitClass} rounded-3xl bg-slate-900/40 max-h-[400px] md:max-h-[450px]`}
             />
             {(item.caption || item.description) && (
               <figcaption className="px-6 py-4 space-y-2">
@@ -1161,6 +1161,10 @@ const slideAssets = {
   kuraAfter1: new URL('../images/蔵サウナ写真/kura1 after.png', import.meta.url).href,
   kuraBefore2: new URL('../images/蔵サウナ写真/kura2 before.JPG', import.meta.url).href,
   kuraAfter2: new URL('../images/蔵サウナ写真/kura2 after.png', import.meta.url).href,
+  kuraBefore3: new URL('../images/画像生成/kura3 before.JPG', import.meta.url).href,
+  kuraAfter3: new URL('../images/画像生成/kura3 after.png', import.meta.url).href,
+  kuraBefore4: new URL('../images/画像生成/kura4 before.JPG', import.meta.url).href,
+  kuraAfter4: new URL('../images/画像生成/kura4 after.png', import.meta.url).href,
   youtubeSnapshot: new URL('../images/Youtube\u3000スクリーンショット.png', import.meta.url).href,
   whiteHotelTiktok: new URL('../images/ホワイトホテル鎌倉　スズキ　Tiktok.PNG', import.meta.url).href,
   geminiFacadeBefore1: new URL('../images/画像生成/ritumen01 before.png', import.meta.url).href,
@@ -1173,6 +1177,7 @@ const slideAssets = {
   geminiFacadeAfter4: new URL('../images/画像生成/ritumen04 after.png', import.meta.url).href,
   geminiFacadeBefore5: new URL('../images/画像生成/ritumen05 before.png', import.meta.url).href,
   geminiFacadeAfter5: new URL('../images/画像生成/ritumen05 after.png', import.meta.url).href,
+  spotPdfLogo: new URL('../images/SpotPDF-logo.ico', import.meta.url).href,
 };
 
 
@@ -1221,7 +1226,7 @@ const GEMINI_SHOWCASES: GeminiShowcase[] = [
   {
     id: 's-gemini-case1',
     kicker: 'CASE 1',
-    title: '夕景の立面提案',
+    title: '立面→パース作成',
     subtitle: '条件: 夕景 / 木質 / 間接照明',
     points: [
       '立面スケッチを読み込み、夕景と木質を強調した案を複数生成',
@@ -1288,7 +1293,7 @@ const GEMINI_SHOWCASES: GeminiShowcase[] = [
   {
     id: 's-gemini-case3',
     kicker: 'CASE 3',
-    title: '夜景サインスタディ',
+    title: 'サイン検討',
     subtitle: '条件: 夜景 / サイン位置 / 光量',
     points: [
       'サイン位置と光量を指定し、夜景での視認性を検証',
@@ -1394,7 +1399,7 @@ const SLIDES: Slide[] = [
     id: 's-hero',
     title: '実務で使える AI×建築セミナー',
     subtitle: '明日から"自分ごと"に落とし込む3時間',
-    goalStatement: '明日、チームにドヤれるAI導入ロードマップをここで描き切る',
+    goalStatement: '明日、みんなにドヤれる情報を持ち帰ろう',
     lines: [
       '建築チームにAIワークフローを持ち帰るための3時間',
       'ライブデモと対話で実務への転用ポイントを整理',
@@ -1409,9 +1414,9 @@ const SLIDES: Slide[] = [
     title: '講師紹介',
     subtitle: '櫻本 聖成 / Sakuramoto Sena',
     lines: [
-      '建築実務とDXをつなぐ Archi-Prisma Design works 代表',
+      '一級建築士事務所　Archi-Prisma Design works株式会社　代表取締役',
       'archisoft株式会社 代表取締役',
-      'AIと建築のワークフロー変革をテーマに活動',
+      'AIで建築業界を変える',
       'Instagram: @sena_archisoft（QRコード右側に表示）',
     ],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
@@ -1545,6 +1550,7 @@ const SLIDES: Slide[] = [
           alt: 'White Hotel Kamakura SNS ショート動画',
           caption: 'スタッフ鈴木のショート動画',
           description: 'SNSでの反響を活かした集客施策',
+          fit: 'contain',
           tone: 'accent',
         },
       ],
@@ -1564,7 +1570,7 @@ const SLIDES: Slide[] = [
     bg: 'linear-gradient(135deg,#7c3aed,#0f172a)',
     media: {
       layout: 'grid',
-      columns: 1,
+      columns: 2,
       headline: 'AI生成 Before / After',
       items: [
         {
@@ -1638,7 +1644,7 @@ const SLIDES: Slide[] = [
     goalStatement: '明日、チーム全員にAI活用の道筋を渡して「やってみよう」を引き出す',
     lines: [
       '学びは「聞く→試す→伝える→教える」の循環で定着する',
-      'セミナー内で明日の社内共有資料と導線を完成させる',
+      '今日知ったことは周りにどんどん伝えて業界全体でアップデートしよう',
       '復習と最新Tipsは Instagram (@sena_archisoft) でフォロー',
     ],
     toggles: [
@@ -1718,9 +1724,9 @@ const SLIDES: Slide[] = [
       },
     ],
     footnotes: [
-      '出典：国土交通省「建設業及び建設工事従事者の現状」(2024年)',
-      '参考：日本建築士事務所協会連合会「建築士事務所の経営実態調査」(2023年)',
-      '※AI導入検討率は自社セミナー参加者アンケート結果(n=127, 2024年7-9月)'
+      '出典：厚生労働省「職業安定業務統計」建築士有効求人倍率(2024年9月)',
+      '参考：国土交通省「建設業働き方改革加速化プログラム」労働時間調査(2023年)',
+      '※生産性向上・AI導入率は当社実施業界アンケート調査結果(n=127, 2024年7-9月実施)'
     ],
     bg: `linear-gradient(135deg,${semanticColors.architecture.primary},${semanticColors.neutral[900]})`,
   },
@@ -2056,7 +2062,7 @@ const SLIDES: Slide[] = [
   },
   {
     id: 's-gemini-case3',
-    title: 'Case 3｜夜景サインスタディ',
+    title: 'Case 3｜サイン検討',
     lines: [
       'サイン位置と光量を指定し、夜景での印象と視認性を検証',
       '複数案を比較しながら、サインのサイズと色味をすり合わせ',
@@ -2214,7 +2220,7 @@ const SLIDES: Slide[] = [
   },
   {
     id: 's-phase2-intro',
-    title: 'Phase 2｜業務ワークフロー',
+    title: 'Phase 2｜実務編',
     lines: [
       '調査→設計→コミュ→見積→省エネ→提出',
       'AI導線マップでROI (工数/誤検出/利益)',
@@ -2234,21 +2240,21 @@ const SLIDES: Slide[] = [
   },
   {
     id: 's-demo1',
-    title: '活用① 現調→議事録→提案',
+    title: '活用① 現地調査でAIをフル活用する',
     lines: [
-      '音声→議事録テンプレ→提案資料',
-      '構造化プロンプト＋表整形で高速化',
-      'Canvas / SpotPDF への導線',
+      '動画で風景に合わせて工事内容や現状指示→議事録まとめ→プロンプトで構造化',
+      'senaが作成したGeminiへのカスタム指示をプレゼント',
+      'ほしいパースの画角で写真を撮る→その場でGeminiでパース提案',
     ],
     bg: 'linear-gradient(135deg,#1e293b,#111827)',
   },
   {
     id: 's-demo1-hands',
-    title: 'Demo① 実演',
+    title: 'Demo① 現地調査AI活用実演',
     lines: [
-      'サンプル音声をNotebookLMに投入',
-      '「構造化して」で要点抽出',
-      '「表形式で」で提案骨子整形',
+      '現地調査動画をGeminiに投入→AIが現状と課題を抽出',
+      'カスタム指示で議事録を自動構造化（sena特製プロンプト公開）',
+      '現地写真→Geminiでその場パース生成→提案イメージ完成',
     ],
     bg: 'linear-gradient(135deg,#111827,#1f2937)',
   },
@@ -2256,10 +2262,74 @@ const SLIDES: Slide[] = [
     id: 's-demo1-out',
     title: 'Demo① 成果物',
     lines: [
-      '議事録骨子（個人成果物）',
-      '提案資料ドラフト',
-      '共有用プロンプトセット',
+      '現地調査議事録（構造化済み・即共有可能）',
+      'AIパース提案画像（複数パターン）',
+      'sena特製Geminiカスタム指示セット（参加者限定プレゼント）',
     ],
+    media: {
+      layout: 'grid',
+      columns: 2,
+      headline: '現地調査AI活用実例：Before / After',
+      items: [
+        {
+          src: slideAssets.kuraBefore1,
+          alt: '現地調査 Before 1',
+          caption: 'Before: 現地撮影',
+          description: '蔵外観の現況',
+          tone: 'muted',
+        },
+        {
+          src: slideAssets.kuraAfter1,
+          alt: '現地調査 After 1',
+          caption: 'After: AIパース',
+          description: 'Gemini生成提案イメージ',
+          tone: 'accent',
+        },
+        {
+          src: slideAssets.kuraBefore2,
+          alt: '現地調査 Before 2',
+          caption: 'Before: 内部現況',
+          description: '蔵内部の既存状況',
+          tone: 'muted',
+        },
+        {
+          src: slideAssets.kuraAfter2,
+          alt: '現地調査 After 2',
+          caption: 'After: 改修提案',
+          description: 'AIによる空間提案',
+          tone: 'accent',
+        },
+        {
+          src: slideAssets.kuraBefore3,
+          alt: '現地調査 Before 3',
+          caption: 'Before: 角度3',
+          description: '別角度からの現況',
+          tone: 'muted',
+        },
+        {
+          src: slideAssets.kuraAfter3,
+          alt: '現地調査 After 3',
+          caption: 'After: 提案3',
+          description: '多角度での提案検討',
+          tone: 'accent',
+        },
+        {
+          src: slideAssets.kuraBefore4,
+          alt: '現地調査 Before 4',
+          caption: 'Before: 角度4',
+          description: '最終角度での現況',
+          tone: 'muted',
+        },
+        {
+          src: slideAssets.kuraAfter4,
+          alt: '現地調査 After 4',
+          caption: 'After: 提案4',
+          description: '完成イメージの検証',
+          tone: 'accent',
+        },
+      ],
+      footnote: '現地で撮影→即座にGeminiでパース生成→その場で提案イメージを共有',
+    },
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
   },
   {
@@ -2270,6 +2340,19 @@ const SLIDES: Slide[] = [
       'コメント→PDF化→共有',
       '承認ログとしてDrive保存',
     ],
+    media: {
+      layout: 'stack',
+      items: [
+        {
+          src: slideAssets.spotPdfLogo,
+          alt: 'SpotPDF ロゴ',
+          caption: 'SpotPDF',
+          description: 'PDF差分検出ツール',
+          fit: 'contain',
+          tone: 'accent',
+        },
+      ],
+    },
     bg: 'linear-gradient(135deg,#1e293b,#475569)',
   },
   {
@@ -2304,21 +2387,21 @@ const SLIDES: Slide[] = [
   },
   {
     id: 's-demo4',
-    title: '活用④ Canvasで資料生成',
+    title: '活用④ HPと自作ゲームを作ろう',
     lines: [
-      'ChatGPT / Gemini CanvasでミニLP',
-      '1ブロック編集→保存',
-      '配布用ミニLPテンプレを提供',
+      'ChatGPT5とGeminiを使って好きにみんなで作ってみよう',
+      'HP、ゲーム、アプリ、何でもOK',
+      '参加者全員で自由に創作タイム',
     ],
     bg: 'linear-gradient(135deg,#111827,#1f2937)',
   },
   {
     id: 's-demo5',
-    title: '活用⑤ GASでタスク通知',
+    title: '活用⑤ 無料で自動化してみよう',
     lines: [
-      'Spreadsheet→GAS→Gmail通知',
-      'トリガ設定と権限の確認',
-      'コード挙動をその場で確認',
+      'タスク管理：当日や前日に担当者にメールが送られるようにしてみよう',
+      'Google SpreadsheetとGASを使った自動通知システム',
+      'DEMOでライブ実演→完成したコードをプレゼント',
     ],
     bg: 'linear-gradient(135deg,#1f2937,#0f172a)',
   },
@@ -2946,11 +3029,11 @@ export default function SeminarLanding(): React.ReactElement {
 
                 {currentSlide.timeline && currentSlide.timeline.length > 0 && (
                   <RevealPanel delay={150}>
-                    <div className="bg-white/5 rounded-2xl px-6 py-6 text-left min-h-[400px] overflow-hidden">
+                    <div className="bg-white/5 rounded-2xl px-6 py-4 text-left">
                       <div className="text-sm uppercase tracking-[0.3em] text-cyan-200/80 mb-4">
                         AI×建築アップデート
                       </div>
-                      <div className="h-full overflow-y-auto">
+                      <div className="max-h-[300px] overflow-y-auto">
                         <Timeline entries={currentSlide.timeline} colorScheme="architecture" />
                       </div>
                     </div>
@@ -2983,7 +3066,7 @@ export default function SeminarLanding(): React.ReactElement {
 
                 {currentSlide.barChart && (
                   <RevealPanel delay={300}>
-                    <div className="bg-white/5 rounded-2xl px-6 py-6 text-left">
+                    <div className="bg-white/10 rounded-2xl px-6 py-6 text-left border border-white/20">
                       <BarChart
                         title={currentSlide.barChart.title}
                         colorScheme={currentSlide.barChart.colorScheme}
