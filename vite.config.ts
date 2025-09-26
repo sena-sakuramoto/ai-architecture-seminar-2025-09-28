@@ -3,7 +3,7 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  base: '/ai-architecture-seminar-2025-09-28/',
+  base: '/ai-architecture-seminar-2025-09-28/aixarch-20250928-8dC2p/',
   build: {
     rollupOptions: {
       output: {
