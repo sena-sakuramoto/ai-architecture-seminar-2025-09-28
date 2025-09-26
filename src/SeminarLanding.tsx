@@ -1413,12 +1413,32 @@ export default function SeminarLanding(): React.ReactElement {
         e.preventDefault();
         return;
       }
+      if (k === 'escape' && slideMode) {
+        setSlideMode(false);
+        e.preventDefault();
+        return;
+      }
       if (k === 'p' && presenter && !slideMode) {
         window.print();
         e.preventDefault();
         return;
       }
-      if (!presenter || slideMode) return;
+      // スライドモードの場合
+      if (slideMode) {
+        if (k === 'arrowright' || k === 'pagedown' || k === ' ') {
+          setSlideIdx(Math.min(slideIdx + 1, CHAPTER_SECTIONS.length - 1));
+          e.preventDefault();
+          return;
+        }
+        if (k === 'arrowleft' || k === 'pageup') {
+          setSlideIdx(Math.max(slideIdx - 1, 0));
+          e.preventDefault();
+          return;
+        }
+        return;
+      }
+
+      if (!presenter) return;
       if (REVEAL_ENABLED && (k === '.' || k === 'enter')) {
         setRevealCount((c) => c + 1);
         e.preventDefault();
@@ -1499,6 +1519,88 @@ export default function SeminarLanding(): React.ReactElement {
     ));
   };
 
+  // スライドモードの場合は専用UI表示
+  if (slideMode) {
+    const currentSection = CHAPTER_SECTIONS[slideIdx] || CHAPTER_SECTIONS[0];
+    const visual = chapterVisuals[currentSection.id];
+
+    return (
+      <div className="h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white flex flex-col">
+        {/* スライドヘッダー */}
+        <div className="flex justify-between items-center p-6 bg-black/20">
+          <div className="flex items-center gap-4">
+            <div className="text-sm opacity-70">
+              {slideIdx + 1} / {CHAPTER_SECTIONS.length}
+            </div>
+            <div className="text-lg font-semibold">実務で使える AI×建築セミナー</div>
+          </div>
+          <div className="text-sm opacity-70">
+            ESC: 終了 | ←→: スライド移動 | N: ノート
+          </div>
+        </div>
+
+        {/* メインスライドエリア */}
+        <div className="flex-1 p-8 flex items-center justify-center">
+          <div className="max-w-6xl w-full">
+            <div className="grid gap-8 lg:grid-cols-[1fr,0.5fr]">
+              {/* 左側：メインコンテンツ */}
+              <div className="space-y-8">
+                {currentSection.kicker && (
+                  <div className="text-cyan-400 text-sm uppercase tracking-[0.3em] font-semibold">
+                    {currentSection.kicker}
+                  </div>
+                )}
+                <h1 className="text-5xl font-bold leading-tight">
+                  {currentSection.title}
+                </h1>
+                <ul className="space-y-4 text-xl">
+                  {currentSection.bullets.map((bullet, idx) => (
+                    <li key={idx} className="flex items-start gap-4">
+                      <div className="mt-2 w-2 h-2 bg-cyan-400 rounded-full flex-shrink-0" />
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* 右側：ビジュアル */}
+              <div className="space-y-6">
+                {visual && (
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+                    <div className="text-white/90 [&_*]:text-white/90 [&_th]:text-white/70 [&_td]:text-white/90">
+                      {visual}
+                    </div>
+                  </div>
+                )}
+
+                {/* プログレス表示 */}
+                <div className="bg-black/20 rounded-xl p-4">
+                  <div className="text-sm opacity-70 mb-2">進行状況</div>
+                  <div className="w-full bg-white/20 rounded-full h-2">
+                    <div
+                      className="bg-cyan-400 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${((slideIdx + 1) / CHAPTER_SECTIONS.length) * 100}%` }}
+                    />
+                  </div>
+                  <div className="text-xs opacity-50 mt-2">
+                    {Math.round(((slideIdx + 1) / CHAPTER_SECTIONS.length) * 100)}% 完了
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* フッター：時間表示 */}
+        <div className="p-4 bg-black/20 text-center">
+          <div className="text-sm opacity-70">
+            経過時間: {Math.floor(elapsedSec / 60)}:{String(elapsedSec % 60).padStart(2, '0')}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       data-testid="root-bg"
@@ -1515,38 +1617,31 @@ export default function SeminarLanding(): React.ReactElement {
         <div className="max-w-6xl w-full mx-auto grid gap-12 lg:grid-cols-[1.05fr,0.95fr] items-start">
           <div className="space-y-8">
             <div className="space-y-4">
-              <Badge>
-                <span aria-hidden>✨</span> 2025.09.28 Live + Archive
-              </Badge>
               <h1 className="text-[44px] font-semibold text-slate-900 leading-[1.1]">実務で使える AI×建築セミナー</h1>
-              <p className="text-base text-slate-600 leading-7">建築プロジェクトにAIを組み込むワークフローを、理解→実演→適用の3段階で体験。ライブ配信後は14日間のアーカイブで復習できます。</p>
+              <p className="text-base text-slate-600 leading-7">建築プロジェクトにAIを組み込むワークフローを、理解→実演→適用の3段階で体験</p>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
               <Card className="p-5 border border-slate-200 bg-white">
-                <div className="text-xs uppercase tracking-[0.3em] text-slate-500">Schedule</div>
-                <div className="mt-3 text-2xl font-semibold text-slate-900">2025.09.28（日）<br className="hidden md:block" />13:00-16:30 JST</div>
-                <div className="mt-2 text-xs text-slate-500">オンラインライブ／アーカイブ視聴14日</div>
+                <div className="text-xs uppercase tracking-[0.3em] text-slate-500">Today's Session</div>
+                <div className="mt-3 text-2xl font-semibold text-slate-900">13:00-16:30<br className="hidden md:block" />180分プログラム</div>
+                <div className="mt-2 text-xs text-slate-500">理解→実演→適用の3段階</div>
               </Card>
               <Card className="p-5 border border-slate-200 bg-white">
-                <div className="text-xs uppercase tracking-[0.3em] text-slate-500">Entry</div>
-                <div className="mt-3 text-2xl font-semibold text-slate-900">Invite: AP-2025-SEMINAR</div>
-                <div className="mt-2 text-xs text-slate-500">定員120名／法人申込可・1アカウント5名視聴</div>
+                <div className="text-xs uppercase tracking-[0.3em] text-slate-500">Controls</div>
+                <div className="mt-3 text-2xl font-semibold text-slate-900">S: スライド<br className="hidden md:block" />N: ノート</div>
+                <div className="mt-2 text-xs text-slate-500">Shift+P: プレゼンターモード</div>
               </Card>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-3 text-sm text-slate-600">
+            <div className="grid gap-4 md:grid-cols-2 text-sm text-slate-600">
               <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                <div className="text-xs text-slate-500 uppercase tracking-[0.3em]">対象</div>
-                <p className="mt-2 leading-6">設計・デザイン／ゼネコン／デベロッパー／DX推進</p>
+                <div className="text-xs text-slate-500 uppercase tracking-[0.3em]">進行方式</div>
+                <p className="mt-2 leading-6">このページをスライドとして使用<br/>プレゼンター機能・ノート表示対応</p>
               </div>
               <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                <div className="text-xs text-slate-500 uppercase tracking-[0.3em]">進行</div>
-                <p className="mt-2 leading-6">このページをスライドとして使用（HUD・ノート対応）</p>
-              </div>
-              <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                <div className="text-xs text-slate-500 uppercase tracking-[0.3em]">配布</div>
-                <p className="mt-2 leading-6">ワークフロー図／提案テンプレ／チェックリスト／GAS雛形</p>
+                <div className="text-xs text-slate-500 uppercase tracking-[0.3em]">配布物</div>
+                <p className="mt-2 leading-6">ワークフロー図・提案テンプレ<br/>チェックリスト・GAS雛形</p>
               </div>
             </div>
 
