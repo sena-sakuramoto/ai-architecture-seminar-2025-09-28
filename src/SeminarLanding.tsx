@@ -743,7 +743,7 @@ const SLIDES: Slide[] = [
   {
     id: 's-opening',
     title: '講師紹介',
-    subtitle: '櫻本 聖成（さくらもと せいな）',
+    subtitle: '櫻本 聖成 / Sakuramoto Sena',
     lines: [
       '• 一級建築士事務所 Archi-Prisma Design works 株式会社　代表取締役',
       '• archisoft株式会社　代表取締役',
@@ -1275,78 +1275,6 @@ const SLIDES: Slide[] = [
   },
 ];
 
-// ===== SlideOverlay Component =====
-const SlideOverlay: React.FC<{ visible: boolean; index: number; setIndex: (idx: number) => void; onExit: () => void }> = ({
-  visible,
-  index,
-  setIndex,
-  onExit,
-}) => {
-  if (!visible) return null;
-
-  const [blank, setBlank] = useState<'black' | 'white' | null>(null);
-  const [fitContain, setFitContain] = useState(false);
-
-  const s = SLIDES[index] || SLIDES[0];
-
-  useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onExit();
-      if (e.key === 'ArrowLeft') setIndex(Math.max(0, index - 1));
-      if (e.key === 'ArrowRight') setIndex(Math.min(SLIDES.length - 1, index + 1));
-      if (e.key === ' ') setIndex(Math.min(SLIDES.length - 1, index + 1));
-      if (e.key === 'b' || e.key === 'B') setBlank(blank === 'black' ? null : 'black');
-      if (e.key === 'w' || e.key === 'W') setBlank(blank === 'white' ? null : 'white');
-      if (e.key === 'f' || e.key === 'F') setFitContain(!fitContain);
-    };
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  }, [index, setIndex, onExit, blank, fitContain]);
-
-  if (blank) {
-    return (
-      <div
-        data-testid="slide-overlay"
-        className="fixed inset-0 z-50"
-        style={{ background: blank === 'black' ? '#000' : '#fff' }}
-      />
-    );
-  }
-
-  return (
-    <div data-testid="slide-overlay" className="fixed inset-0 z-50 text-white" style={{ background: s.bg || '#0f172a' }}>
-      <div className={`w-full h-full flex items-center justify-center p-8 ${fitContain ? '' : 'object-cover'}`}>
-        <div className="max-w-6xl w-full">
-          {s.title ? (
-            <h2 className="font-semibold" style={{ fontSize: 'clamp(28px, 6vw, 68px)', lineHeight: 1.1 }}>
-              {s.title}
-            </h2>
-          ) : null}
-          {s.subtitle ? (
-            <p className="opacity-90 mt-2" style={{ fontSize: 'clamp(16px, 3.2vw, 28px)' }}>
-              {s.subtitle}
-            </p>
-          ) : null}
-          {s.lines && s.lines.length ? (
-            <ul className="mt-4 space-y-2">
-              {s.lines.map((t, i) => (
-                <li key={i} className="opacity-90" style={{ fontSize: 'clamp(14px, 2.4vw, 24px)' }}>
-                  - {t}
-                </li>
-              ))}
-            </ul>
-          ) : null}
-        </div>
-      </div>
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-3 px-4 py-2 rounded-full bg-black/50 text-white text-xs">
-        <span>
-          {index + 1} / {SLIDES.length}
-        </span>
-        <span className="opacity-80 hidden md:inline">←/→ or Space / Esc / F / B / W</span>
-      </div>
-    </div>
-  );
-};
 
 // ===== Notes Overlay =====
 const NotesOverlay: React.FC<{ open: boolean; text: string; onClose: () => void }> = ({ open, text, onClose }) => {
@@ -1647,14 +1575,12 @@ export default function SeminarLanding(): React.ReactElement {
                           <div className="text-slate-800 font-semibold text-sm">Instagram</div>
                           <div className="text-slate-600 text-xs">@sena_archisoft</div>
                         </div>
-                        {/* QRコードプレースホルダー - 実際のQRコードに置き換え */}
-                        <div className="w-48 h-48 bg-slate-100 border-2 border-slate-300 flex items-center justify-center rounded-lg">
-                          <div className="text-center text-slate-500 text-xs">
-                            <div className="mb-2">📱 QRコード</div>
-                            <div>Instagram</div>
-                            <div>@sena_archisoft</div>
-                          </div>
-                        </div>
+                        {/* Instagram QRコード画像 */}
+                        <img
+                          src="./images/senaインスタ.jpeg"
+                          alt="Instagram QRコード @sena_archisoft"
+                          className="w-48 h-48 object-contain rounded-lg"
+                        />
                       </div>
                       <div className="text-sm opacity-70 text-center">
                         スマートフォンで<br/>スキャンしてください
@@ -2451,7 +2377,6 @@ export default function SeminarLanding(): React.ReactElement {
 
       {/* Overlays */}
       <NotesOverlay open={notesOpen} text={notesText} onClose={() => setNotesOpen(false)} />
-      <SlideOverlay visible={slideMode} index={slideIdx} setIndex={setSlideIdx} onExit={() => setSlideMode(false)} />
     </div>
   );
 }
