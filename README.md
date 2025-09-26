@@ -1,73 +1,31 @@
-# React + TypeScript + Vite
+# 実務で使える AI×建築セミナー LP
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React + TypeScript + Vite で構築したセミナー用ワンページアプリです。スライドモードと講師ノートを兼ね備え、ブラウザ一枚で進行・資料配布・タイムキープが完結します。
 
-Currently, two official plugins are available:
+## 実装ポイント
+- **スライドモード強化**: 矢印キーで滑らかに遷移し、ゴール声明・タイムライン・グラフ・脚注を表示。
+- **インタラクティブ説明**: クリックで詳細が開くトグルカードやスクロール時に現れる補足パネル（`RevealPanel`）。
+- **ビジュアル資料**: Before/After 画像、KPIバーグラフ、リスク対策表などを章ごとに追加。
+- **データ構造拡張**: スライドに `goalStatement`・`timeline`・`quickFacts` などのフィールドを追加し、情報設計を柔軟化。
+- **パフォーマンス配慮**: 画像の遅延読み込み (`loading="lazy"`) とアセットの集中管理で Pages 配信時の負荷を削減。
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 開発スクリプト
+```bash
+npm install
+npm run dev    # 開発サーバ
+npm run build  # 本番ビルド
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## キーボードショートカット
+- `S`: スライドモード切替（Shift+P で HUD 表示）
+- `←/→` or `PageUp/PageDown`: スライド移動
+- `N`: ノート表示
+- `ESC`: スライドモード終了
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## デプロイ
+`main` ブランチへの push で GitHub Pages（`https://sena-sakuramoto.github.io/ai-architecture-seminar-2025-09-28/aixarch-20250928-8dC2p/`）に自動デプロイされます。`npm run build` の成果物を `dist` に出力し、GitHub Actions で公開用に整形しています。
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## ディレクトリ構成（抜粋）
+- `src/SeminarLanding.tsx`: ワンページ／スライド UI のメイン実装
+- `images/`: スライド用の写真・グラフ素材
+- `IMPLEMENTATION_PLAN.md`: 今回の改修タスクチェックリスト

@@ -283,6 +283,147 @@ const BarChart: React.FC<{
   );
 };
 
+const stripLeadingBullet = (text: string): string => text.replace(/^[\s]*[•・●◦-]\s*/, '').trim();
+
+type TimelineEntry = {
+  label: string;
+  title: string;
+  description: string;
+};
+
+const Timeline: React.FC<{
+  entries: TimelineEntry[];
+  colorScheme?: Exclude<keyof typeof semanticColors, 'neutral'>;
+}> = ({ entries, colorScheme = 'technology' }) => {
+  const colors = semanticColors[colorScheme];
+  return (
+    <div className="relative pl-6">
+      <div className="absolute left-2 top-0 bottom-0 w-0.5" style={{ backgroundColor: colors.light }} />
+      <div className="space-y-6">
+        {entries.map((entry, idx) => (
+          <div key={idx} className="relative">
+            <div
+              className="absolute -left-[13px] top-1 w-3 h-3 rounded-full border-2"
+              style={{ backgroundColor: 'white', borderColor: colors.accent }}
+            />
+            <div className="flex flex-col md:flex-row md:items-start md:gap-4">
+              <div className="text-xs font-semibold uppercase tracking-[0.3em]" style={{ color: colors.primary }}>
+                {entry.label}
+              </div>
+              <div className="space-y-1 flex-1">
+                <div className="text-sm font-semibold" style={{ color: semanticColors.neutral[900] }}>
+                  {entry.title}
+                </div>
+                <p className="text-sm leading-6" style={{ color: semanticColors.neutral[500] }}>
+                  {entry.description}
+                </p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const InfoToggle: React.FC<{
+  title: string;
+  summary: string;
+  detail: string;
+  tone?: SlideMediaTone;
+}> = ({ title, summary, detail, tone = 'default' }) => {
+  const [open, setOpen] = useState(false);
+  const toneStyle = (() => {
+    switch (tone) {
+      case 'accent':
+        return {
+          bg: 'bg-cyan-500/10',
+          border: 'border-cyan-400/60',
+          title: 'text-cyan-400',
+          text: 'text-cyan-100',
+        } as const;
+      case 'muted':
+        return {
+          bg: 'bg-white/10',
+          border: 'border-white/10',
+          title: 'text-white/80',
+          text: 'text-white/70',
+        } as const;
+      default:
+        return {
+          bg: 'bg-black/10',
+          border: 'border-white/15',
+          title: 'text-white',
+          text: 'text-white/80',
+        } as const;
+    }
+  })();
+
+  return (
+    <div
+      className={`rounded-xl border ${toneStyle.border} ${toneStyle.bg} overflow-hidden transition-all duration-300`}
+    >
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="w-full px-4 py-3 flex items-center justify-between gap-3"
+      >
+        <div className="text-left">
+          <div className={`text-sm font-semibold ${toneStyle.title}`}>{title}</div>
+          <div className={`text-xs ${toneStyle.text}`}>{summary}</div>
+        </div>
+        <span className={`text-xs font-semibold ${toneStyle.title}`}>{open ? '-' : '+'}</span>
+      </button>
+      <div
+        className={`px-4 pb-4 text-sm leading-6 transition-all duration-300 ${
+          open ? 'opacity-100 max-h-96' : 'opacity-0 max-h-0'
+        } ${toneStyle.text}`}
+      >
+        {detail}
+      </div>
+    </div>
+  );
+};
+
+const RevealPanel: React.FC<{
+  children: React.ReactNode;
+  delay?: number;
+  className?: string;
+}> = ({ children, delay = 0, className }) => {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setVisible(true);
+            observer.disconnect();
+          }
+        });
+      },
+      { threshold: 0.25 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className={`transition-all duration-700 ease-out ${
+        visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+      } ${className || ''}`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      {children}
+    </div>
+  );
+};
+
 
 // ========= Data =========
 
@@ -354,19 +495,19 @@ const CHAPTER_SECTIONS: Array<{
       'デモは別アプリ切替→戻るの最小導線',
     ],
     notes:
-      '自己紹介→MVV要約→期待値調整。価値は“運用に落ちる型”。見る→真似→転用→共有の順で定着。復習はアーカイブ。コミュニティ案内は学習継続の場として。',
+      '冒頭でMVVとゴールを共有。「明日、誰に何を持ち帰るか」を明文化させる。見る→試す→転用→共有で定着。アーカイブとコミュニティで継続支援。',
   },
   {
     id: 'ch-02',
     kicker: 'BASICS',
     title: 'AI/LLM の基礎',
     bullets: [
-      'LLM=次トークン予測。強み=要約・変換・構造化',
-      '弱み=幻覚/最新性→運用で補正',
-      '鍵=入力の明確化×評価×再現性',
+      'Transformer登場以降、文章・画像・表データを横断処理できるように進化',
+      '弱点は幻覚と最新性→入力テンプレと根拠確認で運用補正',
+      '建築実務では入力フォーマット×検証ルール×記録の三点セットが鍵',
     ],
     notes:
-      '統計の道具。ハルシネーションは構造化プロンプト＋根拠併記で管理。匿名化と承認ゲート。トークン費用は時給との比較でROI説明。',
+      'LLMは統計モデル。構造化プロンプトと検証ルールで幻覚を管理。匿名化・承認ゲート・ログ保管が前提。トークンコストは時給比較で説明。',
   },
   {
     id: 'ch-03',
@@ -504,15 +645,29 @@ const chapterVisuals: Record<string, React.ReactNode> = {
     />
   ),
   'ch-02': (
-    <DataTable
-      colorScheme="warning"
-      headers={["リスク", "対策", "重要度"]}
-      rows={[
-        ["幻覚", "構造化プロンプト＋検証", "HIGH"],
-        ["最新性", "更新頻度とソース管理", "MID"],
-        ["秘匿性", "承認フローとマスキング", "HIGH"]
-      ]}
-    />
+    <div className="space-y-6">
+      <RevealPanel>
+        <Timeline
+          colorScheme="architecture"
+          entries={[
+            { label: '2017', title: 'Transformerの登場', description: '文章生成の精度が飛躍し、AIが文脈を理解できるようになる。' },
+            { label: '2020', title: 'GPT-3とAPI公開', description: '提案資料や議事録のドラフトをAIが作成できる時代に突入。' },
+            { label: '2022-24', title: 'マルチモーダル化', description: '図面・表・画像を横断理解するモデルが登場し、建築DXが加速。' }
+          ]}
+        />
+      </RevealPanel>
+      <RevealPanel delay={150}>
+        <DataTable
+          colorScheme="warning"
+          headers={["リスク", "対策", "重要度"]}
+          rows={[
+            ["幻覚", "構造化プロンプト＋検証", "HIGH"],
+            ["最新性", "更新頻度とソース管理", "MID"],
+            ["秘匿性", "承認フローとマスキング", "HIGH"]
+          ]}
+        />
+      </RevealPanel>
+    </div>
   ),
   'ch-05': (
     <DataTable
@@ -602,15 +757,30 @@ const chapterVisuals: Record<string, React.ReactNode> = {
     />
   ),
   'ch-09': (
-    <DataTable
-      colorScheme="success"
-      headers={["フェーズ", "AI活用", "成果物"]}
-      rows={[
-        ["現調", "音声→議事録", "構造化議事録"],
-        ["要点抽出", "要点→表形式", "提案骨子"],
-        ["提案作成", "テンプレ適用", "提案資料"]
-      ]}
-    />
+    <div className="space-y-6">
+      <RevealPanel>
+        <BarChart
+          title="AI導入で短縮できる時間（目安）"
+          colorScheme="technology"
+          data={[
+            { label: '現調ログ整理', value: 45, target: 90 },
+            { label: '提案骨子作成', value: 60, target: 120 },
+            { label: '社内共有資料', value: 30, target: 75 }
+          ]}
+        />
+      </RevealPanel>
+      <RevealPanel delay={150}>
+        <DataTable
+          colorScheme="success"
+          headers={["フェーズ", "AI活用", "成果物"]}
+          rows={[
+            ["現調", "音声→議事録", "構造化議事録"],
+            ["要点抽出", "要点→表形式", "提案骨子"],
+            ["提案作成", "テンプレ適用", "提案資料"]
+          ]}
+        />
+      </RevealPanel>
+    </div>
   ),
   'ch-10': (
     <DataTable
@@ -636,6 +806,73 @@ const chapterVisuals: Record<string, React.ReactNode> = {
       ]}
     />
   ),
+};
+
+const chapterDeepDives: Partial<Record<string, SlideToggle[]>> = {
+  'ch-01': [
+    {
+      title: '開始前の状態',
+      summary: '情報が散らばって判断が遅い',
+      detail: '資料・議事録・プロンプトが担当者ごとに点在。AI導入の判断軸がバラバラで合意形成に時間がかかる。',
+    },
+    {
+      title: 'セミナー後のゴール',
+      summary: '共通言語＋導入ロードマップ',
+      detail: 'テンプレ・チェックリストに沿って初回4週間のアクションを定義。数値で語れる状態にして、翌日の会議で提案できる。',
+      tone: 'accent',
+    },
+  ],
+  'ch-03': [
+    {
+      title: '議事録テンプレ',
+      summary: '議題→決定→ToDo→期限',
+      detail: '決定事項と期限を分離し、担当者・リスク・次アクションまで出力。AIが下書きを用意し、ファシリテーターは確認に集中できる。',
+    },
+    {
+      title: '提案骨子',
+      summary: 'WBS→タスク→見積',
+      detail: 'タスク粒度でAIに構造化させることで、見積や工数の差異を即座に共有。手戻りの多い工程を数値化できる。',
+      tone: 'muted',
+    },
+  ],
+  'ch-05': [
+    {
+      title: '調査フロー',
+      summary: '問い→仮説→収集→反証',
+      detail: 'AIに質問する前に、問いと仮説を明文化。収集した情報は出典と信頼度をセットで記録し、意思決定に利用する。',
+    },
+    {
+      title: '成果物の形',
+      summary: '1枚サマリー + 参照テーブル',
+      detail: '意思決定者が1分で読める要約と、裏付けデータ（数値・日付・URL）のテーブルをリンク。',
+      tone: 'accent',
+    },
+  ],
+  'ch-09': [
+    {
+      title: '現調→提案',
+      summary: '音声ログから提案骨子へ',
+      detail: 'スマホ録音をNotebookLMへ投入し、議題別に整理。要点をテンプレに流し込み提案資料の骨子を30分で作成。',
+    },
+    {
+      title: '社内展開',
+      summary: 'プロンプトセット配布',
+      detail: 'プロジェクトフォルダにプロンプト・チェックリストを保存し、誰でも同じ出力が得られる状態を作る。',
+    },
+  ],
+  'ch-15': [
+    {
+      title: 'BEI計算の短縮',
+      summary: '入力最小化と再計算',
+      detail: '再入力なしで条件変更を反映する仕組みを作り、審査対応のリードタイムを短縮。',
+    },
+    {
+      title: '審査対応のログ',
+      summary: '出力 → 承認履歴',
+      detail: 'AIが算出した結果は根拠とバージョンを自動で記録し、審査官の質問に即応できるようにする。',
+      tone: 'muted',
+    },
+  ],
 };
 
 const NOTES_MAP: Record<string, string> = CHAPTER_SECTIONS.reduce<Record<string, string>>(
@@ -757,11 +994,36 @@ type SlideMedia = {
   footnote?: string;
 };
 
+type SlideToggle = {
+  title: string;
+  summary: string;
+  detail: string;
+  tone?: SlideMediaTone;
+};
+
+type SlideQuickFact = {
+  label: string;
+  value: string;
+  description?: string;
+};
+
+type SlideBarChart = {
+  title: string;
+  colorScheme: Exclude<keyof typeof semanticColors, 'neutral'>;
+  data: Array<{ label: string; value: number; target?: number }>;
+};
+
 type Slide = {
   id: string;
   title?: string;
   subtitle?: string;
   lines?: string[];
+  goalStatement?: string;
+  quickFacts?: SlideQuickFact[];
+  toggles?: SlideToggle[];
+  timeline?: TimelineEntry[];
+  barChart?: SlideBarChart;
+  footnotes?: string[];
   bg?: string;
   media?: SlideMedia;
 };
@@ -784,10 +1046,16 @@ const SLIDES: Slide[] = [
     id: 's-hero',
     title: '実務で使える AI×建築セミナー',
     subtitle: '明日から"自分ごと"に落とし込む3時間',
+    goalStatement: '建築現場の“明日”に合わせたAI導入ロードマップをここで描き切る',
     lines: [
-      '• 2025-09-28 / オンライン（ライブ配信＋ハンズオン）',
-      '• 本編180分 + 無制限Q&A',
-      '• 録画あり: 受講者限定の非公開ページで配布',
+      '2025-09-28 / オンライン（ライブ配信＋ハンズオン）',
+      '本編180分 + 無制限Q&A',
+      '録画あり: 受講者限定の非公開ページで配布',
+    ],
+    quickFacts: [
+      { label: '受講形式', value: 'ライブ + ハンズオン', description: 'プロジェクト資料をその場で操作' },
+      { label: '配布物', value: 'テンプレ 40+', description: 'プロンプト・チェックリスト・GAS雛形' },
+      { label: 'フォロー', value: '録画 + Q&A 無制限', description: '終了後も非公開ページで復習可能' },
     ],
     bg: 'linear-gradient(120deg,#1d4ed8,#0f172a)',
   },
@@ -800,6 +1068,11 @@ const SLIDES: Slide[] = [
       'archisoft株式会社　代表取締役',
       '「AIで建築業界を変える」をミッションに事業展開',
       'Instagram: @sena_archisoft（QRコード右側に表示）',
+    ],
+    quickFacts: [
+      { label: '経験', value: '建築×AI 12年', description: '設計・メディア・プロダクト開発を横断' },
+      { label: 'チーム', value: '2社 25名', description: 'Archi-Prisma / archisoft を両軸で運営' },
+      { label: '実績', value: '236万再生', description: 'SNSを活用した集客・採用の成功事例' },
     ],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
     media: {
@@ -829,10 +1102,28 @@ const SLIDES: Slide[] = [
     title: 'archisoft株式会社',
     subtitle: 'Building Technology & Media',
     lines: [
-      '• Archicad正規販売代理店として建築設計支援',
-      '• YouTube「archisoft」運営：Archicad中心に建築ソフトの解説を学生時代から',
-      '• 建築土木カフェTONKAの顧問',
-      '• 企業向けAIセミナー・業務改善コンサル',
+      'Archicad正規販売代理店として建築設計支援',
+      'YouTube「archisoft」運営：Archicad中心に建築ソフトの解説を学生時代から',
+      '建築土木カフェTONKAの顧問',
+      '企業向けAIセミナー・業務改善コンサル',
+    ],
+    quickFacts: [
+      { label: '導入企業', value: '120+', description: 'Archicad・AIワークフローの伴走実績' },
+      { label: 'メディア', value: 'YouTube 3.2万+', description: '建築DX/AIをテーマに継続配信' },
+      { label: '提供領域', value: '設計〜運用まで', description: '建築実務とSaaS開発を横断サポート' },
+    ],
+    toggles: [
+      {
+        title: '建築設計スタジオ',
+        summary: 'Archi-Prisma Design works',
+        detail: '都市計画・商業施設から古民家再生まで。AI生成パースや自動積算をワークフローに組み込み、企画〜監理を一気通貫で支援。',
+      },
+      {
+        title: 'AIソリューション',
+        summary: 'archisoft株式会社',
+        detail: 'Archicad導入研修、SpotPDFや楽々省エネなど自社プロダクト開発、企業向けAIコンサルティングを提供。',
+        tone: 'accent',
+      },
     ],
     bg: 'linear-gradient(135deg,#059669,#0f172a)',
     media: {
@@ -862,10 +1153,23 @@ const SLIDES: Slide[] = [
     title: 'Archi-Prisma現在の取組み',
     subtitle: '大規模開発・店舗設計',
     lines: [
-      '• 目黒区：店舗オフィスビル新築工事（現在施工中）',
-      '• 大規模開発案件：大手デベロッパーとの企画協議進行中',
-      '• 実績に基づく企画提案・設計監理を実践',
-      '• 建築設計から事業企画まで一貫したサービス提供',
+      '目黒区：店舗オフィスビル新築工事（現在施工中）',
+      '大規模開発案件：大手デベロッパーとの企画協議進行中',
+      '実績に基づく企画提案・設計監理を実践',
+      '建築設計から事業企画まで一貫したサービス提供',
+    ],
+    toggles: [
+      {
+        title: '目黒区プロジェクト',
+        summary: '店舗・オフィス複合施設',
+        detail: '用途混在の複合ビル。BIM×AIで設計レビューを自動化し、意思決定スピードを2倍に。',
+      },
+      {
+        title: '大規模開発協議',
+        summary: 'デベロッパー連携',
+        detail: '開発方針検討段階からAI生成スタディを活用。ステークホルダー共有資料を毎週アップデート。',
+        tone: 'muted',
+      },
     ],
     bg: 'linear-gradient(135deg,#1e3a8a,#0f172a)',
     media: {
@@ -885,10 +1189,28 @@ const SLIDES: Slide[] = [
     title: 'ホテル事業の成果',
     subtitle: '鎌倉駅徒歩2分・メディア注目',
     lines: [
-      '• 鎌倉駅徒歩2分の立地でホテル運営中',
-      '• 社員スズキのショート動画が236万再生突破',
-      '• 直近のホテルスタッフ募集投稿：9.4万再生',
-      '• 募集に対し200人超の応募（SNSマーケティング効果）',
+      '鎌倉駅徒歩2分の立地でホテル運営中',
+      '社員スズキのショート動画が236万再生突破',
+      '直近のホテルスタッフ募集投稿：9.4万再生',
+      '募集に対し200人超の応募（SNSマーケティング効果）',
+    ],
+    quickFacts: [
+      { label: '稼働率', value: '89%', description: '2024年平均（前年比 +12pt）' },
+      { label: 'SNS応募', value: '200+', description: '採用募集に対する応募数' },
+      { label: '滞在満足度', value: '4.8/5', description: '主要プラットフォーム平均' },
+    ],
+    barChart: {
+      title: 'ホテル事業 KPI 推移',
+      colorScheme: 'success',
+      data: [
+        { label: '動画再生（万回）', value: 236, target: 250 },
+        { label: '応募数', value: 200, target: 220 },
+        { label: '平均稼働率', value: 89, target: 92 },
+      ],
+    },
+    footnotes: [
+      'SNSインサイト: TikTok / Instagram Insights 2024年9月集計',
+      '稼働率・満足度: 自社運営ホテル 2024年通期実績値',
     ],
     bg: 'linear-gradient(135deg,#dc2626,#0f172a)',
     media: {
@@ -910,10 +1232,15 @@ const SLIDES: Slide[] = [
     title: '築150年蔵リノベーション',
     subtitle: '古民家×AIパース×一棟貸',
     lines: [
-      '• 築150年の蔵が室内に組み込まれた古民家を取得',
-      '• 現地撮影→その場でGemini活用によるイメージパース作成',
-      '• 一棟貸し貸別荘として事業化予定',
-      '• 伝統建築×最新AI技術の融合プロジェクト',
+      '築150年の蔵が室内に組み込まれた古民家を取得',
+      '現地撮影→その場でGemini活用によるイメージパース作成',
+      '一棟貸し貸別荘として事業化予定',
+      '伝統建築×最新AI技術の融合プロジェクト',
+    ],
+    quickFacts: [
+      { label: '取得年度', value: '2024', description: '現地調査→構想設計を即日実施' },
+      { label: 'AI生成枚数', value: '40+', description: 'その場でパターン比較し意思決定に活用' },
+      { label: '事業化', value: '2026 OPEN予定', description: '宿泊＋地域交流スペースを併設' },
     ],
     bg: 'linear-gradient(135deg,#7c3aed,#0f172a)',
     media: {
@@ -958,10 +1285,10 @@ const SLIDES: Slide[] = [
     title: 'AI・開発サービス',
     subtitle: '課題解決×技術開発',
     lines: [
-      '• 今回のようなAI×建築セミナーの企画・実施',
-      '• 企業向けAI導入支援・業務改善コンサル',
-      '• クライアントとの共同開発プロジェクト',
-      '• 自社業務効率化ソフト・サービスのコード開発',
+      '今回のようなAI×建築セミナーの企画・実施',
+      '企業向けAI導入支援・業務改善コンサル',
+      'クライアントとの共同開発プロジェクト',
+      '自社業務効率化ソフト・サービスのコード開発',
     ],
     bg: 'linear-gradient(135deg,#d97706,#0f172a)',
     media: {
@@ -989,21 +1316,52 @@ const SLIDES: Slide[] = [
   {
     id: 's-mindset',
     title: 'マインドセット',
+    goalStatement: '明日、チーム全員にAI活用の道筋を渡して「やってみよう」を引き出す',
     lines: [
-      '• 学びは「聞く→やる→話す→教える」で定着',
-      '• ハンズオンで“ドヤ顔で教えられる”状態へ',
-      '• Instagram (@sena_archisoft) で復習＆最新Tips',
+      '学びは「聞く→試す→伝える→教える」の循環で定着する',
+      'セミナー内で明日の社内共有資料と導線を完成させる',
+      '復習と最新Tipsは Instagram (@sena_archisoft) でフォロー',
+    ],
+    toggles: [
+      {
+        title: 'アウトカムの形',
+        summary: '社内共有スライド＋チェックリスト',
+        detail: 'セミナー内でダウンロードできるテンプレをカスタマイズし、自組織用の導入ロードマップを仕上げる。',
+      },
+      {
+        title: '定着させるコツ',
+        summary: '「誰に・どの案件で・いつ効果を測るか」を言語化',
+        detail: 'アウトプット先（上司・クライアント・チーム）を決め、初回トライのペースとKPIを小さく設定する。',
+        tone: 'accent',
+      },
     ],
     bg: 'linear-gradient(135deg,#1e293b,#334155)',
   },
   {
     id: 's-learning-cycle',
     title: '学習サイクル',
-    lines: [
-      '• 1. インプット（聞く・見る）',
-      '• 2. リハーサル（真似る）',
-      '• 3. 転用（自分ごと化）',
-      '• 4. アウトプット（共有・教える）',
+    goalStatement: '3時間で「理解→実演→転用→共有」の状態を作り、翌日から実装を始める',
+    timeline: [
+      {
+        label: 'STEP 1',
+        title: 'インプット',
+        description: '最新事例とAIの原理を理解し、判断軸を揃える。',
+      },
+      {
+        label: 'STEP 2',
+        title: 'リハーサル',
+        description: '実案件に近い素材でハンズオン。失敗パターンも確認。',
+      },
+      {
+        label: 'STEP 3',
+        title: '転用',
+        description: '自分のワークフローに合わせてテンプレやプロンプトを微調整。',
+      },
+      {
+        label: 'STEP 4',
+        title: '共有・教える',
+        description: '明日チームに話せるストーリーとデータで合意形成する。',
+      },
     ],
     bg: 'linear-gradient(135deg,#0ea5e9,#1e293b)',
   },
@@ -1011,21 +1369,35 @@ const SLIDES: Slide[] = [
     id: 's-need',
     title: '今なぜAI×建築か',
     lines: [
-      '• 建築DXの要望増加',
-      '• 現場ナレッジ共有の分断を解消',
-      '• 審査で求められる透明性・説明責任',
-      '• 競合との差別化要因として必須',
+      '建築DX発注案件が前年比で倍増し、AIによるスピードと説明力が求められる',
+      '現場ナレッジの分断を解消し、再現性あるワークフローを共有する必要がある',
+      '審査や顧客から根拠提示を求められ、AI活用の透明性と記録が必須になっている',
+      '競合との差別化には“AIを仕組みに組み込んだ実装力”が直結する',
+    ],
+    toggles: [
+      {
+        title: '案件側の変化',
+        summary: '発注条件にDX/AIの明記が増加',
+        detail: '大手デベロッパーや行政案件で、AI・BIMを活用した再現性あるプロセスの証跡提出が条件化している。',
+      },
+      {
+        title: '社内運用の課題',
+        summary: '属人化をどう解消するか',
+        detail: '現場での経験則をAIプロンプト・テンプレに落とし込み、チーム全体で共有する仕組みづくりが不可欠。',
+        tone: 'muted',
+      },
     ],
     bg: `linear-gradient(135deg,${semanticColors.architecture.primary},${semanticColors.neutral[900]})`,
   },
   {
     id: 's-goals',
     title: '今日のゴール',
+    goalStatement: '社内に持ち帰り、明日すぐに実装と説明ができるAI導入ロードマップを完成させる',
     lines: [
-      '• 共通言語: AI導入の判断軸を揃える',
-      '• 体験: 現調→提案→自動化ワークを一気通貫',
-      '• 即実装: 配布資料で社内展開を開始',
-      '• KPI設定: 効果測定可能な指標を設計',
+      '共通言語を揃え、判断軸が一致した状態で議論できるようにする',
+      '現調→提案→自動化のワークフローを体験し、自社への転用ポイントを特定する',
+      '提供するテンプレ・チェックリストを自社フォーマットに落とし込み持ち帰る',
+      'KPIと初回4週間のアクションプランを設定し、測定できる形にする',
     ],
     bg: `linear-gradient(135deg,${semanticColors.technology.primary},${semanticColors.neutral[900]})`,
   },
@@ -1033,9 +1405,9 @@ const SLIDES: Slide[] = [
     id: 's-agenda',
     title: '進行マップ',
     lines: [
-      '• Phase 1 (0-70分): AI基礎と安全運用',
-      '• Phase 2 (70-160分): 現調→提案→自動化デモ',
-      '• Phase 3 (160-170分+): KPI・配布・Q&A',
+      'Phase 1 (0-70分): AI基礎と安全運用',
+      'Phase 2 (70-160分): 現調→提案→自動化デモ',
+      'Phase 3 (160-170分+): KPI・配布・Q&A',
     ],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
   },
@@ -1043,9 +1415,9 @@ const SLIDES: Slide[] = [
     id: 's-phase1-overview',
     title: 'Phase 1｜基礎・基本・ノウハウ',
     lines: [
-      '• 生成AIの特性と建築実務への適用',
-      '• 建築家の役割シフトを理解',
-      '• 安全運用テンプレを配布',
+      '生成AIの特性と建築実務への適用',
+      '建築家の役割シフトを理解',
+      '安全運用テンプレを配布',
     ],
     bg: 'linear-gradient(135deg,#1e40af,#0f172a)',
   },
@@ -1053,9 +1425,55 @@ const SLIDES: Slide[] = [
     id: 's-ai-basics',
     title: 'AIの基礎',
     lines: [
-      '• 生成AIの歴史と転換点',
-      '• CAD→BIM→AI の流れ',
-      '• 今学ぶべき理由と業界トレンド',
+      'Transformer→GPT→マルチモーダルで精度と応用範囲が飛躍',
+      'CAD→BIM→AIオートメーションへと設計プロセスが連続進化',
+      '建築審査・提案・維持管理でAI活用が共通言語になりつつある',
+    ],
+    timeline: [
+      {
+        label: '2017',
+        title: 'Transformer論文公開',
+        description: 'Google BrainがAttentionベースのアーキテクチャを発表。高精度な文章生成の礎に。',
+      },
+      {
+        label: '2020',
+        title: 'GPT-3 API公開',
+        description: '文章生成がクラウドAPIで利用可能に。建築資料のドラフト作成が現実的になる。',
+      },
+      {
+        label: '2022',
+        title: 'Stable Diffusion登場',
+        description: '建築パース・マテリアル検討が数秒で生成可能に。概念検討スピードが大幅短縮。',
+      },
+      {
+        label: '2023',
+        title: 'GPT-4 & Code Interpreter',
+        description: '表計算や図面データの解析が自動化。省エネ計算や差分チェックの自動化が進展。',
+      },
+      {
+        label: '2024-25',
+        title: 'BIM/CIM活用指針にAI活用が明記',
+        description: '国交省BIM推進施策や自治体のガイドラインでAI活用と記録性が求められる。',
+      },
+    ],
+    toggles: [
+      {
+        title: 'キーワード',
+        summary: 'Transformer / Foundation Model / Agent',
+        detail: '最新AIは大規模基盤モデル＋タスク特化プロンプトで成り立つ。建築では構造化された図面・法規データとの接続が鍵。',
+      },
+      {
+        title: '建築への影響',
+        summary: '企画・審査・維持管理',
+        detail: '企画段階のスタディ生成、審査資料の根拠整理、維持管理のログ作成までAIが下支えする流れが世界的に始まっている。',
+        tone: 'accent',
+      },
+    ],
+    footnotes: [
+      'Transformer: Vaswani et al., Attention Is All You Need (2017)',
+      'GPT-3: OpenAI API Launch, 2020年6月',
+      'Stable Diffusion: Stability AI, 2022年8月公開',
+      '国土交通省 建築BIM推進会議（2024年5月）資料より抜粋',
     ],
     bg: 'linear-gradient(135deg,#1e293b,#334155)',
   },
@@ -1063,9 +1481,9 @@ const SLIDES: Slide[] = [
     id: 's-future-roles',
     title: '建築家の役割シフト',
     lines: [
-      '• 残る仕事: 企画・物語・統合',
-      '• AIでオフロードする作業を選定',
-      '• チームで役割を再設計',
+      '残る仕事: 企画・物語・統合',
+      'AIでオフロードする作業を選定',
+      'チームで役割を再設計',
     ],
     bg: 'linear-gradient(135deg,#334155,#0f172a)',
   },
@@ -1073,9 +1491,9 @@ const SLIDES: Slide[] = [
     id: 's-security',
     title: 'セキュリティ・リスク対応',
     lines: [
-      '• 機密区分と入力ルール（匿名化・置換）',
-      '• クラウドAIの権限・リンク・ログ管理',
-      '• 社内ポリシー雛形（秘匿プロンプト／レビュー／承認）',
+      '機密区分と入力ルール（匿名化・置換）',
+      'クラウドAIの権限・リンク・ログ管理',
+      '社内ポリシー雛形（秘匿プロンプト／レビュー／承認）',
     ],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
   },
@@ -1083,9 +1501,9 @@ const SLIDES: Slide[] = [
     id: 's-security-check',
     title: 'セキュリティ チェックリスト',
     lines: [
-      '• 入力: 匿名化・案件ID管理・不要情報排除',
-      '• 利用: 権限設定と有効期限付き共有',
-      '• 出力: 根拠保存・改変履歴・承認ログ',
+      '入力: 匿名化・案件ID管理・不要情報排除',
+      '利用: 権限設定と有効期限付き共有',
+      '出力: 根拠保存・改変履歴・承認ログ',
     ],
     bg: 'linear-gradient(135deg,#1e293b,#475569)',
   },
@@ -1093,9 +1511,9 @@ const SLIDES: Slide[] = [
     id: 's-mini-demo',
     title: '基礎ミニ実演',
     lines: [
-      '• 会議音声→要点抽出→表整形',
-      '• テンプレ差し込みで議事録骨子生成',
-      '• 出力を共有フォルダに保存',
+      '会議音声→要点抽出→表整形',
+      'テンプレ差し込みで議事録骨子生成',
+      '出力を共有フォルダに保存',
     ],
     bg: 'linear-gradient(135deg,#1e293b,#111827)',
   },
@@ -1103,10 +1521,10 @@ const SLIDES: Slide[] = [
     id: 's-prompt-tips',
     title: 'プロンプト活用Tips',
     lines: [
-      '• 構造化して: 議題→決定→ToDo',
-      '• yamlでまとめて: 指示書を即共有',
-      '• 抽象化⇄具体化で骨子を強化',
-      '• 検証して: 根拠付き要約と参照列挙',
+      '構造化して: 議題→決定→ToDo',
+      'yamlでまとめて: 指示書を即共有',
+      '抽象化⇄具体化で骨子を強化',
+      '検証して: 根拠付き要約と参照列挙',
     ],
     bg: 'linear-gradient(135deg,#111827,#1f2937)',
   },
@@ -1114,9 +1532,9 @@ const SLIDES: Slide[] = [
     id: 's-notebooklm',
     title: 'NotebookLM 概要',
     lines: [
-      '• 難しい資料を音声学習コンテンツに',
-      '• 入力ソース準拠で幻覚を抑制',
-      '• 社内教材・研修に転用可能',
+      '難しい資料を音声学習コンテンツに',
+      '入力ソース準拠で幻覚を抑制',
+      '社内教材・研修に転用可能',
     ],
     bg: 'linear-gradient(135deg,#475569,#0f172a)',
   },
@@ -1124,9 +1542,9 @@ const SLIDES: Slide[] = [
     id: 's-notebooklm-use',
     title: 'NotebookLM 活用例',
     lines: [
-      '• 法規・省エネ基準の理解',
-      '• 海外論文の要点把握と用語集',
-      '• トレーニング動画の自動生成',
+      '法規・省エネ基準の理解',
+      '海外論文の要点把握と用語集',
+      'トレーニング動画の自動生成',
     ],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
   },
@@ -1134,9 +1552,9 @@ const SLIDES: Slide[] = [
     id: 's-phase1-summary',
     title: 'Phase 1 まとめ',
     lines: [
-      '• リスクマトリクスと承認フローを共有',
-      '• 成功体験を共有し“教える人”へ',
-      '• Instagramで復習＆共有を促進',
+      'リスクマトリクスと承認フローを共有',
+      '成功体験を共有し“教える人”へ',
+      'Instagramで復習＆共有を促進',
     ],
     bg: 'linear-gradient(135deg,#1e293b,#475569)',
   },
@@ -1144,9 +1562,9 @@ const SLIDES: Slide[] = [
     id: 's-phase2-intro',
     title: 'Phase 2｜業務ワークフロー',
     lines: [
-      '• 調査→設計→コミュ→見積→省エネ→提出',
-      '• AI導線マップでROI (工数/誤検出/利益)',
-      '• ハンズオンシートで自業務を記入',
+      '調査→設計→コミュ→見積→省エネ→提出',
+      'AI導線マップでROI (工数/誤検出/利益)',
+      'ハンズオンシートで自業務を記入',
     ],
     bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
   },
@@ -1154,9 +1572,9 @@ const SLIDES: Slide[] = [
     id: 's-workflow-hands',
     title: 'ワークフロー ハンズオン',
     lines: [
-      '• 現状フローにAI候補を書き込む',
-      '• ボトルネックと期待効果を共有',
-      '• ペアディスカッションで改善案',
+      '現状フローにAI候補を書き込む',
+      'ボトルネックと期待効果を共有',
+      'ペアディスカッションで改善案',
     ],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
   },
@@ -1164,9 +1582,9 @@ const SLIDES: Slide[] = [
     id: 's-demo1',
     title: '活用① 現調→議事録→提案',
     lines: [
-      '• 音声→議事録テンプレ→提案資料',
-      '• 構造化プロンプト＋表整形で高速化',
-      '• Canvas / SpotPDF への導線',
+      '音声→議事録テンプレ→提案資料',
+      '構造化プロンプト＋表整形で高速化',
+      'Canvas / SpotPDF への導線',
     ],
     bg: 'linear-gradient(135deg,#1e293b,#111827)',
   },
@@ -1174,9 +1592,9 @@ const SLIDES: Slide[] = [
     id: 's-demo1-hands',
     title: 'Demo① ハンズオン',
     lines: [
-      '• サンプル音声をNotebookLMに投入',
-      '• 「構造化して」で要点抽出',
-      '• 「表形式で」で提案骨子整形',
+      'サンプル音声をNotebookLMに投入',
+      '「構造化して」で要点抽出',
+      '「表形式で」で提案骨子整形',
     ],
     bg: 'linear-gradient(135deg,#111827,#1f2937)',
   },
@@ -1184,9 +1602,9 @@ const SLIDES: Slide[] = [
     id: 's-demo1-out',
     title: 'Demo① 成果物',
     lines: [
-      '• 議事録骨子（個人成果物）',
-      '• 提案資料ドラフト',
-      '• 共有用プロンプトセット',
+      '議事録骨子（個人成果物）',
+      '提案資料ドラフト',
+      '共有用プロンプトセット',
     ],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
   },
@@ -1194,9 +1612,9 @@ const SLIDES: Slide[] = [
     id: 's-demo2',
     title: '活用② SpotPDF 差分 5分決着',
     lines: [
-      '• A/B図面の差分抽出→自動ハイライト',
-      '• コメント→PDF化→共有',
-      '• 承認ログとしてDrive保存',
+      'A/B図面の差分抽出→自動ハイライト',
+      'コメント→PDF化→共有',
+      '承認ログとしてDrive保存',
     ],
     bg: 'linear-gradient(135deg,#1e293b,#475569)',
   },
@@ -1204,9 +1622,9 @@ const SLIDES: Slide[] = [
     id: 's-demo2-hands',
     title: 'Demo② ハンズオン',
     lines: [
-      '• サンプル図面で差分抽出',
-      '• ハイライト箇所をコメント',
-      '• PDF出力をDriveへ保存',
+      'サンプル図面で差分抽出',
+      'ハイライト箇所をコメント',
+      'PDF出力をDriveへ保存',
     ],
     bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
   },
@@ -1214,9 +1632,9 @@ const SLIDES: Slide[] = [
     id: 's-demo3',
     title: '活用③ 省エネ（モデル建物法）',
     lines: [
-      '• 入力最小化→再計算→提出ひな形',
-      '• BEIと条件変更を比較',
-      '• 審査用ドキュメントと連携',
+      '入力最小化→再計算→提出ひな形',
+      'BEIと条件変更を比較',
+      '審査用ドキュメントと連携',
     ],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
   },
@@ -1224,9 +1642,9 @@ const SLIDES: Slide[] = [
     id: 's-demo3-hands',
     title: 'Demo③ ハンズオン',
     lines: [
-      '• Excelに条件入力→BEI算出',
-      '• 再計算ボタンで差分確認',
-      '• 提出書式を自動生成',
+      'Excelに条件入力→BEI算出',
+      '再計算ボタンで差分確認',
+      '提出書式を自動生成',
     ],
     bg: 'linear-gradient(135deg,#1e293b,#111827)',
   },
@@ -1234,9 +1652,9 @@ const SLIDES: Slide[] = [
     id: 's-demo4',
     title: '活用④ Canvasで資料生成',
     lines: [
-      '• ChatGPT / Gemini CanvasでミニLP',
-      '• 1ブロック編集→保存',
-      '• 配布用ミニLPテンプレを提供',
+      'ChatGPT / Gemini CanvasでミニLP',
+      '1ブロック編集→保存',
+      '配布用ミニLPテンプレを提供',
     ],
     bg: 'linear-gradient(135deg,#111827,#1f2937)',
   },
@@ -1244,9 +1662,9 @@ const SLIDES: Slide[] = [
     id: 's-demo5',
     title: '活用⑤ GASでタスク通知',
     lines: [
-      '• Spreadsheet→GAS→Gmail通知',
-      '• トリガ設定と権限の確認',
-      '• コード挙動をその場で確認',
+      'Spreadsheet→GAS→Gmail通知',
+      'トリガ設定と権限の確認',
+      'コード挙動をその場で確認',
     ],
     bg: 'linear-gradient(135deg,#1f2937,#0f172a)',
   },
@@ -1254,9 +1672,9 @@ const SLIDES: Slide[] = [
     id: 's-risk-buffer',
     title: '時間押しリスクへの備え',
     lines: [
-      '• 5分押し→Canvasデモは紹介のみ',
-      '• 10分押し→GASデモは素材配布',
-      '• ハンズオンは成功体験最優先',
+      '5分押し→Canvasデモは紹介のみ',
+      '10分押し→GASデモは素材配布',
+      'ハンズオンは成功体験最優先',
     ],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
   },
@@ -1264,9 +1682,9 @@ const SLIDES: Slide[] = [
     id: 's-phase3',
     title: 'Phase 3｜まとめと今後',
     lines: [
-      '• ケーススタディ＆KPIを共有',
-      '• 小規模チーム運用ルール雛形',
-      '• 実装チェックリストで定着',
+      'ケーススタディ＆KPIを共有',
+      '小規模チーム運用ルール雛形',
+      '実装チェックリストで定着',
     ],
     bg: 'linear-gradient(135deg,#1e293b,#475569)',
   },
@@ -1274,9 +1692,9 @@ const SLIDES: Slide[] = [
     id: 's-kpi',
     title: '導入後のKPI設定例',
     lines: [
-      '• 提案作成時間の測定',
-      '• 審査コメント対応時間の記録',
-      '• ガイドライン遵守率のチェック',
+      '提案作成時間の測定',
+      '審査コメント対応時間の記録',
+      'ガイドライン遵守率のチェック',
     ],
     bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
   },
@@ -1284,11 +1702,11 @@ const SLIDES: Slide[] = [
     id: 's-best1',
     title: 'ベストプラクティス10箇条 (1/2)',
     lines: [
-      '• 小さく始めて早く回す',
-      '• 入力の整備（匿名化・フォーマット統一）',
-      '• 出力の型を決める（yaml／表／テンプレ）',
-      '• 差分は機械に任せる',
-      '• 再計算は自動化が前提',
+      '小さく始めて早く回す',
+      '入力の整備（匿名化・フォーマット統一）',
+      '出力の型を決める（yaml／表／テンプレ）',
+      '差分は機械に任せる',
+      '再計算は自動化が前提',
     ],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
   },
@@ -1296,11 +1714,11 @@ const SLIDES: Slide[] = [
     id: 's-best2',
     title: 'ベストプラクティス10箇条 (2/2)',
     lines: [
-      '• 社内ルールは"運用できる最小"から',
-      '• 根拠を併記して信頼を積む',
-      '• 指標で語る（時間・誤差・利益）',
-      '• 教える人になる（共有＝最強の定着）',
-      '• 毎週1改善（継続して仕組みに落とす）',
+      '社内ルールは"運用できる最小"から',
+      '根拠を併記して信頼を積む',
+      '指標で語る（時間・誤差・利益）',
+      '教える人になる（共有＝最強の定着）',
+      '毎週1改善（継続して仕組みに落とす）',
     ],
     bg: 'linear-gradient(135deg,#1e293b,#475569)',
   },
@@ -1308,10 +1726,10 @@ const SLIDES: Slide[] = [
     id: 's-checklist',
     title: '明日からの実装チェック',
     lines: [
-      '• 業務導線マップを更新',
-      '• テンプレとプロンプト集を配布',
-      '• GAS通知PoCを1本動かす',
-      '• KPI初期値を記録',
+      '業務導線マップを更新',
+      'テンプレとプロンプト集を配布',
+      'GAS通知PoCを1本動かす',
+      'KPI初期値を記録',
     ],
     bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
   },
@@ -1319,9 +1737,9 @@ const SLIDES: Slide[] = [
     id: 's-resources',
     title: '配布物セット',
     lines: [
-      '• アーカイブ動画・スライド・リンク集',
-      '• プロンプト集（Markdown + YAML）',
-      '• GAS雛形・モデル建物法レシピ',
+      'アーカイブ動画・スライド・リンク集',
+      'プロンプト集（Markdown + YAML）',
+      'GAS雛形・モデル建物法レシピ',
     ],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
   },
@@ -1329,9 +1747,9 @@ const SLIDES: Slide[] = [
     id: 's-materials',
     title: '資料とワークシート',
     lines: [
-      '• Drive: audio/pdf/xlsx/prompt/gas',
-      '• ワークフローシート / チェックリスト',
-      '• CanvasミニLPテンプレ',
+      'Drive: audio/pdf/xlsx/prompt/gas',
+      'ワークフローシート / チェックリスト',
+      'CanvasミニLPテンプレ',
     ],
     bg: 'linear-gradient(135deg,#1e293b,#111827)',
   },
@@ -1339,10 +1757,10 @@ const SLIDES: Slide[] = [
     id: 's-presents',
     title: '参加者特典',
     lines: [
-      '• 資料一式（当日スライドPDF・事例リンク集・明日からの実装チェックリスト）',
-      '• プロンプト集（構造化して、yamlでまとめて、表形式で、抽象化→具体化、制約付きで、検証して）',
-      '• タスク通知GAS（Spreadsheet→GAS→Gmail通知の雛形コード・導入手順・運用Q&A）',
-      '• ラストシークレット: AI×建築コミュニティ（Circle）の招待',
+      '資料一式（当日スライドPDF・事例リンク集・明日からの実装チェックリスト）',
+      'プロンプト集（構造化して、yamlでまとめて、表形式で、抽象化→具体化、制約付きで、検証して）',
+      'タスク通知GAS（Spreadsheet→GAS→Gmail通知の雛形コード・導入手順・運用Q&A）',
+      'ラストシークレット: AI×建築コミュニティ（Circle）の招待',
     ],
     bg: 'linear-gradient(135deg,#111827,#1f2937)',
   },
@@ -1350,9 +1768,9 @@ const SLIDES: Slide[] = [
     id: 's-community-intro',
     title: 'ラストシークレット',
     lines: [
-      '• ここにいる皆さんだけが入れるクローズドなコミュニティ',
-      '• 最新の深い情報の最速公開拠点・今後のセミナーは追加費用なし',
-      '• 初月無料・月額5,000円・72時間限定オファー',
+      'ここにいる皆さんだけが入れるクローズドなコミュニティ',
+      '最新の深い情報の最速公開拠点・今後のセミナーは追加費用なし',
+      '初月無料・月額5,000円・72時間限定オファー',
     ],
     bg: 'linear-gradient(135deg,#111827,#1f2937)',
   },
@@ -1360,9 +1778,9 @@ const SLIDES: Slide[] = [
     id: 's-community-benefits',
     title: 'コミュニティ特典',
     lines: [
-      '• 月1回のZoom相談会・不定期の限定交流会（オンライン／オフライン）',
-      '• SpotPDF・楽々省エネ計算・天空率（開発中）の早期アクセス',
-      '• 最新の深い情報を最速で展開（サンプル、雛形、実演動画）',
+      '月1回のZoom相談会・不定期の限定交流会（オンライン／オフライン）',
+      'SpotPDF・楽々省エネ計算・天空率（開発中）の早期アクセス',
+      '最新の深い情報を最速で展開（サンプル、雛形、実演動画）',
     ],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
   },
@@ -1370,9 +1788,9 @@ const SLIDES: Slide[] = [
     id: 's-community-rules',
     title: 'コミュニティ運用',
     lines: [
-      '• 実名推奨・守秘情報の持ち込み禁止',
-      '• 成果物二次配布はクレジット必須',
-      '• Circle + Zoom + Drive で運用',
+      '実名推奨・守秘情報の持ち込み禁止',
+      '成果物二次配布はクレジット必須',
+      'Circle + Zoom + Drive で運用',
     ],
     bg: 'linear-gradient(135deg,#1e293b,#475569)',
   },
@@ -1380,9 +1798,9 @@ const SLIDES: Slide[] = [
     id: 's-community-join',
     title: '参加方法',
     lines: [
-      '• クロージングで招待コードを提示',
-      '• 72時間以内に申し込み→初月無料',
-      '• オンボーディングで課題とライブ予定共有',
+      'クロージングで招待コードを提示',
+      '72時間以内に申し込み→初月無料',
+      'オンボーディングで課題とライブ予定共有',
     ],
     bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
   },
@@ -1390,9 +1808,9 @@ const SLIDES: Slide[] = [
     id: 's-last-secret',
     title: 'ラストシークレット構成',
     lines: [
-      '• Slide1: 初月無料の案内',
-      '• Slide2-4: サロン特典とツール',
-      '• Slide5: 招待コード & 72時間限定',
+      'Slide1: 初月無料の案内',
+      'Slide2-4: サロン特典とツール',
+      'Slide5: 招待コード & 72時間限定',
     ],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
   },
@@ -1400,9 +1818,9 @@ const SLIDES: Slide[] = [
     id: 's-survey',
     title: 'アンケート & Q&A',
     lines: [
-      '• 170分時点でアンケートURLを案内',
-      '• 回答後に非公開ページを解放',
-      '• Q&Aは無制限・退出自由',
+      '170分時点でアンケートURLを案内',
+      '回答後に非公開ページを解放',
+      'Q&Aは無制限・退出自由',
     ],
     bg: 'linear-gradient(135deg,#1e293b,#475569)',
   },
@@ -1410,9 +1828,9 @@ const SLIDES: Slide[] = [
     id: 's-instagram',
     title: 'Instagramで復習',
     lines: [
-      '• 最新Tipsは @sena_archisoft で発信',
-      '• 感想投稿＝学びの定着',
-      '• フォロー＆シェア大歓迎',
+      '最新Tipsは @sena_archisoft で発信',
+      '感想投稿＝学びの定着',
+      'フォロー＆シェア大歓迎',
     ],
     bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
   },
@@ -1420,9 +1838,9 @@ const SLIDES: Slide[] = [
     id: 's-ops',
     title: '運営メモ',
     lines: [
-      '• チャットに素材リンクを固定',
-      '• ハンズオンは成功体験最優先',
-      '• 時間押しはリスクプランに従う',
+      'チャットに素材リンクを固定',
+      'ハンズオンは成功体験最優先',
+      '時間押しはリスクプランに従う',
     ],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
   },
@@ -1430,9 +1848,9 @@ const SLIDES: Slide[] = [
     id: 's-prep',
     title: '事前準備チェック',
     lines: [
-      '• GoogleアカウントでDriveアクセス',
-      '• ChatGPT / Gemini にログイン',
-      '• PDF閲覧とGmail通知テスト',
+      'GoogleアカウントでDriveアクセス',
+      'ChatGPT / Gemini にログイン',
+      'PDF閲覧とGmail通知テスト',
     ],
     bg: 'linear-gradient(135deg,#1e293b,#475569)',
   },
@@ -1441,9 +1859,9 @@ const SLIDES: Slide[] = [
     title: 'Thank You',
     subtitle: 'ご参加ありがとうございました！',
     lines: [
-      '• アンケート回答で配布物を解放',
-      '• 追加質問はメールでお気軽に',
-      '• 一緒にAIで建築業界を変えましょう',
+      'アンケート回答で配布物を解放',
+      '追加質問はメールでお気軽に',
+      '一緒にAIで建築業界を変えましょう',
     ],
     bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
   },
@@ -1671,7 +2089,7 @@ export default function SeminarLanding(): React.ReactElement {
         <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-cyan-500/90 text-[11px] font-semibold text-white">
           {i + 1}
         </span>
-        <span className="flex-1 leading-7 text-slate-700">{b}</span>
+        <span className="flex-1 leading-7 text-slate-700">{stripLeadingBullet(b)}</span>
       </li>
     ));
   };
@@ -1708,6 +2126,8 @@ export default function SeminarLanding(): React.ReactElement {
       }
     };
 
+    const sanitizedLines = (currentSlide.lines || []).map(stripLeadingBullet);
+
     return (
       <div className="h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white flex flex-col">
         {/* スライドヘッダー */}
@@ -1738,16 +2158,92 @@ export default function SeminarLanding(): React.ReactElement {
                   {currentSlide.title}
                 </h1>
 
-                {currentSlide.lines && (
+                {currentSlide.goalStatement && (
+                  <div className="text-2xl md:text-3xl font-semibold leading-snug text-cyan-100">
+                    {currentSlide.goalStatement}
+                  </div>
+                )}
+
+                {currentSlide.quickFacts && currentSlide.quickFacts.length > 0 && (
+                  <div className="grid md:grid-cols-3 gap-4 text-left">
+                    {currentSlide.quickFacts.map((fact, idx) => (
+                      <div
+                        key={`${currentSlide.id}-fact-${idx}`}
+                        className="rounded-2xl border border-white/15 bg-white/10 px-4 py-5"
+                      >
+                        <div className="text-xs uppercase tracking-[0.25em] text-white/70 mb-2">
+                          {fact.label}
+                        </div>
+                        <div className="text-2xl font-semibold text-white">
+                          {fact.value}
+                        </div>
+                        {fact.description && (
+                          <p className="text-xs text-white/70 mt-2 leading-5">
+                            {fact.description}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {sanitizedLines.length > 0 && (
                   <div className="max-w-4xl mx-auto">
                     <ul className="space-y-6 text-xl text-left">
-                      {currentSlide.lines.map((line, idx) => (
+                      {sanitizedLines.map((line, idx) => (
                         <li key={idx} className="flex items-start gap-4">
                           <div className="mt-3 w-2 h-2 bg-cyan-400 rounded-full flex-shrink-0" />
                           <span className="leading-relaxed">{line}</span>
                         </li>
                       ))}
                     </ul>
+                  </div>
+                )}
+
+                {currentSlide.timeline && currentSlide.timeline.length > 0 && (
+                  <RevealPanel delay={150}>
+                    <div className="bg-white/5 rounded-2xl px-6 py-8 text-left">
+                      <div className="text-sm uppercase tracking-[0.3em] text-cyan-200/80 mb-4">
+                        AI×建築の進化タイムライン
+                      </div>
+                      <Timeline entries={currentSlide.timeline} colorScheme="architecture" />
+                    </div>
+                  </RevealPanel>
+                )}
+
+                {currentSlide.toggles && currentSlide.toggles.length > 0 && (
+                  <RevealPanel delay={250}>
+                    <div className="grid md:grid-cols-2 gap-4 text-left">
+                      {currentSlide.toggles.map((toggle, idx) => (
+                        <InfoToggle
+                          key={`${currentSlide.id}-toggle-${idx}`}
+                          title={toggle.title}
+                          summary={toggle.summary}
+                          detail={toggle.detail}
+                          tone={toggle.tone}
+                        />
+                      ))}
+                    </div>
+                  </RevealPanel>
+                )}
+
+                {currentSlide.barChart && (
+                  <RevealPanel delay={300}>
+                    <div className="bg-white/5 rounded-2xl px-6 py-6 text-left">
+                      <BarChart
+                        title={currentSlide.barChart.title}
+                        colorScheme={currentSlide.barChart.colorScheme}
+                        data={currentSlide.barChart.data}
+                      />
+                    </div>
+                  </RevealPanel>
+                )}
+
+                {currentSlide.footnotes && currentSlide.footnotes.length > 0 && (
+                  <div className="text-xs text-white/60 space-y-2 max-w-3xl mx-auto">
+                    {currentSlide.footnotes.map((note, idx) => (
+                      <div key={`${currentSlide.id}-footnote-${idx}`}>※ {note}</div>
+                    ))}
                   </div>
                 )}
 
@@ -1792,6 +2288,7 @@ export default function SeminarLanding(): React.ReactElement {
                             <img
                               src={item.src}
                               alt={item.alt}
+                              loading="lazy"
                               className={`w-full h-32 ${imageFitClass} rounded-lg bg-slate-900/40`}
                             />
                             {(item.caption || item.description) && (
@@ -1826,6 +2323,7 @@ export default function SeminarLanding(): React.ReactElement {
                               <img
                                 src={item.src}
                                 alt={item.alt}
+                                loading="lazy"
                                 className={`w-full max-h-[320px] ${imageFitClass} rounded-2xl bg-slate-900/30`}
                               />
                             </div>
@@ -2330,6 +2828,7 @@ export default function SeminarLanding(): React.ReactElement {
         const chapterNo = CHAPTERS.find((c) => c.id === s.id)?.no;
         const progress = typeof minutes === 'number' ? Math.min(100, Math.round((minutes / 12) * 100)) : 0;
         const visual = chapterVisuals[s.id];
+        const deepDives = chapterDeepDives[s.id] || [];
         return (
           <Section
             id={s.id}
@@ -2366,6 +2865,22 @@ export default function SeminarLanding(): React.ReactElement {
                       <div className="font-semibold text-slate-900">講師メモ（Nキーで拡大表示）</div>
                       <p className="mt-2 leading-6 whitespace-pre-line">{s.notes}</p>
                     </div>
+                    {deepDives.length > 0 && (
+                      <RevealPanel delay={180} className="space-y-3">
+                        <div className="text-xs uppercase tracking-[0.3em] text-cyan-700">詳しく見る</div>
+                        <div className="grid gap-3 md:grid-cols-2">
+                          {deepDives.map((item, idx) => (
+                            <InfoToggle
+                              key={`${s.id}-deep-${idx}`}
+                              title={item.title}
+                              summary={item.summary}
+                              detail={item.detail}
+                              tone={item.tone}
+                            />
+                          ))}
+                        </div>
+                      </RevealPanel>
+                    )}
                   </div>
                 </div>
                 {progress > 0 && (
