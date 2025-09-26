@@ -507,9 +507,9 @@ const chapterVisuals: Record<string, React.ReactNode> = {
       colorScheme="success"
       headers={["項目", "指標", "目標"]}
       rows={[
-        ["誤検出率", "False Positive", "≦5%"],
-        ["未検出率", "False Negative", "≦3%"],
-        ["調査時間", "1案件あたり", "-40%"]
+        ["誤検出率", "False Positive", "要測定"],
+        ["未検出率", "False Negative", "要測定"],
+        ["調査時間", "1案件あたり", "要測定"]
       ]}
     />
   ),
@@ -556,7 +556,7 @@ const chapterVisuals: Record<string, React.ReactNode> = {
       colorScheme="architecture"
       headers={["用途", "プロンプト例", "効果"]}
       rows={[
-        ["雛形作成", "議事録/提案要旨/RFI/メール", "80%時短"],
+        ["雛形作成", "議事録/提案要旨/RFI/メール", "効率化"],
         ["WBS作成", "要件→WBS→見積ブレイクダウン", "構造化"],
         ["図解化", "口述→図解/整形（テンプレ差し込み）", "視覚化"]
       ]}
@@ -776,23 +776,12 @@ const SLIDES: Slide[] = [
     id: 's-need',
     title: '今なぜAI×建築か',
     lines: [
-      '• 建築DXの要望増 (前年比+42%)',
+      '• 建築DXの要望増加',
       '• 現場ナレッジ共有の分断を解消',
       '• 審査で求められる透明性・説明責任',
       '• 競合との差別化要因として必須',
     ],
     bg: `linear-gradient(135deg,${semanticColors.architecture.primary},${semanticColors.neutral[900]})`,
-  },
-  {
-    id: 's-stats',
-    title: 'AI活用の実績データ',
-    lines: [
-      '• 作業時間 65%短縮（議事録作成）',
-      '• 精度向上 89%（図面差分検出）',
-      '• コスト削減 45%（提案書作成）',
-      '• 満足度 92%（クライアント評価）',
-    ],
-    bg: `linear-gradient(135deg,${semanticColors.success.primary},${semanticColors.neutral[900]})`,
   },
   {
     id: 's-goals',
@@ -1048,11 +1037,11 @@ const SLIDES: Slide[] = [
   },
   {
     id: 's-kpi',
-    title: '導入後のKPI例',
+    title: '導入後のKPI設定例',
     lines: [
-      '• 提案作成時間 -40%',
-      '• 審査コメント対応時間 -30%',
-      '• ガイドライン遵守率 +50%',
+      '• 提案作成時間の測定',
+      '• 審査コメント対応時間の記録',
+      '• ガイドライン遵守率のチェック',
     ],
     bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
   },
@@ -1635,27 +1624,6 @@ export default function SeminarLanding(): React.ReactElement {
               </div>
             </div>
 
-            {/* Quick Stats */}
-            <Card className="p-6 border border-slate-200" style={{ backgroundColor: semanticColors.neutral[100] }}>
-              <div className="grid md:grid-cols-4 gap-4 text-center">
-                <div className="space-y-1">
-                  <div className="text-2xl font-bold" style={{ color: semanticColors.success.primary }}>65%</div>
-                  <div className="text-xs" style={{ color: semanticColors.neutral[500] }}>作業時間短縮</div>
-                </div>
-                <div className="space-y-1">
-                  <div className="text-2xl font-bold" style={{ color: semanticColors.technology.primary }}>89%</div>
-                  <div className="text-xs" style={{ color: semanticColors.neutral[500] }}>精度向上</div>
-                </div>
-                <div className="space-y-1">
-                  <div className="text-2xl font-bold" style={{ color: semanticColors.warning.primary }}>45%</div>
-                  <div className="text-xs" style={{ color: semanticColors.neutral[500] }}>コスト削減</div>
-                </div>
-                <div className="space-y-1">
-                  <div className="text-2xl font-bold" style={{ color: semanticColors.process.primary }}>92%</div>
-                  <div className="text-xs" style={{ color: semanticColors.neutral[500] }}>満足度</div>
-                </div>
-              </div>
-            </Card>
 
             <div className="flex flex-wrap gap-4">
               <a href="#program"
@@ -1758,7 +1726,7 @@ export default function SeminarLanding(): React.ReactElement {
             <div className="grid md:grid-cols-4 gap-6">
               <StatCard category="architecture" value="180" label="分の集中学習" trend="効率性重視" indicator="T" />
               <StatCard category="technology" value="5" label="実務デモ" trend="即実装可能" indicator="D" />
-              <StatCard category="success" value="90%" label="満足度目標" trend="過去実績ベース" indicator="S" />
+              <StatCard category="success" value="高" label="満足度目標" trend="品質重視" indicator="S" />
               <StatCard category="process" value="30" label="日後フォロー" trend="定着サポート" indicator="F" />
             </div>
           </Card>
@@ -1989,11 +1957,11 @@ export default function SeminarLanding(): React.ReactElement {
                   colorScheme="success"
                   headers={["実装項目", "難易度", "効果", "実装期間"]}
                   rows={[
-                    ["議事録自動化", "低", "65%時短", "1-2週間"],
-                    ["図面差分検出", "中", "89%精度向上", "2-3週間"],
-                    ["省エネ計算", "高", "45%工数削減", "1ヶ月"],
-                    ["提案書自動生成", "中", "50%時短", "2-3週間"],
-                    ["タスク管理自動化", "低", "通知精度95%", "1週間"]
+                    ["議事録自動化", "低", "時短効果あり", "1-2週間"],
+                    ["図面差分検出", "中", "精度向上", "2-3週間"],
+                    ["省エネ計算", "高", "工数削減", "1ヶ月"],
+                    ["提案書自動生成", "中", "効率化", "2-3週間"],
+                    ["タスク管理自動化", "低", "通知精度向上", "1週間"]
                   ]}
                 />
               </div>
