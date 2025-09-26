@@ -1178,6 +1178,8 @@ const slideAssets = {
   geminiFacadeBefore5: new URL('../images/画像生成/ritumen05 before.png', import.meta.url).href,
   geminiFacadeAfter5: new URL('../images/画像生成/ritumen05 after.png', import.meta.url).href,
   spotPdfLogo: new URL('../images/SpotPDF-logo.ico', import.meta.url).href,
+  notebookLmLogo: new URL('../images/notebooklm-logo.png', import.meta.url).href,
+  notebookLmVideoGeneration: new URL('../images/notebooklm-video-generation.png', import.meta.url).href,
 };
 
 
@@ -2196,6 +2198,19 @@ const SLIDES: Slide[] = [
       '入力ソース準拠で幻覚を抑制',
       '社内教材・研修に転用可能',
     ],
+    media: {
+      layout: 'stack',
+      items: [
+        {
+          src: slideAssets.notebookLmLogo,
+          alt: 'NotebookLM ロゴ',
+          caption: 'Google NotebookLM',
+          description: 'AI powered notebook for research',
+          fit: 'contain',
+          tone: 'accent',
+        },
+      ],
+    },
     bg: 'linear-gradient(135deg,#475569,#0f172a)',
   },
   {
@@ -2206,6 +2221,19 @@ const SLIDES: Slide[] = [
       '海外論文の要点把握と用語集',
       'トレーニング動画の自動生成',
     ],
+    media: {
+      layout: 'stack',
+      items: [
+        {
+          src: slideAssets.notebookLmVideoGeneration,
+          alt: 'NotebookLM 動画生成例',
+          caption: 'Audio Overview Generation',
+          description: '資料を音声コンテンツに自動変換',
+          fit: 'contain',
+          tone: 'muted',
+        },
+      ],
+    },
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
   },
   {
