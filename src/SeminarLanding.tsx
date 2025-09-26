@@ -1426,7 +1426,7 @@ export default function SeminarLanding(): React.ReactElement {
       // スライドモードの場合
       if (slideMode) {
         if (k === 'arrowright' || k === 'pagedown' || k === ' ') {
-          setSlideIdx(Math.min(slideIdx + 1, CHAPTER_SECTIONS.length - 1));
+          setSlideIdx(Math.min(slideIdx + 1, SLIDES.length - 1));
           e.preventDefault();
           return;
         }
@@ -1521,8 +1521,7 @@ export default function SeminarLanding(): React.ReactElement {
 
   // スライドモードの場合は専用UI表示
   if (slideMode) {
-    const currentSection = CHAPTER_SECTIONS[slideIdx] || CHAPTER_SECTIONS[0];
-    const visual = chapterVisuals[currentSection.id];
+    const currentSlide = SLIDES[slideIdx] || SLIDES[0];
 
     return (
       <div className="h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white flex flex-col">
@@ -1530,7 +1529,7 @@ export default function SeminarLanding(): React.ReactElement {
         <div className="flex justify-between items-center p-6 bg-black/20">
           <div className="flex items-center gap-4">
             <div className="text-sm opacity-70">
-              {slideIdx + 1} / {CHAPTER_SECTIONS.length}
+              {slideIdx + 1} / {SLIDES.length}
             </div>
             <div className="text-lg font-semibold">実務で使える AI×建築セミナー</div>
           </div>
@@ -1542,49 +1541,40 @@ export default function SeminarLanding(): React.ReactElement {
         {/* メインスライドエリア */}
         <div className="flex-1 p-8 flex items-center justify-center">
           <div className="max-w-6xl w-full">
-            <div className="grid gap-8 lg:grid-cols-[1fr,0.5fr]">
-              {/* 左側：メインコンテンツ */}
-              <div className="space-y-8">
-                {currentSection.kicker && (
-                  <div className="text-cyan-400 text-sm uppercase tracking-[0.3em] font-semibold">
-                    {currentSection.kicker}
-                  </div>
-                )}
-                <h1 className="text-5xl font-bold leading-tight">
-                  {currentSection.title}
-                </h1>
-                <ul className="space-y-4 text-xl">
-                  {currentSection.bullets.map((bullet, idx) => (
-                    <li key={idx} className="flex items-start gap-4">
-                      <div className="mt-2 w-2 h-2 bg-cyan-400 rounded-full flex-shrink-0" />
-                      <span>{bullet}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            <div className="text-center space-y-8">
+              {currentSlide.subtitle && (
+                <div className="text-cyan-400 text-lg uppercase tracking-[0.3em] font-semibold">
+                  {currentSlide.subtitle}
+                </div>
+              )}
+              <h1 className="text-6xl font-bold leading-tight">
+                {currentSlide.title}
+              </h1>
 
-              {/* 右側：ビジュアル */}
-              <div className="space-y-6">
-                {visual && (
-                  <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-                    <div className="text-white/90 [&_*]:text-white/90 [&_th]:text-white/70 [&_td]:text-white/90">
-                      {visual}
-                    </div>
-                  </div>
-                )}
+              {currentSlide.lines && (
+                <div className="max-w-4xl mx-auto">
+                  <ul className="space-y-6 text-xl text-left">
+                    {currentSlide.lines.map((line, idx) => (
+                      <li key={idx} className="flex items-start gap-4">
+                        <div className="mt-3 w-2 h-2 bg-cyan-400 rounded-full flex-shrink-0" />
+                        <span className="leading-relaxed">{line}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
-                {/* プログレス表示 */}
-                <div className="bg-black/20 rounded-xl p-4">
-                  <div className="text-sm opacity-70 mb-2">進行状況</div>
-                  <div className="w-full bg-white/20 rounded-full h-2">
-                    <div
-                      className="bg-cyan-400 h-2 rounded-full transition-all duration-300"
-                      style={{ width: `${((slideIdx + 1) / CHAPTER_SECTIONS.length) * 100}%` }}
-                    />
-                  </div>
-                  <div className="text-xs opacity-50 mt-2">
-                    {Math.round(((slideIdx + 1) / CHAPTER_SECTIONS.length) * 100)}% 完了
-                  </div>
+              {/* プログレス表示 */}
+              <div className="max-w-2xl mx-auto bg-black/20 rounded-xl p-6 mt-12">
+                <div className="text-sm opacity-70 mb-3">進行状況</div>
+                <div className="w-full bg-white/20 rounded-full h-3">
+                  <div
+                    className="bg-cyan-400 h-3 rounded-full transition-all duration-500"
+                    style={{ width: `${((slideIdx + 1) / SLIDES.length) * 100}%` }}
+                  />
+                </div>
+                <div className="text-sm opacity-60 mt-3">
+                  {Math.round(((slideIdx + 1) / SLIDES.length) * 100)}% 完了 • {currentSlide.id}
                 </div>
               </div>
             </div>
