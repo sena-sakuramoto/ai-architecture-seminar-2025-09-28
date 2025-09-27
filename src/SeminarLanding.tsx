@@ -1069,8 +1069,101 @@ const mediaToneStyles = (tone: SlideMediaTone = 'default') => {
   }
 };
 
+// Before/After Slider Compare Component
+const SliderCompare: React.FC<{ beforeImage: any; afterImage: any; headline?: string }> = ({ 
+  beforeImage, 
+  afterImage, 
+  headline 
+}) => {
+  const [sliderPosition, setSliderPosition] = useState(50);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleSliderMove = (e: React.MouseEvent | React.TouchEvent) => {
+    if (!containerRef.current) return;
+    
+    const rect = containerRef.current.getBoundingClientRect();
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const x = clientX - rect.left;
+    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+    setSliderPosition(percentage);
+  };
+
+  return (
+    <div className="space-y-4">
+      {headline && (
+        <h3 className="text-xl font-bold text-center text-white mb-6">{headline}</h3>
+      )}
+      <div
+        ref={containerRef}
+        className="relative w-full h-[60vh] max-h-[500px] rounded-2xl overflow-hidden cursor-grab active:cursor-grabbing shadow-2xl"
+        onMouseMove={handleSliderMove}
+        onTouchMove={handleSliderMove}
+      >
+        {/* After Image (Background) */}
+        <img
+          src={afterImage.src}
+          alt={afterImage.alt}
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        
+        {/* Before Image (Overlay with clip) */}
+        <div
+          className="absolute inset-0 overflow-hidden"
+          style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
+        >
+          <img
+            src={beforeImage.src}
+            alt={beforeImage.alt}
+            className="w-full h-full object-cover"
+          />
+        </div>
+        
+        {/* Slider Handle */}
+        <div
+          className="absolute top-0 bottom-0 w-1 bg-white shadow-lg"
+          style={{ left: `${sliderPosition}%`, transform: 'translateX(-50%)' }}
+        >
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center">
+            <div className="w-3 h-3 bg-gray-400 rounded-full"></div>
+          </div>
+        </div>
+        
+        {/* Labels */}
+        <div className="absolute top-4 left-4 bg-black/70 text-white px-3 py-1 rounded-lg text-sm font-medium">
+          {beforeImage.caption}
+        </div>
+        <div className="absolute top-4 right-4 bg-black/70 text-white px-3 py-1 rounded-lg text-sm font-medium">
+          {afterImage.caption}
+        </div>
+      </div>
+      
+      {/* Descriptions */}
+      <div className="grid grid-cols-2 gap-4 text-center">
+        <div className="space-y-2">
+          <p className="text-gray-300 text-sm">{beforeImage.description}</p>
+        </div>
+        <div className="space-y-2">
+          <p className="text-gray-300 text-sm">{afterImage.description}</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const ShowcaseMedia: React.FC<{ media: SlideMedia }> = ({ media }) => {
-  if (!media || !media.items.length) return null;
+  if (!media || (!media.items?.length && !media.beforeImage)) return null;
+  
+  // Handle slider-compare layout
+  if (media.layout === 'slider-compare' && media.beforeImage && media.afterImage) {
+    return (
+      <SliderCompare
+        beforeImage={media.beforeImage}
+        afterImage={media.afterImage}
+        headline={media.headline}
+      />
+    );
+  }
+  
   const isGrid = media.layout === 'grid';
   const columns = media.columns ?? (isGrid ? 2 : 1);
   const columnClass = columns === 3 ? 'md:grid-cols-3' : columns === 2 ? 'md:grid-cols-2' : 'md:grid-cols-1';
@@ -1177,7 +1270,7 @@ const slideAssets = {
   geminiFacadeAfter4: new URL('../images/画像生成/ritumen04 after.png', import.meta.url).href,
   geminiFacadeBefore5: new URL('../images/画像生成/ritumen05 before.png', import.meta.url).href,
   geminiFacadeAfter5: new URL('../images/画像生成/ritumen05 after.png', import.meta.url).href,
-  spotPdfLogo: new URL('../images/SpotPDF-logo.ico', import.meta.url).href,
+  spotPdfLogo: new URL('../images/SpotPDF logo.png', import.meta.url).href,
   notebookLmLogo: new URL('../images/notebooklm-logo.png', import.meta.url).href,
   notebookLmVideoGeneration: new URL('../images/notebooklm-video-generation.png', import.meta.url).href,
 };
@@ -2278,87 +2371,140 @@ const SLIDES: Slide[] = [
   },
   {
     id: 's-demo1-hands',
-    title: 'Demo① 現地調査AI活用実演',
+    title: 'Demo① 動画→議事録作成',
     lines: [
       '現地調査動画をGeminiに投入→AIが現状と課題を抽出',
       'カスタム指示で議事録を自動構造化（sena特製プロンプト公開）',
       '現地写真→Geminiでその場パース生成→提案イメージ完成',
     ],
     bg: 'linear-gradient(135deg,#111827,#1f2937)',
-  },
-  {
-    id: 's-demo1-out',
-    title: 'Demo① 成果物',
-    lines: [
-      '現地調査議事録（構造化済み・即共有可能）',
-      'AIパース提案画像（複数パターン）',
-      'sena特製Geminiカスタム指示セット（参加者限定プレゼント）',
-    ],
     media: {
-      layout: 'grid',
-      columns: 2,
-      headline: '現地調査AI活用実例：Before / After',
+      layout: 'single',
+      headline: '議事録作成AI実演',
       items: [
         {
-          src: slideAssets.kuraBefore1,
-          alt: '現地調査 Before 1',
-          caption: 'Before: 現地撮影',
-          description: '蔵外観の現況',
-          tone: 'muted',
-        },
-        {
-          src: slideAssets.kuraAfter1,
-          alt: '現地調査 After 1',
-          caption: 'After: AIパース',
-          description: 'Gemini生成提案イメージ',
-          tone: 'accent',
-        },
-        {
-          src: slideAssets.kuraBefore2,
-          alt: '現地調査 Before 2',
-          caption: 'Before: 内部現況',
-          description: '蔵内部の既存状況',
-          tone: 'muted',
-        },
-        {
-          src: slideAssets.kuraAfter2,
-          alt: '現地調査 After 2',
-          caption: 'After: 改修提案',
-          description: 'AIによる空間提案',
-          tone: 'accent',
-        },
-        {
-          src: slideAssets.kuraBefore3,
-          alt: '現地調査 Before 3',
-          caption: 'Before: 角度3',
-          description: '別角度からの現況',
-          tone: 'muted',
-        },
-        {
-          src: slideAssets.kuraAfter3,
-          alt: '現地調査 After 3',
-          caption: 'After: 提案3',
-          description: '多角度での提案検討',
-          tone: 'accent',
-        },
-        {
-          src: slideAssets.kuraBefore4,
-          alt: '現地調査 Before 4',
-          caption: 'Before: 角度4',
-          description: '最終角度での現況',
-          tone: 'muted',
-        },
-        {
-          src: slideAssets.kuraAfter4,
-          alt: '現地調査 After 4',
-          caption: 'After: 提案4',
-          description: '完成イメージの検証',
+          src: 'images/meeting-minutes-demo.png',
+          alt: '議事録作成AI実演の様子',
+          caption: 'Geminiで議事録を自動生成',
+          description: '現地調査動画から構造化された議事録を作成する様子',
           tone: 'accent',
         },
       ],
-      footnote: '現地で撮影→即座にGeminiでパース生成→その場で提案イメージを共有',
     },
+  },
+  {
+    id: 's-demo2-intro',
+    title: 'Demo② 速攻パース提案',
+    lines: [
+      '現地写真をGeminiに投入→即座にパース生成',
+      'AIパース提案画像（複数パターン・その場で確認）',
+      'sena特製Geminiカスタム指示セット（参加者限定プレゼント）',
+    ],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
+  },
+  {
+    id: 's-demo2-compare1',
+    title: 'パース提案例①：蔵外観',
+    lines: [
+      '現地撮影→Gemini投入→AIパース生成',
+      'スライダーで Before / After を比較',
+      '提案の説得力が格段にアップ',
+    ],
+    media: {
+      layout: 'slider-compare',
+      headline: '蔵外観：現況 vs AI提案',
+      beforeImage: {
+        src: slideAssets.kuraBefore1,
+        alt: '蔵外観 現況',
+        caption: 'Before: 現地撮影',
+        description: '蔵外観の現況',
+      },
+      afterImage: {
+        src: slideAssets.kuraAfter1,
+        alt: '蔵外観 AI提案',
+        caption: 'After: AIパース',
+        description: 'Gemini生成提案イメージ',
+      },
+    },
+    bg: 'linear-gradient(135deg,#111827,#1f2937)',
+  },
+  {
+    id: 's-demo2-compare2',
+    title: 'パース提案例②：内部空間',
+    lines: [
+      '内部空間も同様の手順で即座に提案',
+      'クライアントとリアルタイムで検討可能',
+      '現地での意思決定が加速',
+    ],
+    media: {
+      layout: 'slider-compare',
+      headline: '蔵内部：現況 vs AI提案',
+      beforeImage: {
+        src: slideAssets.kuraBefore2,
+        alt: '蔵内部 現況',
+        caption: 'Before: 内部現況',
+        description: '蔵内部の既存状況',
+      },
+      afterImage: {
+        src: slideAssets.kuraAfter2,
+        alt: '蔵内部 AI提案',
+        caption: 'After: 改修提案',
+        description: 'AIによる空間提案',
+      },
+    },
+    bg: 'linear-gradient(135deg,#1f2937,#374151)',
+  },
+  {
+    id: 's-demo2-compare3',
+    title: 'パース提案例③：多角度検討',
+    lines: [
+      '複数角度での検証で提案の精度向上',
+      '様々な視点からクライアントに説明',
+      '現地での合意形成が効率的に',
+    ],
+    media: {
+      layout: 'slider-compare',
+      headline: '別角度：現況 vs AI提案',
+      beforeImage: {
+        src: slideAssets.kuraBefore3,
+        alt: '別角度 現況',
+        caption: 'Before: 角度3',
+        description: '別角度からの現況',
+      },
+      afterImage: {
+        src: slideAssets.kuraAfter3,
+        alt: '別角度 AI提案',
+        caption: 'After: 提案3',
+        description: '多角度での提案検討',
+      },
+    },
+    bg: 'linear-gradient(135deg,#374151,#4b5563)',
+  },
+  {
+    id: 's-demo2-compare4',
+    title: 'パース提案例④：完成イメージ',
+    lines: [
+      '最終的な完成イメージまで即座に確認',
+      'プロジェクト全体の方向性を現地で決定',
+      'クライアント満足度の大幅向上',
+    ],
+    media: {
+      layout: 'slider-compare',
+      headline: '完成イメージ：現況 vs AI提案',
+      beforeImage: {
+        src: slideAssets.kuraBefore4,
+        alt: '最終角度 現況',
+        caption: 'Before: 角度4',
+        description: '最終角度での現況',
+      },
+      afterImage: {
+        src: slideAssets.kuraAfter4,
+        alt: '最終角度 AI提案',
+        caption: 'After: 提案4',
+        description: '完成イメージの検証',
+      },
+    },
+    bg: 'linear-gradient(135deg,#4b5563,#6b7280)',
   },
   {
     id: 's-demo2',
@@ -2385,7 +2531,7 @@ const SLIDES: Slide[] = [
   },
   {
     id: 's-demo2-hands',
-    title: 'Demo② 実演',
+    title: 'Demo③ 実演',
     lines: [
       'サンプル図面で差分抽出',
       'ハイライト箇所をコメント',
