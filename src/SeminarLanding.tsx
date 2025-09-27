@@ -1932,6 +1932,38 @@ const SLIDES: Slide[] = [
     bg: 'linear-gradient(135deg,#059669,#0f172a)',
   },
   {
+    id: 's-gemini-style-conversion',
+    title: 'Geminiスタイル変換実例',
+    lines: [
+      'パースや写真をコピック風に変換',
+      '手描きスケッチ風、水彩画風など多様なスタイル',
+      'プレゼンテーションの表現力を大幅向上',
+    ],
+    media: {
+      layout: 'grid',
+      columns: 2,
+      headline: 'スタイル変換：革命的な表現力',
+      items: [
+        {
+          src: slideAssets.kuraBefore1,
+          alt: 'オリジナル写真',
+          caption: 'Before: オリジナル',
+          description: '現地撮影の写真',
+          tone: 'muted',
+        },
+        {
+          src: slideAssets.kuraAfter1,
+          alt: 'コピック風変換',
+          caption: 'After: コピック風',
+          description: 'AI変換後の手描き風',
+          tone: 'accent',
+        },
+      ],
+      footnote: 'nanobananaの精度により、建物の特徴を保ちながらスタイル変換が可能',
+    },
+    bg: 'linear-gradient(135deg,#374151,#059669)',
+  },
+  {
     id: 's-basic-usage-tips',
     title: '基礎的な使い方のコツ',
     lines: [
