@@ -1878,6 +1878,11 @@ const SLIDES: Slide[] = [
       },
       {
         label: '2022',
+        title: 'Midjourney登場',
+        description: 'AI画像生成の民主化。建築デザインのアイデア展開やコンセプト検討が一般化。',
+      },
+      {
+        label: '2022',
         title: 'Stable Diffusion登場',
         description: '建築パース・マテリアル検討が数秒で生成可能に。概念検討スピードが大幅短縮。',
       },
@@ -1892,22 +1897,10 @@ const SLIDES: Slide[] = [
         description: '国交省BIM推進施策や自治体のガイドラインでAI活用と記録性が求められる。',
       },
     ],
-    toggles: [
-      {
-        title: 'キーワード',
-        summary: 'Transformer / Foundation Model / Agent',
-        detail: '最新AIは大規模基盤モデル＋タスク特化プロンプトで成り立つ。建築では構造化された図面・法規データとの接続が鍵。',
-      },
-      {
-        title: '建築への影響',
-        summary: '企画・審査・維持管理',
-        detail: '企画段階のスタディ生成、審査資料の根拠整理、維持管理のログ作成までAIが下支えする流れが世界的に始まっている。',
-        tone: 'accent',
-      },
-    ],
     footnotes: [
       'Transformer: Vaswani et al., Attention Is All You Need (2017)',
       'GPT-3: OpenAI API Launch, 2020年6月',
+      'Midjourney: Discord Bot Public Beta, 2022年7月',
       'Stable Diffusion: Stability AI, 2022年8月公開',
       '国土交通省 建築BIM推進会議（2024年5月）資料より抜粋',
     ],
@@ -3205,7 +3198,7 @@ export default function SeminarLanding(): React.ReactElement {
                   <RevealPanel delay={150}>
                     <div className="bg-white/5 rounded-2xl px-6 py-4 text-left">
                       <div className="text-sm uppercase tracking-[0.3em] text-cyan-200/80 mb-4">
-                        AI×建築アップデート
+                        AIの歴史
                       </div>
                       <div className="max-h-[300px] overflow-y-auto">
                         <Timeline entries={currentSlide.timeline} colorScheme="architecture" />
