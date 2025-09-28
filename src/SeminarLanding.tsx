@@ -294,10 +294,12 @@ type TimelineEntry = {
 const Timeline: React.FC<{
   entries: TimelineEntry[];
   colorScheme?: Exclude<keyof typeof semanticColors, 'neutral'>;
-}> = ({ entries, colorScheme = 'technology' }) => {
+  columns?: number;
+}> = ({ entries, colorScheme = 'technology', columns }) => {
   const colors = semanticColors[colorScheme];
+  const gridClass = columns === 2 ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 lg:grid-cols-2 xl:grid-cols-3';
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 w-full max-w-full">
+    <div className={`grid ${gridClass} gap-6 w-full max-w-full`}>
       {entries.map((entry, idx) => (
         <div
           key={idx}
@@ -424,18 +426,19 @@ const CHAPTERS = [
   { no: 5, id: 'part1-demo', title: '基礎のミニ実演 (50-55分)' },
   { no: 6, id: 'part1-tips', title: 'プロンプト活用Tips (55-60分)' },
   { no: 7, id: 'part1-notebook', title: 'Google NotebookLM 紹介 (60-70分)' },
-  { no: 8, id: 'part2-workflow', title: '実務ワークフローの全体像 (70-90分)' },
-  { no: 9, id: 'part2-demo1', title: '活用① Deepresearch (90-100分)' },
-  { no: 10, id: 'part2-demo2', title: '活用② ChatGPTエージェントでサンプル請求 (100-115分)' },
-  { no: 11, id: 'part2-demo3', title: '活用③ 現地調査でAIをフル活用する (115-135分)' },
-  { no: 12, id: 'part2-demo4', title: '活用④ Geminiで立面からパースへ (135-145分)' },
-  { no: 13, id: 'part2-demo5', title: '活用⑤ SpotPDF (145-155分)' },
-  { no: 14, id: 'part2-demo6', title: '活用⑥ HPと自作ゲームを作ろう (155-160分)' },
-  { no: 15, id: 'part2-demo7', title: '活用⑦ 無料で自動化してみよう (160-165分)' },
-  { no: 16, id: 'part2-demo8', title: '活用⑧ Manusでプレゼン資料を作ってみよう (165-170分)' },
-  { no: 17, id: 'part3-summary', title: 'まとめと今後 (170-180分)' },
-  { no: 18, id: 'survey', title: 'アンケート (180分-)' },
-  { no: 19, id: 'qa', title: '無制限Q&A' },
+  { no: 8, id: 'break', title: '休憩 (70-75分)' },
+  { no: 9, id: 'part2-workflow', title: '実務ワークフローの全体像 (75-90分)' },
+  { no: 10, id: 'part2-demo1', title: '活用① Deepresearch (90-100分)' },
+  { no: 11, id: 'part2-demo2', title: '活用② ChatGPTエージェントでサンプル請求 (100-115分)' },
+  { no: 12, id: 'part2-demo3', title: '活用③ 現地調査でAIをフル活用する (115-135分)' },
+  { no: 13, id: 'part2-demo4', title: '活用④ Geminiで立面からパースへ (135-145分)' },
+  { no: 14, id: 'part2-demo5', title: '活用⑤ SpotPDF (145-155分)' },
+  { no: 15, id: 'part2-demo6', title: '活用⑥ HPと自作ゲームを作ろう (155-160分)' },
+  { no: 16, id: 'part2-demo7', title: '活用⑦ 無料で自動化してみよう (160-165分)' },
+  { no: 17, id: 'part2-demo8', title: '活用⑧ Manusでプレゼン資料を作ってみよう (165-170分)' },
+  { no: 18, id: 'part3-summary', title: 'まとめと今後 (170-180分)' },
+  { no: 19, id: 'survey', title: 'アンケート (180分-)' },
+  { no: 20, id: 'qa', title: '無制限Q&A' },
 ] as const;
 
 const CHAPTER_SUMMARIES: Record<string, string> = {
@@ -446,6 +449,7 @@ const CHAPTER_SUMMARIES: Record<string, string> = {
   'part1-demo': '会議音声→要点抽出→表形式の即整形',
   'part1-tips': '構造化して、yamlでまとめて、表形式で、抽象化→具体化、制約付き、検証して',
   'part1-notebook': '難しい資料を投入してラジオ形式で要点を音声学習、幻覚抑制の運用',
+  'break': 'フェーズ1とフェーズ2の間の5分休憩',
   'part2-workflow': '調査→設計→コミュ→見積→省エネ→提出のAI導線マップ',
   'part2-demo1': 'Deepresearchを使った物件調査手法とAI活用のコツ',
   'part2-demo2': 'ChatGPTエージェント機能でサンゲツなどからのサンプル自動請求',
@@ -1047,6 +1051,7 @@ type Slide = {
   toggles?: SlideToggle[];
   timeline?: TimelineEntry[];
   timelineTitle?: string;
+  timelineColumns?: number;
   barChart?: SlideBarChart;
   footnotes?: string[];
   bg?: string;
@@ -1195,7 +1200,7 @@ const ShowcaseMedia: React.FC<{ media: SlideMedia }> = ({ media }) => {
                 src={item.src}
                 alt={item.alt}
                 loading="lazy"
-                className={`w-full ${imageFitClass} rounded-3xl ${item.src.includes('SpotPDF') ? 'bg-white' : 'bg-slate-900/40'} ${columns === 1 ? 'max-h-[500px]' : (item.src.includes('logo') ? 'max-h-[180px] md:max-h-[200px] p-4' : 'max-h-[600px] md:max-h-[650px]')} mx-auto`}
+                className={`w-full ${imageFitClass} rounded-3xl ${item.src.includes('SpotPDF') ? 'bg-white' : 'bg-slate-900/40'} ${columns === 1 ? 'max-h-[500px]' : (item.src.includes('logo') ? 'max-h-[120px] md:max-h-[140px] p-6' : 'max-h-[600px] md:max-h-[650px]')} mx-auto`}
               />
               {(item.caption || item.description) && (
                 <figcaption className="px-8 py-6 space-y-3">
@@ -1232,7 +1237,7 @@ const ShowcaseMedia: React.FC<{ media: SlideMedia }> = ({ media }) => {
               src={item.src}
               alt={item.alt}
               loading="lazy"
-              className={`w-full ${imageFitClass} rounded-3xl ${item.src.includes('SpotPDF') ? 'bg-white' : 'bg-slate-900/40'} ${item.src.includes('logo') ? 'max-h-[160px] md:max-h-[180px] p-4' : 'max-h-[400px] md:max-h-[450px]'}`}
+              className={`w-full ${imageFitClass} rounded-3xl ${item.src.includes('SpotPDF') ? 'bg-white' : 'bg-slate-900/40'} ${item.src.includes('logo') ? 'max-h-[100px] md:max-h-[120px] p-6' : 'max-h-[400px] md:max-h-[450px]'}`}
             />
             {(item.caption || item.description) && (
               <figcaption className="px-6 py-4 space-y-2">
@@ -1559,7 +1564,7 @@ const SLIDES: Slide[] = [
     lines: [
       'Archicad正規販売代理店として建築設計支援',
       'YouTube「archisoft」運営：Archicad中心に建築ソフトの解説を学生時代から',
-      '建築土木カフェTONKAの顧問',
+      '建築土木カフェTONKANの顧問',
       '企業向けAIセミナー・業務改善コンサル',
     ],
     toggles: [
@@ -1789,6 +1794,21 @@ const SLIDES: Slide[] = [
         description: '推論能力が大幅向上。複雑な構造計算や法規チェックなど、専門的な建築業務をAIが支援。',
       },
       {
+        label: '2024年12月',
+        title: 'DeepSeek V3',
+        description: '中国発の高性能AI。多言語対応と推論能力で建築プロジェクトの国際展開を支援。',
+      },
+      {
+        label: '2025年1月',
+        title: 'o3 登場',
+        description: 'OpenAIの次世代推論モデル。より複雑な建築問題の解決と創造的デザイン支援を実現。',
+      },
+      {
+        label: '2025年予定',
+        title: 'GPT-5 期待',
+        description: '次世代汎用AI。建築設計から施工管理まで、包括的な建築業務の自動化が期待される。',
+      },
+      {
         label: '2024年現在',
         title: 'MANUS・専門AI',
         description: '建築特化AIツールが続々登場。BIM連携、法規チェック、積算自動化など実務に直結する機能が実装。',
@@ -1801,6 +1821,7 @@ const SLIDES: Slide[] = [
     id: 's-learning-cycle',
     title: '学習サイクル',
     goalStatement: '3時間で「理解→実演→転用→共有」の状態を作り、翌日から実装を始める',
+    timelineColumns: 2,
     timeline: [
       {
         label: 'STEP 1',
@@ -2663,11 +2684,22 @@ const SLIDES: Slide[] = [
     id: 's-demo4',
     title: '活用④ Geminiで立面からパースへ',
     lines: [
-      'ChatGPT5とGeminiを使って好きにみんなで作ってみよう',
-      'HP、ゲーム、アプリ、何でもOK',
-      '参加者全員で自由に創作タイム',
+      '立面やスケッチをそのまま読み込み、用途・時間帯・材質をテキストで指示',
+      'プロンプトで「どこを強調したいか」を伝え、数パターンを生成して比較',
+      '採用案はPhotoshopなどで微調整し、提案資料やSNSに即活用する',
     ],
     bg: 'linear-gradient(135deg,#111827,#1f2937)',
+  },
+  {
+    id: 's-gemini-facade-examples',
+    title: 'Geminiスタイル変換実例',
+    subtitle: '立面図からパースへの実践ワークフロー',
+    lines: [
+      '建築立面図の読み込み→材質・環境・時間帯の指定→即座にパース生成',
+      '複数パターンの比較検討で最適案を選択',
+      '現場での説得力のあるビジュアライゼーション実現',
+    ],
+    bg: 'linear-gradient(135deg,#1e293b,#111827)',
   },
   {
     id: 's-demo5',
@@ -2683,9 +2715,9 @@ const SLIDES: Slide[] = [
     id: 's-demo6',
     title: '活用⑥ HPと自作ゲームを作ろう',
     lines: [
-      'Claudeを使って簡単なWebサイト作成',
-      '建築事務所向けのゲーム要素を組み込み',
-      'プロジェクト紹介やポートフォリオサイトを即座に構築',
+      'ChatGPTとClaudeを使って好きにみんなで作ってみよう',
+      'HP、ゲーム、アプリ、何でもOK',
+      '参加者全員で自由に創作タイム',
     ],
     bg: 'linear-gradient(135deg,#374151,#1f2937)',
   },
@@ -3390,7 +3422,7 @@ export default function SeminarLanding(): React.ReactElement {
                         {currentSlide.timelineTitle || 'タイムライン'}
                       </div>
                       <div className="max-h-[300px] overflow-y-auto">
-                        <Timeline entries={currentSlide.timeline} colorScheme="architecture" />
+                        <Timeline entries={currentSlide.timeline} colorScheme="architecture" columns={currentSlide.timelineColumns} />
                       </div>
                     </div>
                   </RevealPanel>
