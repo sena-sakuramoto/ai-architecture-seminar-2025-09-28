@@ -617,7 +617,7 @@ const CHAPTER_SECTIONS: Array<{
     id: 'ch-16',
     kicker: 'ASSETS',
     title: '配布物の解放',
-    bullets: ['テンプレ/チェック/プロンプト集', 'GAS雛形/差分KPIシート', '非公開ページで一括DL'],
+    bullets: ['テンプレ/チェックリスト', 'GAS雛形/差分KPIシート', '非公開ページで一括DL'],
     notes:
       'URL/DL期限/再配布ポリシーを明記。プロンプトは構造化/表/YAML/検証の型で配る。',
   },
@@ -718,7 +718,6 @@ const chapterVisuals: Record<string, React.ReactNode> = {
       rows={[
         ["テンプレート", "15本", "PDF/DOCX"],
         ["チェックリスト", "8本", "PDF/XLSX"],
-        ["プロンプト集", "70種", "YAML/MD"],
         ["GAS雛形", "3本", "GS/JS"]
       ]}
     />
@@ -2760,7 +2759,7 @@ const SLIDES: Slide[] = [
     title: '明日からの実装チェック',
     lines: [
       '業務導線マップを更新',
-      'テンプレとプロンプト集を配布',
+      'テンプレとチェックリストを配布',
       'GAS通知PoCを1本動かす',
       'KPI初期値を記録',
     ],
@@ -2771,7 +2770,6 @@ const SLIDES: Slide[] = [
     title: '配布物セット',
     lines: [
       'アーカイブ動画・スライド・リンク集',
-      'プロンプト集（Markdown + YAML）',
       'GAS雛形・モデル建物法レシピ',
     ],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
@@ -2791,7 +2789,6 @@ const SLIDES: Slide[] = [
     title: '参加者特典',
     lines: [
       '資料一式（当日スライドPDF・事例リンク集・明日からの実装チェックリスト）',
-      'プロンプト集（構造化して、yamlでまとめて、表形式で、抽象化→具体化、制約付きで、検証して）',
       'タスク通知GAS（Spreadsheet→GAS→Gmail通知の雛形コード・導入手順・運用Q&A）',
       'ラストシークレット: AI×建築コミュニティ（Circle）の招待',
     ],
@@ -2901,7 +2898,7 @@ const SLIDES: Slide[] = [
       {
         title: '配布資料で復習',
         summary: 'セミナー終了後の非公開ページ',
-        detail: 'プロンプト集、チェックリスト、テンプレート一式をダウンロードして、実務で活用開始してください。',
+        detail: 'チェックリスト、テンプレート一式をダウンロードして、実務で活用開始してください。',
       },
       {
         title: '次のステップ',
@@ -2924,15 +2921,89 @@ const SLIDES: Slide[] = [
     bg: 'linear-gradient(135deg,#334155,#0f172a)',
   },
   {
-    id: 's-thanks',
-    title: 'Thank You',
+    id: 's-goal-check',
+    title: '今日のゴール達成確認',
+    goalStatement: '現状を理解し、明日から自分の業務でAIを実践していける具体的な姿を描く',
+    lines: [
+      '✓ AI活用の現実を知り、自分の業務での活用イメージを具体化できましたか？',
+      '✓ 明日から試せる具体的な手法を体験し、実践への道筋は明確になりましたか？',
+      '✓ 自分のワークフローでどこをAI化できるかを特定できましたか？',
+      '✓ 継続的に取り組める現実的な一歩目を設定できましたか？',
+    ],
+    bg: 'linear-gradient(135deg,#059669,#0f172a)',
+  },
+  {
+    id: 's-major-announcement',
+    title: '重大発表',
+    lines: [],
+    bg: 'linear-gradient(135deg,#dc2626,#0f172a)',
+  },
+  {
+    id: 's-circle-announcement',
+    title: 'AI×建築サークル　始動します',
+    goalStatement: '月5000円で中小建築関係者の力になりたい',
+    lines: [
+      'AIはその時その時で最適解が変わる技術',
+      '同じようなイベントを今後も継続的に開催',
+      '僕はどんどん実務でほしいソフトやサービスを作っていく',
+      '大手はマネーパワーで何とかなるけど、中小企業はいまの時代厳しい',
+    ],
+    toggles: [
+      {
+        title: 'サークルの目的',
+        summary: '日本の中小建築関係者の力になりたい',
+        detail: '大手はマネーパワーで最新技術を導入できるが、中小企業は情報格差で苦労している。月5000円で最新AI情報、開発ソフトの利用、交流・意見交換ができる環境を提供したい。',
+        tone: 'accent',
+      },
+      {
+        title: 'サークルの特徴',
+        summary: '学生時代のサークルのような交流空間',
+        detail: 'AIに関心がある建築関係者が集まり、最新技術を学び、実務での活用法を共有し、一緒に業界を変えていく仲間づくりの場。',
+      },
+      {
+        title: '参加条件',
+        summary: '今回のセミナー参加者だけが入会可能',
+        detail: '初月無料で、第一期メンバーとして、まだ未熟なAI×建築サークルを一緒に作っていってもらいたい。建築業界の未来を一緒に創造しましょう。',
+        tone: 'muted',
+      },
+    ],
+    bg: 'linear-gradient(135deg,#7c3aed,#0f172a)',
+  },
+  {
+    id: 's-future-roles-final',
+    title: 'AI時代の建築家の役割',
+    lines: [
+      '生産性向上により、全員が現場監督能力を求められる時代に',
+      '考えるだけでなく、AIに指示出し→進捗確認→自分でも作る',
+      'できることは自分で手を動かし、プロジェクト全体を統括する',
+      '名もなき建築家が神社を設計・施工していた昔の姿に回帰する',
+    ],
+    bg: 'linear-gradient(135deg,#334155,#0f172a)',
+  },
+  {
+    id: 's-final-announcement',
+    title: 'アンケートで配布物とサークル参加を解放',
     subtitle: 'ご参加ありがとうございました！',
     lines: [
-      'アンケート回答で配布物を解放',
-      '追加質問はメールでお気軽に',
+      '配布物とサークルへの参加（初月無料）は、アンケート回答後に解放される仕組みとなってます',
+      'アンケート回答後に非公開ページで資料一括ダウンロード',
+      'AI×建築サークルの招待コードもアンケート完了後に表示',
       '一緒にAIで建築業界を変えましょう',
     ],
-    bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
+    toggles: [
+      {
+        title: '配布内容',
+        summary: 'チェックリスト・テンプレート・GAS雛形',
+        detail: '実装チェックリスト、ワークフローテンプレート、自動化スクリプト雛形などをまとめて配布します。',
+      },
+      {
+        title: 'サークル特典',
+        summary: '初月無料・月5000円・セミナー参加者限定',
+        detail: '最新AI情報、開発ソフトの早期アクセス、月1回Zoom相談会、限定交流会への参加が可能です。',
+        tone: 'accent',
+      },
+    ],
+    bg: 'linear-gradient(135deg,#059669,#0f172a)',
   },
 ];
 
@@ -3578,7 +3649,7 @@ export default function SeminarLanding(): React.ReactElement {
               <div className="mt-1 text-lg">📄</div>
               <div className="space-y-2">
                 <div className="text-sm font-semibold text-slate-900">使い回せる資料セット</div>
-                <p className="text-sm text-slate-600 leading-6">提案テンプレ・プロンプト集・チェックリスト・GAS雛形などを終了後にまとめて配布。</p>
+                <p className="text-sm text-slate-600 leading-6">提案テンプレ・チェックリスト・GAS雛形などを終了後にまとめて配布。</p>
               </div>
             </Card>
             <Card className="flex items-start gap-4 p-5 border border-slate-200 bg-white">
@@ -3828,7 +3899,7 @@ export default function SeminarLanding(): React.ReactElement {
                       BONUS: 配布物解放
                     </div>
                     <p className="text-sm leading-5" style={{ color: semanticColors.neutral[700] }}>
-                      全資料・プロンプト集・コミュニティ招待
+                      全資料・コミュニティ招待
                     </p>
                   </div>
                 </div>
@@ -4076,8 +4147,6 @@ export default function SeminarLanding(): React.ReactElement {
                 </div>
                 <div className="text-center space-y-2">
                   <div className="text-3xl">💬</div>
-                  <div className="font-semibold text-slate-900">プロンプト集</div>
-                  <div className="text-sm text-slate-600">構造化・YAML・検証パターン</div>
                 </div>
                 <div className="text-center space-y-2">
                   <div className="text-3xl">⚙️</div>
@@ -4136,7 +4205,7 @@ export default function SeminarLanding(): React.ReactElement {
                   <div className="bg-gradient-to-r from-purple-50 to-violet-50 border border-purple-200 rounded-lg p-4">
                     <div className="font-semibold text-purple-900 text-sm mb-2">🛠️ 実装ツール</div>
                     <ul className="text-sm text-slate-700 space-y-1 list-none">
-                      {["プロンプト集（Markdown + YAML形式）", "GAS通知サンプルコード・導入手順", "SpotPDF差分サンプル・省エネ計算レシピ"].map((item) => (
+                      {["GAS通知サンプルコード・導入手順", "SpotPDF差分サンプル・省エネ計算レシピ"].map((item) => (
                         <li key={item} className="flex items-start gap-2">
                           <span className="mt-1 h-1.5 w-1.5 rounded-full bg-violet-400" />
                           <span>{item}</span>
