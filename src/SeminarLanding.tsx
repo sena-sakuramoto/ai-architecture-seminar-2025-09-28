@@ -2352,17 +2352,6 @@ const SLIDES: Slide[] = [
     bg: 'linear-gradient(135deg,#111d2d,#080b12)',
   },
   {
-    id: 's-future-roles',
-    title: 'AI時代の建築家の役割',
-    lines: [
-      '生産性向上により、全員が現場監督能力を求められる時代に',
-      '考えるだけでなく、AIに指示出し→進捗確認→自分でも作る',
-      'できることは自分で手を動かし、プロジェクト全体を統括する',
-      '名もなき建築家が神社を設計・施工していた昔の姿に回帰する',
-    ],
-    bg: 'linear-gradient(135deg,#334155,#0f172a)',
-  },
-  {
     id: 's-security',
     title: 'セキュリティ・リスク対応',
     lines: [
@@ -2608,13 +2597,14 @@ const SLIDES: Slide[] = [
   },
   {
     id: 's-demo2',
-    title: '活用② SpotPDF 差分 5分決着',
+    title: '活用② SpotPDF 差分チェック',
     lines: [
       'A/B図面の差分抽出→自動ハイライト',
       'コメント→PDF化→共有',
       '承認ログとしてDrive保存',
     ],
     media: {
+      position: 'main',
       layout: 'stack',
       items: [
         {
@@ -2626,6 +2616,7 @@ const SLIDES: Slide[] = [
           tone: 'accent',
         },
       ],
+      footnote: 'アップロード→差分チェック→共有まで最短5分で完結',
     },
     bg: 'linear-gradient(135deg,#1e293b,#475569)',
   },
@@ -2680,16 +2671,6 @@ const SLIDES: Slide[] = [
     bg: 'linear-gradient(135deg,#1f2937,#0f172a)',
   },
   {
-    id: 's-risk-buffer',
-    title: '時間押しリスクへの備え',
-    lines: [
-      '5分押し→Canvasデモは紹介のみ',
-      '10分押し→GASデモは素材配布',
-      '実演は成功体験最優先',
-    ],
-    bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
-  },
-  {
     id: 's-phase3',
     title: 'Phase 3｜まとめと今後',
     lines: [
@@ -2698,6 +2679,16 @@ const SLIDES: Slide[] = [
       '実装チェックリストで定着',
     ],
     bg: 'linear-gradient(135deg,#1e293b,#475569)',
+  },
+  {
+    id: 's-risk-buffer',
+    title: '時間押しリスクへの備え',
+    lines: [
+      '5分押し→Canvasデモは紹介のみ',
+      '10分押し→GASデモは素材配布',
+      '実演は成功体験最優先',
+    ],
+    bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
   },
   {
     id: 's-kpi',
@@ -2864,6 +2855,42 @@ const SLIDES: Slide[] = [
       'PDF閲覧とGmail通知テスト',
     ],
     bg: 'linear-gradient(135deg,#1e293b,#475569)',
+  },
+  {
+    id: 's-goal-check',
+    title: '今日のゴール達成確認',
+    goalStatement: '現状を理解し、明日から自分の業務でAIを実践していける具体的な姿を描く',
+    lines: [
+      '✓ AI活用の現実を知り、自分の業務での活用イメージを具体化できましたか？',
+      '✓ 明日から試せる具体的な手法を体験し、実践への道筋は明確になりましたか？',
+      '✓ 自分のワークフローでどこをAI化できるかを特定できましたか？',
+      '✓ 継続的に取り組める現実的な一歩目を設定できましたか？',
+    ],
+    toggles: [
+      {
+        title: '配布資料で復習',
+        summary: 'セミナー終了後の非公開ページ',
+        detail: 'プロンプト集、チェックリスト、テンプレート一式をダウンロードして、実務で活用開始してください。',
+      },
+      {
+        title: '次のステップ',
+        summary: 'まずは小さく始めて、チームに共有',
+        detail: '一つの業務から始めて成果を確認。効果が見えたらチーム全体に展開し、AI×建築の新しい働き方を実現しましょう。',
+        tone: 'accent',
+      },
+    ],
+    bg: 'linear-gradient(135deg,#059669,#0f172a)',
+  },
+  {
+    id: 's-future-roles-final',
+    title: 'AI時代の建築家の役割',
+    lines: [
+      '生産性向上により、全員が現場監督能力を求められる時代に',
+      '考えるだけでなく、AIに指示出し→進捗確認→自分でも作る',
+      'できることは自分で手を動かし、プロジェクト全体を統括する',
+      '名もなき建築家が神社を設計・施工していた昔の姿に回帰する',
+    ],
+    bg: 'linear-gradient(135deg,#334155,#0f172a)',
   },
   {
     id: 's-thanks',
