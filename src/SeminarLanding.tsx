@@ -470,9 +470,9 @@ const CHAPTER_SECTIONS: Array<{
     title: '講師紹介：櫻本聖成 / Sakuramoto Sena',
     bullets: [
       'Archi-Prisma Design works 代表：一級建築士事務所として大規模開発、ホテル事業',
-                  'YouTube「archisoft」運営：Archicad中心に建築ソフトの解説を学生時代から',
+      'YouTube「archisoft」運営：Archicad中心に建築ソフトの解説を学生時代から',
       '建築土木カフェTONKANの顧問',
-      '企業向けAIセミナー・業務改善コンサル',,
+      '企業向けAIセミナー・業務改善コンサル',
       '築150年蔵リノベ、AI×建築セミナー、企業コンサル・共同開発',
     ],
     notes:
