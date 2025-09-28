@@ -470,7 +470,9 @@ const CHAPTER_SECTIONS: Array<{
     title: '講師紹介：櫻本聖成 / Sakuramoto Sena',
     bullets: [
       'Archi-Prisma Design works 代表：一級建築士事務所として大規模開発、ホテル事業',
-      'archisoft 代表：Archicad代理店、YouTube運営、建築土木カフェTONKA顧問',
+                  'YouTube「archisoft」運営：Archicad中心に建築ソフトの解説を学生時代から',
+      '建築土木カフェTONKANの顧問',
+      '企業向けAIセミナー・業務改善コンサル',,
       '築150年蔵リノベ、AI×建築セミナー、企業コンサル・共同開発',
     ],
     notes:
@@ -574,9 +576,9 @@ const CHAPTER_SECTIONS: Array<{
     id: 'ch-12',
     kicker: 'IMAGE',
     title: '画像生成：役割で使い分け',
-    bullets: ['日本語入りポスターやレイアウト修正＝ChatGPT Image Editorで文字を正確に配置', '立面・現地写真の部分編集／差分パース＝Gemini 2.5 Flash + nanobananaで崩さず反映', '用途ごとに担当AIを決めると修正依頼と差分チェックの往復が最短になる'],
+    bullets: ['構図整合=GPT、写実=Gemini', '下描き→指示→反復→部分リタッチ', 'PSで垂直補正/色調/ノイズ'],
     notes:
-      'ChatGPTは文字・レイアウト調整の精度が高い。Gemini 2.5 Flash + nanobananaは指定箇所だけを更新し、周辺ピクセルを保持できるため実務で使える差分パースが得られる。',
+      '時間/季節/色温度/材質/比率を指定。生成後に窓割/光量/道路幅員など建築的整合を点検。',
   },
   {
     id: 'ch-13',
@@ -2166,6 +2168,183 @@ const SLIDES: Slide[] = [
     footnotes: ['AIは背景を知らないまま提案する。人間同士のマネジメント視点が不可欠'],
     bg: 'linear-gradient(135deg,#12354a,#0f172a)',
   },
+  {
+    id: 's-gemini-overview',
+    title: 'Geminiで立面からパースへ',
+    subtitle: '現場で回すときの流れ',
+    lines: [
+      '1. 立面やスケッチをそのまま読み込み、目的（用途・時間帯・材質）をテキストで指定する',
+      '2. プロンプトで「どこを強調したいか」を伝え、数パターンを生成し比較する',
+      '3. 採用案はPhotoshopなどで微調整し、提案資料やSNSに即活用する',
+    ],
+    media: {
+      position: 'main',
+      layout: 'grid',
+      columns: 1,
+      headline: '作業イメージ',
+      items: [
+        {
+          src: slideAssets.geminiFacadeBefore1,
+          alt: '立面スケッチのサンプル',
+          caption: '入力素材の例',
+          description: 'クライアントと共有した立面図。背景情報と意図をセットでAIに渡す。',
+          tone: 'muted',
+          fit: 'contain',
+        },
+      ],
+      footnote: '実務では立面図・構造メモ・希望テイストをセットで指示',
+    },
+    bg: 'linear-gradient(135deg,#10213a,#0b1220)',
+  },
+  {
+    id: 's-gemini-case1',
+    title: 'Case 1｜夕景の立面提案',
+    lines: [
+      '立面スケッチをそのまま読み込み、夕景・木質・間接照明を指定',
+      '複数案の中から店舗らしさが出る1枚を選び、Photoshopでロゴとサインを追加',
+    ],
+    media: {
+      position: 'main',
+      layout: 'grid',
+      columns: 2,
+      headline: 'Before / After',
+      items: [
+        {
+          src: slideAssets.geminiFacadeBefore1,
+          alt: '立面スケッチ Before',
+          caption: 'Before: 立面スケッチ',
+          description: 'クライアント提供の一次資料',
+          tone: 'muted',
+          fit: 'contain',
+        },
+        {
+          src: slideAssets.geminiFacadeAfter1,
+          alt: 'Gemini生成パース After',
+          caption: 'After: Gemini案',
+          description: '条件: 夕景 / 木質 / 間接照明',
+          tone: 'accent',
+        },
+      ],
+      footnote: '生成～調整まで約7分。提案資料とSNS投稿に転用',
+    },
+    bg: 'linear-gradient(135deg,#172942,#0b111d)',
+  },
+  {
+    id: 's-gemini-case2',
+    title: 'Case 2｜昼景の外構提案',
+    lines: [
+      '外構の立面データに「日中・植栽・来客導線」を指定し、複数案を生成',
+      '採用案は色味だけを調整し、見積・計画会議で共有',
+    ],
+    media: {
+      position: 'main',
+      layout: 'grid',
+      columns: 2,
+      items: [
+        {
+          src: slideAssets.geminiFacadeBefore2,
+          alt: '外構立面 Before',
+          caption: 'Before: 外構立面',
+          description: '必要最低限の線情報',
+          tone: 'muted',
+          fit: 'contain',
+        },
+        {
+          src: slideAssets.geminiFacadeAfter2,
+          alt: 'Gemini生成 昼景パース After',
+          caption: 'After: 昼景パース',
+          description: '明るさ・植栽・人流を追加',
+          tone: 'accent',
+        },
+      ],
+      footnote: '生成10枚から2案を採用。社内レビューのたたき台に使用',
+    },
+    bg: 'linear-gradient(135deg,#14263c,#091017)',
+  },
+  {
+    id: 's-gemini-case3',
+    title: 'Case 3｜サイン検討',
+    lines: [
+      'サイン位置と光量を指定し、夜景での印象と視認性を検証',
+      '複数案を比較しながら、サインのサイズと色味をすり合わせ',
+    ],
+    media: {
+      position: 'main',
+      layout: 'grid',
+      columns: 2,
+      items: [
+        {
+          src: slideAssets.geminiFacadeBefore3,
+          alt: 'サインなし立面 Before',
+          caption: 'Before: 立面ベース',
+          description: 'サイン・光源なしの状態',
+          tone: 'muted',
+          fit: 'contain',
+        },
+        {
+          src: slideAssets.geminiFacadeAfter3,
+          alt: 'Gemini生成 夜景サイン After',
+          caption: 'After: サインスタディ',
+          description: '夜景・ネオン・人流を追加して想定共有',
+          tone: 'accent',
+        },
+      ],
+      footnote: '各案を比較しながらサイン計画を決定',
+    },
+    bg: 'linear-gradient(135deg,#111f33,#080c14)',
+  },
+  {
+    id: 's-gemini-case4',
+    title: 'Case 4｜ファサード素材検討',
+    lines: [
+      '素材や色の違いを複数パターン生成し、クライアントと即日共有',
+      '実施設計で使う色番号・素材カタログに紐付けて意思決定をスムーズに',
+    ],
+    media: {
+      position: 'main',
+      layout: 'grid',
+      columns: 2,
+      items: [
+        {
+          src: slideAssets.geminiFacadeBefore4,
+          alt: 'ファサード素材検討 Before',
+          caption: 'Before: ベース立面',
+          description: '素材・照明条件なし',
+          tone: 'muted',
+          fit: 'contain',
+        },
+        {
+          src: slideAssets.geminiFacadeAfter4,
+          alt: 'Gemini生成 ファサードバリエーション After',
+          caption: 'After: 素材バリエーション',
+          description: 'マテリアルと光環境を変えて比較',
+          tone: 'accent',
+        },
+      ],
+      footnote: '各案に対応する仕上げ表を添えてクライアント合意を形成',
+    },
+    bg: 'linear-gradient(135deg,#122031,#090f18)',
+  },
+  {
+    id: 's-gemini-case5',
+    title: 'Case 5｜ディテール検討',
+    lines: [
+      '屋根や袖壁などディテールのバリエーションを短時間で並べて比較',
+      '設計チーム内で「どこを重点的に作り込むか」を共通認識に',
+    ],
+    media: {
+      position: 'main',
+      layout: 'grid',
+      columns: 2,
+      items: [
+        {
+          src: slideAssets.geminiFacadeBefore5,
+          alt: 'ディテール検討 Before',
+          caption: 'Before: ベース立面',
+          description: 'ディテール指定なし',
+          tone: 'muted',
+          fit: 'contain',
+        },
         {
           src: slideAssets.geminiFacadeAfter5,
           alt: 'Gemini生成 ディテール比較 After',
@@ -2308,259 +2487,6 @@ const SLIDES: Slide[] = [
       ],
     },
   },
-  {
-    id: 's-image-gen-routing',
-    title: '画像生成の使い分け',
-    lines: [
-      '日本語入りポスターやレイアウト修正はChatGPT Image Editorで文字を正確に配置',
-      '立面・現地写真の部分編集や差分パースはGemini 2.5 Flash + nanobananaで崩さず反映',
-      '用途を分けておくと修正依頼と差分チェックの往復が最短になる',
-    ],
-    quickFacts: [
-      { label: 'ChatGPT', value: '文字入り', description: 'キャッチコピーや注釈のレイアウト調整が得意' },
-      { label: 'Gemini', value: '差分パース', description: 'nanobananaで編集範囲外をピクセル保持' },
-      { label: '共有', value: '即レビュー', description: 'Drive / Slack に貼って議事録に転用' },
-    ],
-    bg: 'linear-gradient(135deg,#0f172a,#1f2937)',
-  },
-  {
-    id: 's-gemini-overview',
-    title: 'Gemini 2.5 Flash × nanobanana',
-    goalStatement: '編集箇所以外をいじらない差分生成で実務品質のAIパースを量産',
-    lines: [
-      'nanobanana拡張で指定箇所以外のピクセルを保持したまま編集できる',
-      '立面・現地写真・SketchUpキャプチャを読み込み、数十秒で複数案を生成',
-      '従来は微妙に崩れていた既存写真もブラシで指定した部分だけを更新できる',
-    ],
-    quickFacts: [
-      { label: 'スピード', value: '約40秒', description: '立面→提案案までnanobananaプリセットで完了' },
-      { label: '再現性', value: '±2px', description: '差分レビューが即できるピクセル一致度' },
-      { label: '対応素材', value: '写真 / 立面 / 3D', description: '現地フォトやCAD書き出しをそのまま投入' },
-    ],
-    toggles: [
-      {
-        title: '崩さない編集',
-        summary: 'nanobananaで部分だけを更新',
-        detail: 'サイン差し替えや植栽追加なども背景を崩さず即対応できる。'
-      },
-      {
-        title: '現場で即判断',
-        summary: '生成→比較→決定の1サイクル',
-        detail: '夕景／昼景など条件違いを数パターン並べて、その場でGO/STOPを決定。',
-        tone: 'accent',
-      },
-    ],
-    media: {
-      position: 'main',
-      layout: 'grid',
-      columns: 1,
-      headline: 'nanobananaワークフロー',
-      items: [
-        {
-          src: slideAssets.geminiFacadeBefore1,
-          alt: '立面ベース',
-          caption: 'Before: 立面図 / 現地写真',
-          description: 'ブラシで編集範囲を指定してアップロード',
-          tone: 'muted',
-          fit: 'contain',
-        },
-      ],
-      footnote: 'Gemini Advanced (2.5 Flash) + nanobanana。編集履歴はDriveに保存。',
-    },
-    bg: 'linear-gradient(135deg,#10213a,#0b1220)',
-  },
-  {
-    id: 's-gemini-case1',
-    title: 'Case 1｜KURA外観を夕景に',
-    lines: [
-      '現地で撮影した蔵サウナ外観をその場で夕景化し、施主と色味を詰める',
-      '看板・照明・人の動きを複数パターン生成し、SNS素材にも転用',
-    ],
-    media: {
-      position: 'main',
-      layout: 'grid',
-      columns: 2,
-      headline: 'Before / After',
-      items: [
-        {
-          src: slideAssets.kuraBefore1,
-          alt: '蔵サウナ外観 before',
-          caption: 'Before: 現地撮影',
-          description: '夕景化したいベース写真',
-          tone: 'muted',
-        },
-        {
-          src: slideAssets.kuraAfter1,
-          alt: '蔵サウナ外観 after',
-          caption: 'After: Gemini 2.5 Flash + nanobanana',
-          description: '照明やサインを追加し、差分チェックも即完了',
-          tone: 'accent',
-        },
-      ],
-      footnote: '編集範囲外を保持したまま差分生成。ロゴなどは後からPhotoshopで追記。',
-    },
-    bg: 'linear-gradient(135deg,#172942,#0b111d)',
-  },
-  {
-    id: 's-gemini-case2',
-    title: 'Case 2｜昼景の外構プラン',
-    lines: [
-      '立面スケッチに「日中 / 植栽 / 来客導線」を指定し、昼景案を複数生成',
-      '社内レビューでは色味だけ整えて見積・計画会議へ共有',
-    ],
-    media: {
-      position: 'main',
-      layout: 'grid',
-      columns: 2,
-      items: [
-        {
-          src: slideAssets.geminiFacadeBefore2,
-          alt: '外構立面 before',
-          caption: 'Before: 外構立面',
-          description: '必要最低限の線情報のみ',
-          tone: 'muted',
-          fit: 'contain',
-        },
-        {
-          src: slideAssets.geminiFacadeAfter2,
-          alt: '外構立面 after',
-          caption: 'After: 昼景パース',
-          description: '植栽・人流・質感を追加し共有用イメージ化',
-          tone: 'accent',
-        },
-      ],
-      footnote: '生成10案→2案採用。社内レビューのたたき台に。',
-    },
-    bg: 'linear-gradient(135deg,#14263c,#091017)',
-  },
-  {
-    id: 's-gemini-case3',
-    title: 'Case 3｜サインと光の検証',
-    lines: [
-      'サイン位置と光量を差し替え、夜景での視認性と雰囲気を確認',
-      'nanobananaでサインだけ差し替えるので背景や人流を崩さない',
-    ],
-    media: {
-      position: 'main',
-      layout: 'grid',
-      columns: 2,
-      items: [
-        {
-          src: slideAssets.geminiFacadeBefore3,
-          alt: 'サイン検討 before',
-          caption: 'Before: 立面ベース',
-          description: 'サイン・光源なし',
-          tone: 'muted',
-          fit: 'contain',
-        },
-        {
-          src: slideAssets.geminiFacadeAfter3,
-          alt: 'サイン検討 after',
-          caption: 'After: 夜景サイン',
-          description: 'サイン配置・光量のバリエーションを比較',
-          tone: 'accent',
-        },
-      ],
-      footnote: '合意した案をそのまま施工業者に渡せる画質。',
-    },
-    bg: 'linear-gradient(135deg,#101f33,#070d16)',
-  },
-  {
-    id: 's-gemini-case4',
-    title: 'Case 4｜マテリアル比較',
-    lines: [
-      'タイル・金属パネル・照明などの素材パターンを切り替え、昼夜の印象を比較',
-      '採用案は仕上げ表とリンクしてクライアント合意を高速化',
-    ],
-    media: {
-      position: 'main',
-      layout: 'grid',
-      columns: 2,
-      items: [
-        {
-          src: slideAssets.geminiFacadeBefore4,
-          alt: 'マテリアル比較 before',
-          caption: 'Before: ベース立面',
-          description: '素材指定なし',
-          tone: 'muted',
-          fit: 'contain',
-        },
-        {
-          src: slideAssets.geminiFacadeAfter4,
-          alt: 'マテリアル比較 after',
-          caption: 'After: 素材バリエーション',
-          description: '素材と光環境を変えた比較案',
-          tone: 'accent',
-        },
-      ],
-      footnote: '各案に仕上げ表リンクを添えてDrive共有。',
-    },
-    bg: 'linear-gradient(135deg,#122031,#090f18)',
-  },
-  {
-    id: 's-gemini-case5',
-    title: 'Case 5｜ディテールスタディ',
-    lines: [
-      '屋根・庇・ライティングなど細部だけを差し替え、施工前に最終確認',
-      '周辺ピクセルが変わらないので施工図との突き合わせもスムーズ',
-    ],
-    media: {
-      position: 'main',
-      layout: 'grid',
-      columns: 2,
-      items: [
-        {
-          src: slideAssets.geminiFacadeBefore5,
-          alt: 'ディテールスタディ before',
-          caption: 'Before: ベース立面',
-          description: '変更したい箇所のみブラシ指定',
-          tone: 'muted',
-          fit: 'contain',
-        },
-        {
-          src: slideAssets.geminiFacadeAfter5,
-          alt: 'ディテールスタディ after',
-          caption: 'After: ディテール比較',
-          description: '庇・照明・テクスチャのバリエーション',
-          tone: 'accent',
-        },
-      ],
-      footnote: '施工前最終確認をAI案で共有し、合意形成ログを残す。',
-    },
-    bg: 'linear-gradient(135deg,#111d2d,#080b12)',
-  },
-  {
-    id: 's-gemini-style',
-    title: 'Style｜コピック風・水彩風アレンジ',
-    lines: [
-      '現地写真や完成予想図をnanobananaで読み込み、テイストを数秒で変換',
-      'SNSや顧客プレゼン用に「手描き」「水彩」「ミニチュア」などを量産',
-    ],
-    media: {
-      position: 'main',
-      layout: 'grid',
-      columns: 2,
-      headline: '前後比較',
-      items: [
-        {
-          src: slideAssets.kuraBefore3,
-          alt: 'スタイル変換 before',
-          caption: 'Before: 現地写真',
-          tone: 'muted',
-        },
-        {
-          src: slideAssets.kuraAfter3,
-          alt: 'スタイル変換 after',
-          caption: 'After: コピック風',
-          description: '線や陰影を保ちながら手描きタッチ化',
-          tone: 'accent',
-        },
-      ],
-      footnote: 'ChatGPTで文字レイアウト、Geminiで差分＆テイスト変更という分業が最速。',
-    },
-    bg: 'linear-gradient(135deg,#374151,#059669)',
-  },
-
   {
     id: 's-demo2-intro',
     title: 'Demo② 速攻パース提案',
@@ -2749,6 +2675,31 @@ const SLIDES: Slide[] = [
       'DEMOでライブ実演→完成したコードをプレゼント',
     ],
     bg: 'linear-gradient(135deg,#1f2937,#0f172a)',
+  },
+  {
+    id: 's-breaking-news',
+    title: '緊急で追加情報が！',
+    subtitle: '最新アップデート速報',
+    lines: [
+      '緊急速報①：PhotoshopにGemini nanobanana（9/26発表）が搭載',
+      '緊急速報②：まじん式プロンプト最新版（本日発表）背景に動画や画像を入れられてよりオリジナリティが出るようにかつ無料ユーザーでも使えるようになった！',
+    ],
+    bg: 'linear-gradient(135deg,#dc2626,#0f172a)',
+    toggles: [
+      {
+        title: 'Photoshop + Gemini nanobanana',
+        summary: 'Adobe FireflyにGemini nanobananaが統合',
+        detail: 'Photoshop内で直接、nanobananaの強力な差分編集機能が利用可能に。デザインワークフローがさらに高速化します。',
+        tone: 'accent',
+      },
+      {
+        title: 'まじん式プロンプト Ver.3',
+        summary: '背景メディア指定＆無料ユーザー対応',
+        detail: '最新版では、プロンプトに背景画像や動画を指定して、より独創的な生成が可能になりました。この機能が無料ユーザーにも解放された点が大きなポイントです。',
+        tone: 'muted',
+      },
+    ],
+    footnotes: ['情報は2025年9月28日現在のものです。'],
   },
   {
     id: 's-phase3',
