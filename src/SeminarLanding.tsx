@@ -1003,12 +1003,14 @@ type SlideMediaItem = {
 };
 
 type SlideMedia = {
-  layout?: 'stack' | 'grid';
+  layout?: 'stack' | 'grid' | 'single' | 'slider-compare';
   columns?: 1 | 2 | 3;
   headline?: string;
-  items: SlideMediaItem[];
+  items?: SlideMediaItem[];
   footnote?: string;
   position?: 'side' | 'main';
+  beforeImage?: SlideMediaItem;
+  afterImage?: SlideMediaItem;
 };
 
 type SlideToggle = {
@@ -1153,7 +1155,7 @@ const SliderCompare: React.FC<{ beforeImage: any; afterImage: any; headline?: st
 };
 
 const ShowcaseMedia: React.FC<{ media: SlideMedia }> = ({ media }) => {
-  if (!media || (!media.items?.length && !media.beforeImage)) return null;
+  if (!media || (!(media.items?.length) && !media.beforeImage)) return null;
   
   // Handle slider-compare layout
   if (media.layout === 'slider-compare' && media.beforeImage && media.afterImage) {
@@ -1167,6 +1169,7 @@ const ShowcaseMedia: React.FC<{ media: SlideMedia }> = ({ media }) => {
   }
   
   const isGrid = media.layout === 'grid';
+  const items = media.items ?? [];
   const columns = media.columns ?? (isGrid ? 2 : 1);
   const columnClass = columns === 3 ? 'md:grid-cols-3' : columns === 2 ? 'md:grid-cols-2' : 'md:grid-cols-1';
   const toneStyles = mediaToneStyles;
@@ -1174,7 +1177,7 @@ const ShowcaseMedia: React.FC<{ media: SlideMedia }> = ({ media }) => {
   if (isGrid) {
     return (
       <div className={`grid gap-8 ${columnClass} max-w-full`}>
-        {media.items.map((item, idx) => {
+        {items.map((item, idx) => {
           const tone = toneStyles(item.tone);
           const imageFitClass = item.fit === 'contain' ? 'object-contain' : 'object-cover';
           return (
@@ -1211,7 +1214,7 @@ const ShowcaseMedia: React.FC<{ media: SlideMedia }> = ({ media }) => {
 
   return (
     <div className="space-y-6">
-      {media.items.map((item, idx) => {
+      {items.map((item, idx) => {
         const tone = toneStyles(item.tone);
         const imageFitClass = item.fit === 'contain' ? 'object-contain' : 'object-cover';
         return (
@@ -3107,8 +3110,9 @@ export default function SeminarLanding(): React.ReactElement {
 
     const media = currentSlide.media;
     const mediaPosition = media?.position ?? 'side';
-    const showSideContent = Boolean(media && media.items.length && mediaPosition !== 'main');
-    const showMainMedia = Boolean(media && media.items.length && mediaPosition === 'main');
+    const hasItems = Boolean(media?.items?.length);
+    const showSideContent = Boolean(hasItems && mediaPosition !== 'main');
+    const showMainMedia = Boolean(hasItems && mediaPosition === 'main');
     const toneClasses = mediaToneStyles;
 
     const renderMediaContainer = (placement: 'side' | 'main') => {
@@ -3116,7 +3120,20 @@ export default function SeminarLanding(): React.ReactElement {
       if (placement === 'side' && mediaPosition === 'main') return null;
       if (placement === 'main' && mediaPosition !== 'main') return null;
 
+      if (media.layout === 'slider-compare' && media.beforeImage && media.afterImage) {
+        return placement === 'main'
+          ? (
+            <SliderCompare
+              beforeImage={media.beforeImage}
+              afterImage={media.afterImage}
+              headline={media.headline}
+            />
+          )
+          : null;
+      }
+
       const isGrid = media.layout === 'grid';
+      const items = media.items ?? [];
       const columns = media.columns ?? (isGrid ? 2 : 1);
       const singleColumn = columns === 1;
       const containerBase = placement === 'main'
@@ -3131,7 +3148,7 @@ export default function SeminarLanding(): React.ReactElement {
         if (isGrid) {
           return (
             <div className={gridClass}>
-              {media.items.map((item, idx) => {
+              {items.map((item, idx) => {
                 const tone = toneClasses(item.tone);
                 const imageFitClass = item.fit === 'contain' ? 'object-contain' : 'object-cover';
                 const baseFigureClass = placement === 'main'
@@ -3166,7 +3183,7 @@ export default function SeminarLanding(): React.ReactElement {
 
         return (
           <div className={stackClass}>
-            {media.items.map((item, idx) => {
+            {items.map((item, idx) => {
               const tone = toneClasses(item.tone);
               const imageFitClass = item.fit === 'contain' ? 'object-contain' : 'object-cover';
               const baseFigureClass = placement === 'main'
