@@ -1191,7 +1191,7 @@ const ShowcaseMedia: React.FC<{ media: SlideMedia }> = ({ media }) => {
                 src={item.src}
                 alt={item.alt}
                 loading="lazy"
-                className={`w-full ${imageFitClass} rounded-3xl ${item.src.includes('SpotPDF') ? 'bg-white' : 'bg-slate-900/40'} ${columns === 1 ? 'max-h-[500px]' : 'max-h-[600px] md:max-h-[650px]'} mx-auto`}
+                className={`w-full ${imageFitClass} rounded-3xl ${item.src.includes('SpotPDF') ? 'bg-white' : 'bg-slate-900/40'} ${columns === 1 ? 'max-h-[500px]' : (item.src.includes('logo') ? 'max-h-[180px] md:max-h-[200px] p-4' : 'max-h-[600px] md:max-h-[650px]')} mx-auto`}
               />
               {(item.caption || item.description) && (
                 <figcaption className="px-8 py-6 space-y-3">
@@ -1228,7 +1228,7 @@ const ShowcaseMedia: React.FC<{ media: SlideMedia }> = ({ media }) => {
               src={item.src}
               alt={item.alt}
               loading="lazy"
-              className={`w-full ${imageFitClass} rounded-3xl ${item.src.includes('SpotPDF') ? 'bg-white' : 'bg-slate-900/40'} max-h-[400px] md:max-h-[450px]`}
+              className={`w-full ${imageFitClass} rounded-3xl ${item.src.includes('SpotPDF') ? 'bg-white' : 'bg-slate-900/40'} ${item.src.includes('logo') ? 'max-h-[160px] md:max-h-[180px] p-4' : 'max-h-[400px] md:max-h-[450px]'}`}
             />
             {(item.caption || item.description) && (
               <figcaption className="px-6 py-4 space-y-2">
@@ -2710,61 +2710,11 @@ const SLIDES: Slide[] = [
     ],
     bg: 'linear-gradient(135deg,#1e293b,#475569)',
   },
-  {
-    id: 's-risk-buffer',
-    title: '時間押しリスクへの備え',
-    lines: [
-      '5分押し→Canvasデモは紹介のみ',
-      '10分押し→GASデモは素材配布',
-      '実演は成功体験最優先',
-    ],
-    bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
-  },
-  {
-    id: 's-kpi',
-    title: '導入後のKPI設定例',
-    lines: [
-      '提案作成時間の測定',
-      '審査コメント対応時間の記録',
-      'ガイドライン遵守率のチェック',
-    ],
-    bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
-  },
-  {
-    id: 's-best1',
-    title: 'ベストプラクティス10箇条 (1/2)',
-    lines: [
-      '小さく始めて早く回す',
-      '入力の整備（匿名化・フォーマット統一）',
-      '出力の型を決める（yaml／表／テンプレ）',
-      '差分は機械に任せる',
-      '再計算は自動化が前提',
-    ],
-    bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
-  },
-  {
-    id: 's-best2',
-    title: 'ベストプラクティス10箇条 (2/2)',
-    lines: [
-      '社内ルールは"運用できる最小"から',
-      '根拠を併記して信頼を積む',
-      '指標で語る（時間・誤差・利益）',
-      '教える人になる（共有＝最強の定着）',
-      '毎週1改善（継続して仕組みに落とす）',
-    ],
-    bg: 'linear-gradient(135deg,#1e293b,#475569)',
-  },
-  {
-    id: 's-checklist',
-    title: '明日からの実装チェック',
-    lines: [
-      '業務導線マップを更新',
-      'テンプレとチェックリストを配布',
-      'GAS通知PoCを1本動かす',
-      'KPI初期値を記録',
-    ],
-    bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
-  },
+  
+  
+  
+  
+  
   {
     id: 's-resources',
     title: '配布物セット',
@@ -2774,16 +2724,7 @@ const SLIDES: Slide[] = [
     ],
     bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
   },
-  {
-    id: 's-materials',
-    title: '資料とワークシート',
-    lines: [
-      'Drive: audio/pdf/xlsx/prompt/gas',
-      'ワークフローシート / チェックリスト',
-      'CanvasミニLPテンプレ',
-    ],
-    bg: 'linear-gradient(135deg,#1e293b,#111827)',
-  },
+  
   {
     id: 's-presents',
     title: '参加者特典',
@@ -2794,16 +2735,7 @@ const SLIDES: Slide[] = [
     ],
     bg: 'linear-gradient(135deg,#111827,#1f2937)',
   },
-  {
-    id: 's-community-intro',
-    title: 'ラストシークレット',
-    lines: [
-      'ここにいる皆さんだけが入れるクローズドなコミュニティ',
-      '最新の深い情報の最速公開拠点・今後のセミナーは追加費用なし',
-      '初月無料・月額5,000円・72時間限定オファー',
-    ],
-    bg: 'linear-gradient(135deg,#111827,#1f2937)',
-  },
+  
   {
     id: 's-community-benefits',
     title: 'コミュニティ特典',
@@ -2834,16 +2766,7 @@ const SLIDES: Slide[] = [
     ],
     bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
   },
-  {
-    id: 's-last-secret',
-    title: 'ラストシークレット構成',
-    lines: [
-      'Slide1: 初月無料の案内',
-      'Slide2-4: サロン特典とツール',
-      'Slide5: 招待コード & 72時間限定',
-    ],
-    bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
-  },
+  
   {
     id: 's-survey',
     title: 'アンケート & Q&A',
@@ -2864,16 +2787,7 @@ const SLIDES: Slide[] = [
     ],
     bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
   },
-  {
-    id: 's-ops',
-    title: '運営メモ',
-    lines: [
-      'チャットに素材リンクを固定',
-      '実演は成功体験最優先',
-      '時間押しはリスクプランに従う',
-    ],
-    bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
-  },
+  
   {
     id: 's-prep',
     title: '事前準備チェック',
