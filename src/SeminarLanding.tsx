@@ -256,7 +256,7 @@ const BarChart: React.FC<{
         {data.map((item, idx) => (
           <div key={idx} className="space-y-1">
             <div className="flex justify-between text-sm">
-              <span style={{ color: semanticColors.neutral[700] }}>{item.label}</span>
+              <span className="text-white">{item.label}</span>
               <span className="font-semibold" style={{ color: colors.primary }}>
                 {item.value}{item.target ? `/${item.target}` : ''}
               </span>
@@ -297,33 +297,35 @@ const Timeline: React.FC<{
 }> = ({ entries, colorScheme = 'technology' }) => {
   const colors = semanticColors[colorScheme];
   return (
-    <div className="space-y-5 md:space-y-4">
+    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 w-full max-w-full">
       {entries.map((entry, idx) => (
         <div
           key={idx}
-          className="rounded-2xl border px-4 py-5 md:px-6 md:py-6 transition-shadow duration-300"
+          className="rounded-2xl border px-6 py-6 transition-all duration-300 hover:scale-105"
           style={{
             background: 'rgba(15,23,42,0.45)',
             borderColor: colors.accent,
             boxShadow: '0 20px 45px rgba(15,23,42,0.35)',
           }}
         >
-          <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
-            <span
-              className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] px-3 py-1 rounded-full"
-              style={{ backgroundColor: colors.light, color: colors.primary }}
-            >
-              {entry.label}
-            </span>
-            <span className="h-2 w-2 rounded-full" style={{ backgroundColor: colors.accent }} />
-          </div>
-          <div className="space-y-2">
-            <div className="text-lg font-semibold text-white leading-snug">
-              {entry.title}
+          <div className="flex flex-col gap-4 h-full">
+            <div className="flex items-center justify-between">
+              <span
+                className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.25em] px-3 py-1 rounded-full font-medium"
+                style={{ backgroundColor: colors.light, color: colors.primary }}
+              >
+                {entry.label}
+              </span>
+              <span className="h-3 w-3 rounded-full" style={{ backgroundColor: colors.accent }} />
             </div>
-            <p className="text-sm md:text-base leading-7 text-white/80">
-              {entry.description}
-            </p>
+            <div className="space-y-3 flex-grow">
+              <div className="text-xl font-bold text-white leading-tight">
+                {entry.title}
+              </div>
+              <p className="text-sm leading-6 text-white/85">
+                {entry.description}
+              </p>
+            </div>
           </div>
         </div>
       ))}
@@ -1171,7 +1173,7 @@ const ShowcaseMedia: React.FC<{ media: SlideMedia }> = ({ media }) => {
 
   if (isGrid) {
     return (
-      <div className={`grid gap-6 ${columnClass}`}>
+      <div className={`grid gap-8 ${columnClass} max-w-full`}>
         {media.items.map((item, idx) => {
           const tone = toneStyles(item.tone);
           const imageFitClass = item.fit === 'contain' ? 'object-contain' : 'object-cover';
@@ -1184,10 +1186,10 @@ const ShowcaseMedia: React.FC<{ media: SlideMedia }> = ({ media }) => {
                 src={item.src}
                 alt={item.alt}
                 loading="lazy"
-                className={`w-full ${imageFitClass} rounded-3xl bg-slate-900/40 ${columns === 1 ? 'max-h-[400px]' : 'max-h-[520px] md:max-h-[560px]'} mx-auto`}
+                className={`w-full ${imageFitClass} rounded-3xl bg-slate-900/40 ${columns === 1 ? 'max-h-[500px]' : 'max-h-[600px] md:max-h-[650px]'} mx-auto`}
               />
               {(item.caption || item.description) && (
-                <figcaption className="px-6 py-4 space-y-2">
+                <figcaption className="px-8 py-6 space-y-3">
                   {item.caption && (
                     <div className={`text-base font-semibold ${tone.caption}`}>
                       {item.caption}
@@ -1735,24 +1737,48 @@ const SLIDES: Slide[] = [
   },
   {
     id: 's-mindset',
-    title: 'マインドセット',
-    goalStatement: '明日、チーム全員にAI活用の道筋を渡して「やってみよう」を引き出す',
+    title: 'AI技術の歴史と建築業界への影響',
+    goalStatement: 'AI技術の進化の流れを理解し、建築業界がどう変わってきたかを把握する',
     lines: [
-      '学びは「聞く→試す→伝える→教える」の循環で定着する',
-      '今日知ったことは周りにどんどん伝えて業界全体でアップデートしよう',
-      '復習と最新Tipsは Instagram (@sena_archisoft) でフォロー',
+      '生成AI技術は急速に進化し、建築業界にも大きな変革をもたらしている',
+      'GPT、画像生成AI、専門AIツールの登場により設計プロセスが根本的に変化',
+      '最新技術の動向を把握することで、競争優位性を維持できる',
     ],
-    toggles: [
+    timeline: [
       {
-        title: 'アウトカムの形',
-        summary: '社内共有スライド＋チェックリスト',
-        detail: 'セミナー内でダウンロードできるテンプレをカスタマイズし、自組織用の導入ロードマップを仕上げる。',
+        label: '2022年11月',
+        title: 'ChatGPT 登場',
+        description: 'OpenAIがChatGPTを公開。対話型AIが一般ユーザーに普及開始。建築業界でも文書作成やアイデア出しに活用が始まる。',
       },
       {
-        title: '定着させるコツ',
-        summary: '「誰に・どの案件で・いつ効果を測るか」を言語化',
-        detail: 'アウトプット先（上司・クライアント・チーム）を決め、初回トライのペースとKPIを小さく設定する。',
-        tone: 'accent',
+        label: '2023年3月',
+        title: 'GPT-4 リリース',
+        description: 'マルチモーダル対応により、図面や画像の理解が可能に。建築図面の解析や説明生成が実用レベルに到達。',
+      },
+      {
+        label: '2023年6月',
+        title: 'Midjourney V5',
+        description: '建築パースの品質が飛躍的に向上。写真のようなリアルな建築ビジュアライゼーションが可能になる。',
+      },
+      {
+        label: '2023年12月',
+        title: 'Gemini Pro 登場',
+        description: 'Googleの大規模言語モデル。建築プロジェクトでの多言語対応やコードジェネレーションに活用。',
+      },
+      {
+        label: '2024年5月',
+        title: 'GPT-4o 発表',
+        description: 'リアルタイム音声・画像処理が可能に。現場での即座な設計判断支援や施工管理が実現。',
+      },
+      {
+        label: '2024年9月',
+        title: 'o1 (Strawberry)',
+        description: '推論能力が大幅向上。複雑な構造計算や法規チェックなど、専門的な建築業務をAIが支援。',
+      },
+      {
+        label: '2024年現在',
+        title: 'MANUS・専門AI',
+        description: '建築特化AIツールが続々登場。BIM連携、法規チェック、積算自動化など実務に直結する機能が実装。',
       },
     ],
     bg: 'linear-gradient(135deg,#1e293b,#334155)',
