@@ -2490,11 +2490,11 @@ const SLIDES: Slide[] = [
   },
   {
     id: 's-demo1-hands',
-    title: 'Demo① 動画→議事録作成',
+    title: 'Demo① Deepresearch活用実演',
     lines: [
-      '現地調査動画をGeminiに投入→AIが現状と課題を抽出',
-      'カスタム指示で議事録を自動構造化（sena特製プロンプト公開）',
-      '現地写真→Geminiでその場パース生成→提案イメージ完成',
+      'Deepresearchで物件情報を素早く調査',
+      'AI検索で関連法令や周辺環境を把握',
+      'データをまとめて提案資料に活用',
     ],
     bg: 'linear-gradient(135deg,#111827,#1f2937)',
     media: {
@@ -2629,9 +2629,9 @@ const SLIDES: Slide[] = [
     id: 's-demo2',
     title: '活用② ChatGPTエージェントでサンプル請求',
     lines: [
-      'A/B図面の差分抽出→自動ハイライト',
-      'コメント→PDF化→共有',
-      '承認ログとしてDrive保存',
+      'ChatGPTエージェント機能でサンゲツなどからサンプル自動請求',
+      '商品情報をAIが整理して最適な選択肢を提案',
+      '発注プロセスの自動化で業務効率大幅向上',
     ],
     media: {
       position: 'main',
@@ -2651,8 +2651,18 @@ const SLIDES: Slide[] = [
     bg: 'linear-gradient(135deg,#1e293b,#475569)',
   },
   {
+    id: 's-demo2-hands-new',
+    title: 'Demo② エージェント実演',
+    lines: [
+      'ChatGPTエージェントを使ったサンプル請求の実演',
+      '商品カタログから最適な選択肢をAIが提案',
+      '自動発注プロセスをライブデモ',
+    ],
+    bg: 'linear-gradient(135deg,#475569,#1e293b)',
+  },
+  {
     id: 's-demo2-hands',
-    title: 'Demo③ 実演',
+    title: 'Demo⑤ SpotPDF実演',
     lines: [
       'サンプル図面で差分抽出',
       'ハイライト箇所をコメント',
@@ -2672,11 +2682,11 @@ const SLIDES: Slide[] = [
   },
   {
     id: 's-demo3-hands',
-    title: 'Demo③ 実演',
+    title: 'Demo③ 現地調査AI実演',
     lines: [
-      'Excelに条件入力→BEI算出',
-      '再計算ボタンで差分確認',
-      '提出書式を自動生成',
+      '現地調査動画をGeminiに投入→AIが現状と課題を抽出',
+      'カスタム指示で議事録を自動構造化（sena特製プロンプト公開）',
+      '現地写真→Geminiでその場パース生成→提案イメージ完成',
     ],
     bg: 'linear-gradient(135deg,#1e293b,#111827)',
   },
