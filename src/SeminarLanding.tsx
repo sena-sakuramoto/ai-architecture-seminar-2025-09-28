@@ -425,15 +425,17 @@ const CHAPTERS = [
   { no: 6, id: 'part1-tips', title: 'プロンプト活用Tips (55-60分)' },
   { no: 7, id: 'part1-notebook', title: 'Google NotebookLM 紹介 (60-70分)' },
   { no: 8, id: 'part2-workflow', title: '実務ワークフローの全体像 (70-90分)' },
-  { no: 9, id: 'part2-demo1', title: '活用① 現地調査でAIをフル活用する (90-115分)' },
-  { no: 10, id: 'part2-demo2', title: '活用② SpotPDF 差分"5分決着" (115-130分)' },
-  { no: 11, id: 'part2-demo3', title: '活用③ 省エネ（モデル建物法） (130-150分)' },
-  { no: 12, id: 'part2-demo4', title: '活用④ HPと自作ゲームを作ろう (150-155分)' },
-  { no: 13, id: 'part2-demo5', title: '活用⑤ 無料で自動化してみよう (155-160分)' },
-  { no: 14, id: 'part2-invoice', title: '活用⑥ サンプル自動請求 (160-170分)' },
-  { no: 15, id: 'part3-summary', title: 'まとめと今後 (170-180分)' },
-  { no: 16, id: 'survey', title: 'アンケート (180分-)' },
-  { no: 17, id: 'qa', title: '無制限Q&A' },
+  { no: 9, id: 'part2-demo1', title: '活用① Deepresearch (90-100分)' },
+  { no: 10, id: 'part2-demo2', title: '活用② ChatGPTエージェントでサンプル請求 (100-115分)' },
+  { no: 11, id: 'part2-demo3', title: '活用③ 現地調査でAIをフル活用する (115-135分)' },
+  { no: 12, id: 'part2-demo4', title: '活用④ Geminiで立面からパースへ (135-145分)' },
+  { no: 13, id: 'part2-demo5', title: '活用⑤ SpotPDF (145-155分)' },
+  { no: 14, id: 'part2-demo6', title: '活用⑥ HPと自作ゲームを作ろう (155-160分)' },
+  { no: 15, id: 'part2-demo7', title: '活用⑦ 無料で自動化してみよう (160-165分)' },
+  { no: 16, id: 'part2-demo8', title: '活用⑧ Manusでプレゼン資料を作ってみよう (165-170分)' },
+  { no: 17, id: 'part3-summary', title: 'まとめと今後 (170-180分)' },
+  { no: 18, id: 'survey', title: 'アンケート (180分-)' },
+  { no: 19, id: 'qa', title: '無制限Q&A' },
 ] as const;
 
 const CHAPTER_SUMMARIES: Record<string, string> = {
@@ -445,12 +447,14 @@ const CHAPTER_SUMMARIES: Record<string, string> = {
   'part1-tips': '構造化して、yamlでまとめて、表形式で、抽象化→具体化、制約付き、検証して',
   'part1-notebook': '難しい資料を投入してラジオ形式で要点を音声学習、幻覚抑制の運用',
   'part2-workflow': '調査→設計→コミュ→見積→省エネ→提出のAI導線マップ',
-  'part2-demo1': '音声→議事録テンプレ→提案資料までの流れをライブ実演',
-  'part2-demo2': 'A/B図面の差分抽出→自動ハイライト→コメント→PDF化',
-  'part2-demo3': '入力最小化→再計算→提出ひな形の生成',
-  'part2-demo4': 'ChatGPT5とGeminiを使って自由にHP・ゲーム・アプリを作成',
-  'part2-demo5': 'タスク管理：当日や前日に担当者にメールが送られるシステムを無料で構築',
-  'part2-invoice': '見積・実績データからサンプル請求書を自動生成し共有',
+  'part2-demo1': 'Deepresearchを使った物件調査手法とAI活用のコツ',
+  'part2-demo2': 'ChatGPTエージェント機能でサンゲツなどからのサンプル自動請求',
+  'part2-demo3': '音声→議事録テンプレ→提案資料までの流れをライブ実演',
+  'part2-demo4': 'Geminiで立面図からパース画像を生成する実践手法',
+  'part2-demo5': 'A/B図面の差分抽出→自動ハイライト→コメント→PDF化',
+  'part2-demo6': 'ChatGPTとGeminiを使って自由にHP・ゲーム・アプリを作成',
+  'part2-demo7': 'タスク管理：当日や前日に担当者にメールが送られるシステムを無料で構築',
+  'part2-demo8': 'Manusで提案書や議事録を建築業界向けの表現に調整',
   'part3-summary': 'ケーススタディ＆KPI、小規模チーム運用ルール、ベストプラクティス10箇条',
   'survey': '本編終了直後、回答者に非公開ページのアクセスを解放',
   'qa': '無制限（退出自由、延長対応）',
@@ -2455,7 +2459,7 @@ const SLIDES: Slide[] = [
   },
   {
     id: 's-demo1',
-    title: '活用① 現地調査でAIをフル活用する',
+    title: '活用① Deepresearch',
     lines: [
       '動画で風景に合わせて工事内容や現状指示→議事録まとめ→プロンプトで構造化',
       'senaが作成したGeminiへのカスタム指示をプレゼント',
@@ -2602,7 +2606,7 @@ const SLIDES: Slide[] = [
   },
   {
     id: 's-demo2',
-    title: '活用② SpotPDF 差分チェック',
+    title: '活用② ChatGPTエージェントでサンプル請求',
     lines: [
       'A/B図面の差分抽出→自動ハイライト',
       'コメント→PDF化→共有',
@@ -2637,7 +2641,7 @@ const SLIDES: Slide[] = [
   },
   {
     id: 's-demo3',
-    title: '活用③ 省エネ（モデル建物法）',
+    title: '活用③ 現地調査でAIをフル活用する',
     lines: [
       '入力最小化→再計算→提出ひな形',
       'BEIと条件変更を比較',
@@ -2657,7 +2661,7 @@ const SLIDES: Slide[] = [
   },
   {
     id: 's-demo4',
-    title: '活用④ HPと自作ゲームを作ろう',
+    title: '活用④ Geminiで立面からパースへ',
     lines: [
       'ChatGPT5とGeminiを使って好きにみんなで作ってみよう',
       'HP、ゲーム、アプリ、何でもOK',
@@ -2667,13 +2671,43 @@ const SLIDES: Slide[] = [
   },
   {
     id: 's-demo5',
-    title: '活用⑤ 無料で自動化してみよう',
+    title: '活用⑤ SpotPDF 差分チェック',
+    lines: [
+      'A/B図面の差分抽出→自動ハイライト',
+      'コメント→PDF化→共有',
+      '誤検出率/未検出率をKPI化して精度向上',
+    ],
+    bg: 'linear-gradient(135deg,#1f2937,#0f172a)',
+  },
+  {
+    id: 's-demo6',
+    title: '活用⑥ HPと自作ゲームを作ろう',
+    lines: [
+      'Claudeを使って簡単なWebサイト作成',
+      '建築事務所向けのゲーム要素を組み込み',
+      'プロジェクト紹介やポートフォリオサイトを即座に構築',
+    ],
+    bg: 'linear-gradient(135deg,#374151,#1f2937)',
+  },
+  {
+    id: 's-demo7',
+    title: '活用⑦ 無料で自動化してみよう',
     lines: [
       'タスク管理：当日や前日に担当者にメールが送られるようにしてみよう',
       'Google SpreadsheetとGASを使った自動通知システム',
       'DEMOでライブ実演→完成したコードをプレゼント',
     ],
-    bg: 'linear-gradient(135deg,#1f2937,#0f172a)',
+    bg: 'linear-gradient(135deg,#4b5563,#374151)',
+  },
+  {
+    id: 's-demo8',
+    title: '活用⑧ Manusでプレゼン資料を作ってみよう',
+    lines: [
+      '国産AIで敬語・用語を建築業界向けに調整',
+      '提案書や議事録を社内配布用の表現に最終調整',
+      'クライアント向け資料の日本語品質を向上',
+    ],
+    bg: 'linear-gradient(135deg,#6b7280,#4b5563)',
   },
   {
     id: 's-breaking-news',
@@ -2788,16 +2822,7 @@ const SLIDES: Slide[] = [
     bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
   },
   
-  {
-    id: 's-prep',
-    title: '事前準備チェック',
-    lines: [
-      'GoogleアカウントでDriveアクセス',
-      'ChatGPT / Gemini にログイン',
-      'PDF閲覧とGmail通知テスト',
-    ],
-    bg: 'linear-gradient(135deg,#1e293b,#475569)',
-  },
+  
   {
     id: 's-goal-check',
     title: '今日のゴール達成確認',
