@@ -1506,7 +1506,7 @@ const GEMINI_SHOWCASES: GeminiShowcase[] = [
   },
 ];
 
-const GEMINI_SHOWCASE_IDS = GEMINI_SHOWCASES.map((s) => s.id);
+
 
 
 const SLIDES: Slide[] = [
@@ -2912,108 +2912,6 @@ const SLIDES: Slide[] = [
     ],
     bg: 'linear-gradient(135deg,#111827,#1f2937)',
   },
-  
-  {
-    id: 's-community-benefits',
-    title: 'コミュニティ特典',
-    lines: [
-      '月1回のZoom相談会・不定期の限定交流会（オンライン／オフライン）',
-      'SpotPDF・楽々省エネ計算・天空率（開発中）の早期アクセス',
-      '最新の深い情報を最速で展開（サンプル、雛形、実演動画）',
-    ],
-    bg: 'linear-gradient(135deg,#0f172a,#1e293b)',
-  },
-  {
-    id: 's-community-rules',
-    title: 'コミュニティ運用',
-    lines: [
-      '実名推奨・守秘情報の持ち込み禁止',
-      '成果物二次配布はクレジット必須',
-      'Circle + Zoom + Drive で運用',
-    ],
-    bg: 'linear-gradient(135deg,#1e293b,#475569)',
-  },
-  {
-    id: 's-community-join',
-    title: '参加方法',
-    lines: [
-      'クロージングで招待コードを提示',
-      '72時間以内に申し込み→初月無料',
-      'オンボーディングで課題とライブ予定共有',
-    ],
-    bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
-  },
-  
-  {
-    id: 's-survey',
-    title: 'アンケート & Q&A',
-    lines: [
-      '170分時点でアンケートURLを案内',
-      '回答後に非公開ページを解放',
-      'Q&Aは無制限・退出自由',
-    ],
-    bg: 'linear-gradient(135deg,#1e293b,#475569)',
-  },
-  {
-    id: 's-instagram',
-    title: 'Instagramで復習',
-    lines: [
-      '最新Tipsは @sena_archisoft で発信',
-      '感想投稿＝学びの定着',
-      'フォロー＆シェア大歓迎',
-    ],
-    bg: 'linear-gradient(135deg,#38bdf8,#0f172a)',
-  },
-  
-  
-  {
-    id: 's-goal-check',
-    title: '今日のゴール達成確認',
-    goalStatement: '現状を理解し、明日から自分の業務でAIを実践していける具体的な姿を描く',
-    lines: [
-      '✓ AI活用の現実を知り、自分の業務での活用イメージを具体化できましたか？',
-      '✓ 明日から試せる具体的な手法を体験し、実践への道筋は明確になりましたか？',
-      '✓ 自分のワークフローでどこをAI化できるかを特定できましたか？',
-      '✓ 継続的に取り組める現実的な一歩目を設定できましたか？',
-    ],
-    toggles: [
-      {
-        title: '配布資料で復習',
-        summary: 'セミナー終了後の非公開ページ',
-        detail: 'チェックリスト、テンプレート一式をダウンロードして、実務で活用開始してください。',
-      },
-      {
-        title: '次のステップ',
-        summary: 'まずは小さく始めて、チームに共有',
-        detail: '一つの業務から始めて成果を確認。効果が見えたらチーム全体に展開し、AI×建築の新しい働き方を実現しましょう。',
-        tone: 'accent',
-      },
-    ],
-    bg: 'linear-gradient(135deg,#059669,#0f172a)',
-  },
-  {
-    id: 's-future-roles-final',
-    title: 'AI時代の建築家の役割',
-    lines: [
-      '生産性向上により、全員が現場監督能力を求められる時代に',
-      '考えるだけでなく、AIに指示出し→進捗確認→自分でも作る',
-      'できることは自分で手を動かし、プロジェクト全体を統括する',
-      '名もなき建築家が神社を設計・施工していた昔の姿に回帰する',
-    ],
-    bg: 'linear-gradient(135deg,#334155,#0f172a)',
-  },
-  {
-    id: 's-goal-check',
-    title: '今日のゴール達成確認',
-    goalStatement: '現状を理解し、明日から自分の業務でAIを実践していける具体的な姿を描く',
-    lines: [
-      '✓ AI活用の現実を知り、自分の業務での活用イメージを具体化できましたか？',
-      '✓ 明日から試せる具体的な手法を体験し、実践への道筋は明確になりましたか？',
-      '✓ 自分のワークフローでどこをAI化できるかを特定できましたか？',
-      '✓ 継続的に取り組める現実的な一歩目を設定できましたか？',
-    ],
-    bg: 'linear-gradient(135deg,#059669,#0f172a)',
-  },
   {
     id: 's-major-announcement',
     title: '重大発表',
@@ -3050,17 +2948,6 @@ const SLIDES: Slide[] = [
       },
     ],
     bg: 'linear-gradient(135deg,#7c3aed,#0f172a)',
-  },
-  {
-    id: 's-future-roles-final',
-    title: 'AI時代の建築家の役割',
-    lines: [
-      '生産性向上により、全員が現場監督能力を求められる時代に',
-      '考えるだけでなく、AIに指示出し→進捗確認→自分でも作る',
-      'できることは自分で手を動かし、プロジェクト全体を統括する',
-      '名もなき建築家が神社を設計・施工していた昔の姿に回帰する',
-    ],
-    bg: 'linear-gradient(135deg,#334155,#0f172a)',
   },
   {
     id: 's-final-announcement',
