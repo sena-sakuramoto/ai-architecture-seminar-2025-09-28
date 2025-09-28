@@ -1041,6 +1041,7 @@ type Slide = {
   quickFacts?: SlideQuickFact[];
   toggles?: SlideToggle[];
   timeline?: TimelineEntry[];
+  timelineTitle?: string;
   barChart?: SlideBarChart;
   footnotes?: string[];
   bg?: string;
@@ -1788,6 +1789,7 @@ const SLIDES: Slide[] = [
         description: '建築特化AIツールが続々登場。BIM連携、法規チェック、積算自動化など実務に直結する機能が実装。',
       },
     ],
+    timelineTitle: 'AIの歴史',
     bg: 'linear-gradient(135deg,#1e293b,#334155)',
   },
   {
@@ -1797,12 +1799,12 @@ const SLIDES: Slide[] = [
     timeline: [
       {
         label: 'STEP 1',
-        title: 'インプット',
+        title: '理解',
         description: '最新事例とAIの原理を理解し、判断軸を揃える。',
       },
       {
         label: 'STEP 2',
-        title: 'リハーサル',
+        title: '実演',
         description: '実案件に近い素材でライブ実演。失敗パターンも確認。',
       },
       {
@@ -1816,6 +1818,7 @@ const SLIDES: Slide[] = [
         description: '明日チームに話せるストーリーとデータで合意形成する。',
       },
     ],
+    timelineTitle: '学習サイクル',
     bg: 'linear-gradient(135deg,#0ea5e9,#1e293b)',
   },
   {
@@ -1930,6 +1933,7 @@ const SLIDES: Slide[] = [
         description: '国交省BIM推進施策や自治体のガイドラインでAI活用と記録性が求められる。',
       },
     ],
+    timelineTitle: '建築×AIの転換点',
     footnotes: [
       'Transformer: Vaswani et al., Attention Is All You Need (2017)',
       'GPT-3: OpenAI API Launch, 2020年6月',
@@ -3346,7 +3350,7 @@ export default function SeminarLanding(): React.ReactElement {
                   <RevealPanel delay={150}>
                     <div className="bg-white/5 rounded-2xl px-6 py-4 text-left">
                       <div className="text-sm uppercase tracking-[0.3em] text-cyan-200/80 mb-4">
-                        AIの歴史
+                        {currentSlide.timelineTitle || 'タイムライン'}
                       </div>
                       <div className="max-h-[300px] overflow-y-auto">
                         <Timeline entries={currentSlide.timeline} colorScheme="architecture" />
