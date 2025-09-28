@@ -2693,23 +2693,155 @@ const SLIDES: Slide[] = [
   {
     id: 's-demo4',
     title: '活用④ Geminiで立面からパースへ',
+    subtitle: '現場で回すときの流れ',
     lines: [
       '立面やスケッチをそのまま読み込み、用途・時間帯・材質をテキストで指示',
       'プロンプトで「どこを強調したいか」を伝え、数パターンを生成して比較',
       '採用案はPhotoshopなどで微調整し、提案資料やSNSに即活用する',
     ],
+    media: {
+      position: 'main',
+      layout: 'grid',
+      columns: 1,
+      headline: '作業イメージ',
+      items: [
+        {
+          src: slideAssets.geminiFacadeBefore1,
+          alt: '立面スケッチのサンプル',
+          caption: '入力素材の例',
+          description: 'クライアントと共有した立面図。背景情報と意図をセットでAIに渡す。',
+          tone: 'muted',
+          fit: 'contain',
+        },
+      ],
+      footnote: '立面図・構造メモ・希望テイストなど「背景」をセットで渡すことで精度が上がる',
+    },
     bg: 'linear-gradient(135deg,#111827,#1f2937)',
   },
   {
-    id: 's-gemini-facade-examples',
-    title: 'Geminiスタイル変換実例',
-    subtitle: '立面図からパースへの実践ワークフロー',
+    id: 's-gemini-case1-detail',
+    title: 'Case 1｜夕景の立面提案',
     lines: [
-      '建築立面図の読み込み→材質・環境・時間帯の指定→即座にパース生成',
-      '複数パターンの比較検討で最適案を選択',
-      '現場での説得力のあるビジュアライゼーション実現',
+      '立面スケッチをそのまま読み込み、夕景・木質・間接照明を指定',
+      '複数案の中から店舗らしさが出る1枚を選び、Photoshopでロゴとサインを追加',
     ],
-    bg: 'linear-gradient(135deg,#1e293b,#111827)',
+    media: {
+      layout: 'slider-compare',
+      headline: '夕景立面：入力 vs 生成結果',
+      beforeImage: {
+        src: slideAssets.geminiFacadeBefore1,
+        alt: 'Case 1 立面スケッチ',
+        caption: 'Before: 立面スケッチ',
+        description: '手描きの立面スケッチ',
+      },
+      afterImage: {
+        src: slideAssets.geminiFacadeAfter1,
+        alt: 'Case 1 夕景パース',
+        caption: 'After: 夕景パース',
+        description: '夕景・木質・間接照明を指定したAI生成パース',
+      },
+    },
+    bg: 'linear-gradient(135deg,#1f2937,#374151)',
+  },
+  {
+    id: 's-gemini-case2-detail',
+    title: 'Case 2｜昼景の外構提案',
+    lines: [
+      '外構の立面データに「日中・植栽・来客導線」を指定し、複数案を生成',
+      '採用案は色味だけを調整し、見積・計画会議で共有',
+    ],
+    media: {
+      layout: 'slider-compare',
+      headline: '昼景外構：入力 vs 生成結果',
+      beforeImage: {
+        src: slideAssets.geminiFacadeBefore2,
+        alt: 'Case 2 外構立面',
+        caption: 'Before: 外構立面',
+        description: '外構の基本立面図',
+      },
+      afterImage: {
+        src: slideAssets.geminiFacadeAfter2,
+        alt: 'Case 2 昼景パース',
+        caption: 'After: 昼景パース',
+        description: '日中・植栽・来客導線を考慮したAI生成パース',
+      },
+    },
+    bg: 'linear-gradient(135deg,#374151,#4b5563)',
+  },
+  {
+    id: 's-gemini-case3-detail',
+    title: 'Case 3｜サイン検討',
+    lines: [
+      'サイン位置と光量を指定し、夜景での印象と視認性を検証',
+      '複数案を比較しながら、サインのサイズと色味をすり合わせ',
+    ],
+    media: {
+      layout: 'slider-compare',
+      headline: 'サイン検討：入力 vs 生成結果',
+      beforeImage: {
+        src: slideAssets.geminiFacadeBefore3,
+        alt: 'Case 3 サイン検討前',
+        caption: 'Before: サイン検討前',
+        description: 'サイン設置前の立面',
+      },
+      afterImage: {
+        src: slideAssets.geminiFacadeAfter3,
+        alt: 'Case 3 サイン設置後',
+        caption: 'After: サイン設置後',
+        description: '夜景での視認性を検証したサイン案',
+      },
+    },
+    bg: 'linear-gradient(135deg,#4b5563,#6b7280)',
+  },
+  {
+    id: 's-gemini-case4-detail',
+    title: 'Case 4｜ファサード素材検討',
+    lines: [
+      '素材や色の違いを複数パターン生成し、クライアントと即日共有',
+      '実施設計で使う色番号・素材カタログに紐付けて意思決定をスムーズに',
+    ],
+    media: {
+      layout: 'slider-compare',
+      headline: 'ファサード素材：入力 vs 生成結果',
+      beforeImage: {
+        src: slideAssets.geminiFacadeBefore4,
+        alt: 'Case 4 素材検討前',
+        caption: 'Before: 素材検討前',
+        description: '基本ファサード案',
+      },
+      afterImage: {
+        src: slideAssets.geminiFacadeAfter4,
+        alt: 'Case 4 素材適用後',
+        caption: 'After: 素材適用後',
+        description: '素材・色味を適用したファサード案',
+      },
+    },
+    bg: 'linear-gradient(135deg,#6b7280,#9ca3af)',
+  },
+  {
+    id: 's-gemini-case5-detail',
+    title: 'Case 5｜ディテール検討',
+    lines: [
+      '屋根や袖壁などディテールのバリエーションを短時間で並べて比較',
+      '設計チーム内で「どこを重点的に作り込むか」を共通認識に',
+    ],
+    media: {
+      layout: 'slider-compare',
+      headline: 'ディテール検討：入力 vs 生成結果',
+      beforeImage: {
+        src: slideAssets.geminiFacadeBefore5,
+        alt: 'Case 5 ディテール検討前',
+        caption: 'Before: ディテール検討前',
+        description: '基本ディテール案',
+      },
+      afterImage: {
+        src: slideAssets.geminiFacadeAfter5,
+        alt: 'Case 5 ディテール案',
+        caption: 'After: ディテール案',
+        description: '屋根・庇・照明のバリエーション比較',
+      },
+    },
+    bg: 'linear-gradient(135deg,#9ca3af,#111827)',
   },
   {
     id: 's-demo5',
@@ -3036,7 +3168,7 @@ function runSmokeTests(allIds: string[]): void {
 
 export default function SeminarLanding(): React.ReactElement {
   const baseOrder = useMemo(() => ['top', 'highlights', 'program', 'chapters'], []);
-  const allIds = useMemo(() => [...baseOrder, ...CHAPTERS.map((c) => c.id), ...GEMINI_SHOWCASE_IDS, 'resources'], [baseOrder]);
+  const allIds = useMemo(() => [...baseOrder, ...CHAPTERS.map((c) => c.id), 'resources'], [baseOrder]);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [presenter, setPresenter] = useState(false);
