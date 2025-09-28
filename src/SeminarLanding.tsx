@@ -1191,7 +1191,7 @@ const ShowcaseMedia: React.FC<{ media: SlideMedia }> = ({ media }) => {
                 src={item.src}
                 alt={item.alt}
                 loading="lazy"
-                className={`w-full ${imageFitClass} rounded-3xl bg-slate-900/40 ${columns === 1 ? 'max-h-[500px]' : 'max-h-[600px] md:max-h-[650px]'} mx-auto`}
+                className={`w-full ${imageFitClass} rounded-3xl ${item.src.includes('SpotPDF') ? 'bg-white' : 'bg-slate-900/40'} ${columns === 1 ? 'max-h-[500px]' : 'max-h-[600px] md:max-h-[650px]'} mx-auto`}
               />
               {(item.caption || item.description) && (
                 <figcaption className="px-8 py-6 space-y-3">
@@ -1228,7 +1228,7 @@ const ShowcaseMedia: React.FC<{ media: SlideMedia }> = ({ media }) => {
               src={item.src}
               alt={item.alt}
               loading="lazy"
-              className={`w-full ${imageFitClass} rounded-3xl bg-slate-900/40 max-h-[400px] md:max-h-[450px]`}
+              className={`w-full ${imageFitClass} rounded-3xl ${item.src.includes('SpotPDF') ? 'bg-white' : 'bg-slate-900/40'} max-h-[400px] md:max-h-[450px]`}
             />
             {(item.caption || item.description) && (
               <figcaption className="px-6 py-4 space-y-2">
